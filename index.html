@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แดชบอร์ดวิเคราะห์สินเชื่อ — เมษายน 2569</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-base: #0a0c10;
+    --bg-surface: #111318;
+    --bg-card: #161a22;
+    --bg-card-hover: #1c2130;
+    --bg-input: #0d1017;
+    --border: #1f2535;
+    --border-bright: #2a3348;
+    --accent-blue: #3b82f6;
+    --accent-blue-dim: #1d4ed8;
+    --accent-green: #22c55e;
+    --accent-green-dim: #15803d;
+    --accent-amber: #f59e0b;
+    --accent-amber-dim: #b45309;
+    --accent-red: #ef4444;
+    --accent-red-dim: #991b1b;
+    --accent-purple: #a855f7;
+    --accent-cyan: #06b6d4;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --text-dim: #334155;
+    --holiday: #1a1020;
+    --holiday-border: #4c1d95;
+    --monday: #0f1520;
+    --monday-border: #1e3a5f;
+    --font-th: 'IBM Plex Sans Thai', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-th);
+    min-height: 100vh;
+    padding: 24px 16px 60px;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+    position: relative;
+  }
+  .header::after {
+    content:'';
+    display:block;
+    width:120px;height:2px;
+    background: linear-gradient(90deg,transparent,var(--accent-blue),transparent);
+    margin: 16px auto 0;
+  }
+  .header-badge {
+    display: inline-block;
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.3);
+    color: var(--accent-blue);
+    font-size: 11px;
+    font-family: var(--font-mono);
+    letter-spacing: 2px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  .header h1 {
+    font-size: clamp(20px, 4vw, 30px);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+  }
+  .header p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+  }
+
+  /* ─── GRID LAYOUT ─── */
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+  .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+  @media(max-width:900px){ .grid-4{grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:600px){ .grid-2{grid-template-columns:1fr;} .grid-4{grid-template-columns:1fr 1fr;} }
+
+  /* ─── CARD ─── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--border-bright); }
+  .card-title {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  /* ─── KPI CARDS ─── */
+  .kpi-value {
+    font-size: clamp(20px,3vw,28px);
+    font-weight: 700;
+    font-family: var(--font-mono);
+    line-height: 1.1;
+  }
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .kpi-bar {
+    height: 3px;
+    border-radius: 2px;
+    background: var(--border);
+    margin-top: 12px;
+    overflow: hidden;
+  }
+  .kpi-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.8s ease;
+  }
+  .blue .kpi-value  { color: var(--accent-blue); }
+  .blue .kpi-bar-fill { background: var(--accent-blue); }
+  .green .kpi-value { color: var(--accent-green); }
+  .green .kpi-bar-fill { background: var(--accent-green); }
+  .amber .kpi-value { color: var(--accent-amber); }
+  .amber .kpi-bar-fill { background: var(--accent-amber); }
+  .purple .kpi-value { color: var(--accent-purple); }
+  .purple .kpi-bar-fill { background: var(--accent-purple); }
+
+  /* ─── SECTION TITLE ─── */
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::before {
+    content:'';
+    width:3px; height:14px;
+    border-radius:2px;
+    background: var(--accent-blue);
+    display:inline-block;
+  }
+
+  /* ─── CALENDAR ─── */
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7,1fr);
+    gap: 6px;
+  }
+  .cal-header {
+    text-align: center;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    padding: 4px 0 8px;
+    letter-spacing: 1px;
+  }
+  .cal-day {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 7px 6px 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-height: 80px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .cal-day:hover:not(.disabled):not(.empty) {
+    border-color: var(--accent-blue);
+    background: var(--bg-card-hover);
+    z-index: 1;
+  }
+  .cal-day.empty { background: transparent; border-color: transparent; cursor: default; }
+  .cal-day.monday {
+    background: var(--monday);
+    border-color: var(--monday-border);
+    cursor: default;
+  }
+  .cal-day.holiday {
+    background: var(--holiday);
+    border-color: var(--holiday-border);
+    cursor: default;
+  }
+  .cal-day.disabled { opacity: 0.4; cursor: default; }
+  .cal-day.today { border-color: var(--accent-cyan) !important; }
+  .cal-day.has-data { border-color: var(--accent-green-dim); }
+
+  .day-num {
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .monday .day-num { color: var(--accent-blue); opacity:0.5; }
+  .holiday .day-num { color: var(--accent-purple); opacity:0.6; }
+  .today .day-num { color: var(--accent-cyan) !important; }
+
+  .day-tag {
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 4px;
+    width: fit-content;
+  }
+  .tag-holiday { background: rgba(168,85,247,0.15); color: var(--accent-purple); }
+  .tag-monday  { background: rgba(59,130,246,0.1); color: var(--accent-blue); }
+  .tag-today   { background: rgba(6,182,212,0.15); color: var(--accent-cyan); }
+
+  .day-amounts { display:flex; flex-direction:column; gap:2px; margin-top:auto; }
+  .day-amount-new {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: var(--accent-green);
+  }
+  .day-amount-old {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: var(--accent-amber);
+  }
+  .day-count {
+    font-size: 9px;
+    color: var(--text-muted);
+  }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg-card);
+    border: 1px solid var(--border-bright);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 480px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn {
+    from { transform: translateY(20px); opacity:0; }
+    to   { transform: translateY(0);    opacity:1; }
+  }
+  .modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .modal-close:hover { color: var(--text-primary); }
+
+  /* ─── FORM ─── */
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .form-input {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--accent-blue); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ─── BUDGET BARS ─── */
+  .budget-section { margin-bottom: 20px; }
+  .budget-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .budget-name { font-size: 13px; color: var(--text-secondary); }
+  .budget-nums { font-size: 12px; font-family: var(--font-mono); color: var(--text-muted); }
+  .budget-track {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .budget-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s ease;
+  }
+  .budget-targets {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  /* ─── DAILY SUMMARY TABLE ─── */
+  .summary-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 4px;
+    font-size: 12px;
+  }
+  .summary-table th {
+    text-align: left;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+  }
+  .summary-table th:not(:first-child) { text-align: right; }
+  .summary-table td {
+    padding: 8px 10px;
+    background: var(--bg-surface);
+  }
+  .summary-table td:not(:first-child) { text-align: right; font-family: var(--font-mono); }
+  .summary-table tr td:first-child { border-radius: 6px 0 0 6px; }
+  .summary-table tr td:last-child  { border-radius: 0 6px 6px 0; }
+  .summary-table .row-holiday td { opacity:0.4; }
+  .summary-table .row-today td { outline: 1px solid var(--accent-cyan); outline-offset:-1px; }
+  .col-new   { color: var(--accent-green); }
+  .col-old   { color: var(--accent-amber); }
+  .col-total { color: var(--text-primary); font-weight:600; }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-th);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+  .btn-primary {
+    background: var(--accent-blue);
+    color: white;
+  }
+  .btn-primary:hover { background: #2563eb; }
+  .btn-danger {
+    background: rgba(239,68,68,0.1);
+    color: var(--accent-red);
+    border: 1px solid rgba(239,68,68,0.3);
+  }
+  .btn-danger:hover { background: rgba(239,68,68,0.2); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { border-color: var(--border-bright); color: var(--text-primary); }
+
+  /* ─── DAILY QUOTA ─── */
+  .quota-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .quota-box {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+  }
+  .quota-label { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing:1px; margin-bottom: 6px; }
+  .quota-val   { font-size: 20px; font-weight: 700; font-family: var(--font-mono); }
+  .quota-val.new { color: var(--accent-green); }
+  .quota-val.old { color: var(--accent-amber); }
+  .quota-sub   { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+
+  /* ─── ALERT ─── */
+  .alert {
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 12px;
+    border: 1px solid;
+    margin-bottom: 14px;
+  }
+  .alert-info    { background: rgba(59,130,246,0.08); border-color: rgba(59,130,246,0.3); color: #93c5fd; }
+  .alert-warning { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.3); color: #fcd34d; }
+  .alert-success { background: rgba(34,197,94,0.08);  border-color: rgba(34,197,94,0.3);  color: #86efac; }
+  .alert-danger  { background: rgba(239,68,68,0.08);  border-color: rgba(239,68,68,0.3);  color: #fca5a5; }
+
+  /* ─── PROGRESS RING ─── */
+  .ring-wrap { display:flex; align-items:center; gap:16px; }
+  .ring-info { flex:1; }
+  svg.ring { transform: rotate(-90deg); }
+  .ring-text {
+    text-anchor: middle;
+    dominant-baseline: middle;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    fill: var(--text-primary);
+    transform: rotate(90deg);
+    transform-origin: 44px 44px;
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width:5px; height:5px; }
+  ::-webkit-scrollbar-track { background: var(--bg-base); }
+  ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius:3px; }
+
+  .tag-workday { background: rgba(34,197,94,0.1); color: var(--accent-green); }
+
+  /* status chip */
+  .chip {
+    display: inline-block;
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-family: var(--font-mono);
+    margin-left: 6px;
+  }
+  .chip-over { background: rgba(239,68,68,0.15); color: var(--accent-red); }
+  .chip-ok   { background: rgba(34,197,94,0.15);  color: var(--accent-green); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  .modal-budget-info {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 12px;
+  }
+  .modal-budget-info .mbi-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    color: var(--text-secondary);
+  }
+  .mbi-val { font-family: var(--font-mono); }
+  .mbi-over { color: var(--accent-red); }
+  .mbi-ok   { color: var(--accent-green); }
+
+  .legend { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:14px; }
+  .legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); }
+  .legend-dot  { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">CREDIT ANALYTICS · APRIL 2026</div>
+  <h1>แดชบอร์ดวิเคราะห์สินเชื่อ — เมษายน 2569</h1>
+  <p>วางแผนและบันทึกการปล่อยสินเชื่อรายวัน · กดที่วันทำงานเพื่ออัพเดทข้อมูล</p>
+</div>
+
+<!-- KPI SUMMARY -->
+<div class="grid-4" id="kpiSection">
+  <div class="card blue">
+    <div class="card-title">งบลูกค้าใหม่คงเหลือ</div>
+    <div class="kpi-value" id="kpiBudgetNew">฿2,500,000</div>
+    <div class="kpi-sub" id="kpiBudgetNewSub">ปล่อยแล้ว ฿0 · เหลือ ฿2,500,000</div>
+    <div class="kpi-bar"><div class="kpi-bar-fill" id="kpiBarNew" style="width:0%"></div></div>
+  </div>
+  <div class="card green">
+    <div class="card-title">งบลูกค้าเก่าคงเหลือ</div>
+    <div class="kpi-value" id="kpiBudgetOld">฿1,080,000</div>
+    <div class="kpi-sub" id="kpiBudgetOldSub">ปล่อยแล้ว ฿0 · เหลือ ฿1,080,000</div>
+    <div class="kpi-bar"><div class="kpi-bar-fill" id="kpiBarOld" style="width:0%"></div></div>
+  </div>
+  <div class="card amber">
+    <div class="card-title">จำนวนลูกค้าใหม่</div>
+    <div class="kpi-value" id="kpiCntNew">0 / 250</div>
+    <div class="kpi-sub" id="kpiCntNewSub">เป้าหมาย 250 ราย</div>
+    <div class="kpi-bar"><div class="kpi-bar-fill" id="kpiBarCntNew" style="width:0%"></div></div>
+  </div>
+  <div class="card purple">
+    <div class="card-title">จำนวนลูกค้าเก่า</div>
+    <div class="kpi-value" id="kpiCntOld">0 / 60</div>
+    <div class="kpi-sub" id="kpiCntOldSub">เป้าหมาย 60 ราย</div>
+    <div class="kpi-bar"><div class="kpi-bar-fill" id="kpiBarCntOld" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- QUOTA + PROGRESS -->
+<div class="grid-2" style="margin-bottom:20px;">
+  <div class="card">
+    <div class="section-title">โควต้าเฉลี่ยต่อวันทำงาน</div>
+    <div id="alertQuota"></div>
+    <div class="quota-grid">
+      <div class="quota-box">
+        <div class="quota-label">ลูกค้าใหม่ · งบ/วัน</div>
+        <div class="quota-val new" id="qBudgetNew">—</div>
+        <div class="quota-sub" id="qBudgetNewSub">—</div>
+      </div>
+      <div class="quota-box">
+        <div class="quota-label">ลูกค้าเก่า · งบ/วัน</div>
+        <div class="quota-val old" id="qBudgetOld">—</div>
+        <div class="quota-sub" id="qBudgetOldSub">—</div>
+      </div>
+      <div class="quota-box">
+        <div class="quota-label">ลูกค้าใหม่ · ราย/วัน</div>
+        <div class="quota-val new" id="qCntNew">—</div>
+        <div class="quota-sub" id="qCntNewSub">—</div>
+      </div>
+      <div class="quota-box">
+        <div class="quota-label">ลูกค้าเก่า · ราย/วัน</div>
+        <div class="quota-val old" id="qCntOld">—</div>
+        <div class="quota-sub" id="qCntOldSub">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">ความคืบหน้างบประมาณ</div>
+    <div class="budget-section">
+      <div class="budget-label">
+        <span class="budget-name">🆕 ลูกค้าใหม่</span>
+        <span class="budget-nums" id="progressNewNum">฿0 / ฿2,500,000</span>
+      </div>
+      <div class="budget-track"><div class="budget-fill" id="progressNewFill" style="width:0%;background:var(--accent-blue)"></div></div>
+      <div class="budget-targets" id="progressNewTarget">เป้า 250 ราย · ราคาเฉลี่ย/คน: ฿10,000</div>
+    </div>
+    <div class="budget-section">
+      <div class="budget-label">
+        <span class="budget-name">🔄 ลูกค้าเก่า</span>
+        <span class="budget-nums" id="progressOldNum">฿0 / ฿1,080,000</span>
+      </div>
+      <div class="budget-track"><div class="budget-fill" id="progressOldFill" style="width:0%;background:var(--accent-green)"></div></div>
+      <div class="budget-targets" id="progressOldTarget">เป้า 60 ราย · ราคาเฉลี่ย/คน: ฿18,000</div>
+    </div>
+    <hr class="divider">
+    <div id="budgetAlert"></div>
+    <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
+      วันทำงานเดือนเมษายน: <span id="totalWorkDays" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
+      ผ่านไปแล้ว: <span id="passedWorkDays" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
+      เหลือ: <span id="remainWorkDays" style="color:var(--accent-green)">—</span> วัน
+    </div>
+  </div>
+</div>
+
+<!-- CALENDAR -->
+<div class="card" style="margin-bottom:20px;">
+  <div class="section-title">ปฏิทินเมษายน 2569 — คลิกวันทำงานเพื่อบันทึกข้อมูล</div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue);opacity:0.4"></div>วันจันทร์ (หยุด)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple);opacity:0.4"></div>หยุดยาว 13–17 เม.ย.</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green);opacity:0.6"></div>บันทึกแล้ว</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent-cyan);opacity:0.8"></div>วันนี้</div>
+  </div>
+  <div class="calendar-grid" id="calendarGrid">
+    <!-- headers -->
+    <div class="cal-header">อา</div>
+    <div class="cal-header" style="color:var(--accent-blue);opacity:0.6">จ</div>
+    <div class="cal-header">อ</div>
+    <div class="cal-header">พ</div>
+    <div class="cal-header">พฤ</div>
+    <div class="cal-header">ศ</div>
+    <div class="cal-header">ส</div>
+  </div>
+</div>
+
+<!-- DAILY TABLE -->
+<div class="card">
+  <div class="section-title">สรุปรายวัน (เฉพาะวันทำงาน)</div>
+  <div style="overflow-x:auto;">
+    <table class="summary-table" id="summaryTable">
+      <thead>
+        <tr>
+          <th>วัน</th>
+          <th>งบใหม่ (฿)</th>
+          <th>ราย (ใหม่)</th>
+          <th>งบเก่า (฿)</th>
+          <th>ราย (เก่า)</th>
+          <th>รวม (฿)</th>
+          <th>สถานะ</th>
+        </tr>
+      </thead>
+      <tbody id="summaryBody"></tbody>
+      <tfoot id="summaryFoot"></tfoot>
+    </table>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="modalDateTitle">บันทึกข้อมูลประจำวัน</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-budget-info" id="modalBudgetInfo"></div>
+
+    <div class="alert alert-info" style="margin-bottom:14px;">
+      💡 กรอกเฉพาะค่าที่ต้องการบันทึก — ระบบจะคำนวณงบคงเหลืออัตโนมัติ
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">💵 งบลูกค้าใหม่ (฿)</label>
+        <input type="number" class="form-input" id="inAmtNew" placeholder="0" min="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">👤 จำนวนลูกค้าใหม่ (ราย)</label>
+        <input type="number" class="form-input" id="inCntNew" placeholder="0" min="0">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">💵 งบลูกค้าเก่า (฿)</label>
+        <input type="number" class="form-input" id="inAmtOld" placeholder="0" min="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">👤 จำนวนลูกค้าเก่า (ราย)</label>
+        <input type="number" class="form-input" id="inCntOld" placeholder="0" min="0">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">📝 หมายเหตุ</label>
+      <input type="text" class="form-input" id="inNote" placeholder="บันทึกเพิ่มเติม...">
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:space-between;margin-top:6px;">
+      <button class="btn btn-danger" id="btnDelete" onclick="deleteDay()">🗑 ลบข้อมูล</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost" onclick="closeModal()">ยกเลิก</button>
+        <button class="btn btn-primary" onclick="saveDay()">💾 บันทึก</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────
+const BUDGET_NEW  = 2500000;
+const BUDGET_OLD  = 1080000;
+const TARGET_NEW  = 250;  // รายลูกค้าใหม่
+const TARGET_OLD  = 60;   // รายลูกค้าเก่า
+
+const YEAR  = 2026;
+const MONTH = 4; // April
+
+// วันหยุดยาว (วันที่ในเมษายน)
+const LONG_HOLIDAYS = [13,14,15,16,17];
+
+// ─── STATE ────────────────────────────────────────────────
+let data = {}; // key: "2026-04-DD" => { amtNew, cntNew, amtOld, cntOld, note }
+let currentEditDate = null;
+
+const STORAGE_KEY = 'loan_april_2025_v2';
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) data = JSON.parse(raw);
+  } catch(e) { data = {}; }
+}
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+// ─── DATE HELPERS ─────────────────────────────────────────
+function dateKey(d) {
+  return `${YEAR}-04-${String(d).padStart(2,'0')}`;
+}
+function isMonday(d) {
+  // April 2026: April 1 is Tuesday (day 2)
+  return new Date(YEAR, MONTH-1, d).getDay() === 1;
+}
+function isHoliday(d) {
+  return LONG_HOLIDAYS.includes(d);
+}
+function isWorkday(d) {
+  return !isMonday(d) && !isHoliday(d);
+}
+function daysInMonth() { return new Date(YEAR, MONTH, 0).getDate(); }
+
+function getWorkdays() {
+  const days = [];
+  for (let d = 1; d <= daysInMonth(); d++) {
+    if (isWorkday(d)) days.push(d);
+  }
+  return days;
+}
+
+function getTodayDate() {
+  const now = new Date();
+  if (now.getFullYear() === YEAR && now.getMonth() === MONTH-1) {
+    return now.getDate();
+  }
+  return null; // not in April 2026
+}
+
+// ─── CALCULATIONS ─────────────────────────────────────────
+function calcTotals() {
+  let spentNew=0, spentOld=0, cntNew=0, cntOld=0;
+  Object.values(data).forEach(d => {
+    spentNew += (d.amtNew||0);
+    spentOld += (d.amtOld||0);
+    cntNew   += (d.cntNew||0);
+    cntOld   += (d.cntOld||0);
+  });
+  return { spentNew, spentOld, cntNew, cntOld };
+}
+
+function getWorkdayStatus() {
+  const today = getTodayDate();
+  const all = getWorkdays();
+  let passed = 0, remain = 0;
+  all.forEach(d => {
+    if (today && d < today) passed++;
+    else if (!today || d >= today) remain++;
+  });
+  // if today is workday, it counts in remain
+  return { total: all.length, passed, remain };
+}
+
+// ─── FORMAT ───────────────────────────────────────────────
+function fmt(n) {
+  return '฿' + Math.round(n).toLocaleString('th-TH');
+}
+function fmtShort(n) {
+  if (n >= 1000000) return '฿' + (n/1000000).toFixed(2) + 'M';
+  if (n >= 1000)    return '฿' + (n/1000).toFixed(1) + 'K';
+  return '฿' + Math.round(n).toLocaleString();
+}
+function pct(v, total) {
+  if (!total) return 0;
+  return Math.min(100, Math.round(v/total*100));
+}
+
+// ─── RENDER ───────────────────────────────────────────────
+function render() {
+  renderKPI();
+  renderQuota();
+  renderCalendar();
+  renderTable();
+}
+
+function renderKPI() {
+  const { spentNew, spentOld, cntNew, cntOld } = calcTotals();
+  const remNew = BUDGET_NEW - spentNew;
+  const remOld = BUDGET_OLD - spentOld;
+
+  document.getElementById('kpiBudgetNew').textContent = fmt(remNew);
+  document.getElementById('kpiBudgetNewSub').textContent =
+    `ปล่อยแล้ว ${fmt(spentNew)} · เหลือ ${fmt(remNew)}`;
+  document.getElementById('kpiBarNew').style.width = pct(spentNew,BUDGET_NEW) + '%';
+
+  document.getElementById('kpiBudgetOld').textContent = fmt(remOld);
+  document.getElementById('kpiBudgetOldSub').textContent =
+    `ปล่อยแล้ว ${fmt(spentOld)} · เหลือ ${fmt(remOld)}`;
+  document.getElementById('kpiBarOld').style.width = pct(spentOld,BUDGET_OLD) + '%';
+
+  document.getElementById('kpiCntNew').textContent = `${cntNew} / ${TARGET_NEW}`;
+  document.getElementById('kpiCntNewSub').textContent = `เป้าหมาย ${TARGET_NEW} ราย`;
+  document.getElementById('kpiBarCntNew').style.width = pct(cntNew,TARGET_NEW) + '%';
+
+  document.getElementById('kpiCntOld').textContent = `${cntOld} / ${TARGET_OLD}`;
+  document.getElementById('kpiCntOldSub').textContent = `เป้าหมาย ${TARGET_OLD} ราย`;
+  document.getElementById('kpiBarCntOld').style.width = pct(cntOld,TARGET_OLD) + '%';
+
+  // progress bars in card 2
+  document.getElementById('progressNewNum').textContent = `${fmt(spentNew)} / ${fmt(BUDGET_NEW)}`;
+  document.getElementById('progressNewFill').style.width = pct(spentNew,BUDGET_NEW) + '%';
+  document.getElementById('progressNewTarget').textContent =
+    `เป้า ${TARGET_NEW} ราย · ราคาเฉลี่ย/คน: ${cntNew ? fmtShort(spentNew/cntNew) : fmt(BUDGET_NEW/TARGET_NEW)}`;
+
+  document.getElementById('progressOldNum').textContent = `${fmt(spentOld)} / ${fmt(BUDGET_OLD)}`;
+  document.getElementById('progressOldFill').style.width = pct(spentOld,BUDGET_OLD) + '%';
+  document.getElementById('progressOldTarget').textContent =
+    `เป้า ${TARGET_OLD} ราย · ราคาเฉลี่ย/คน: ${cntOld ? fmtShort(spentOld/cntOld) : fmt(BUDGET_OLD/TARGET_OLD)}`;
+
+  // workday stats
+  const ws = getWorkdayStatus();
+  document.getElementById('totalWorkDays').textContent = ws.total;
+  document.getElementById('passedWorkDays').textContent = ws.passed;
+  document.getElementById('remainWorkDays').textContent = ws.remain;
+
+  // budget alert
+  let alertHTML = '';
+  if (spentNew > BUDGET_NEW) alertHTML += `<div class="alert alert-danger">⚠️ งบลูกค้าใหม่เกินแล้ว ${fmt(spentNew - BUDGET_NEW)}</div>`;
+  if (spentOld > BUDGET_OLD) alertHTML += `<div class="alert alert-danger">⚠️ งบลูกค้าเก่าเกินแล้ว ${fmt(spentOld - BUDGET_OLD)}</div>`;
+  if (!alertHTML && (pct(spentNew,BUDGET_NEW) >= 90 || pct(spentOld,BUDGET_OLD) >= 90)) {
+    alertHTML = `<div class="alert alert-warning">⚠️ งบใกล้หมดแล้ว ควรระมัดระวังการปล่อยสินเชื่อ</div>`;
+  }
+  document.getElementById('budgetAlert').innerHTML = alertHTML;
+}
+
+function renderQuota() {
+  const { spentNew, spentOld, cntNew, cntOld } = calcTotals();
+  const ws = getWorkdayStatus();
+  const remain = Math.max(1, ws.remain);
+
+  const remBudNew = Math.max(0, BUDGET_NEW - spentNew);
+  const remBudOld = Math.max(0, BUDGET_OLD - spentOld);
+  const remCntNew = Math.max(0, TARGET_NEW - cntNew);
+  const remCntOld = Math.max(0, TARGET_OLD - cntOld);
+
+  const qBN = remBudNew / remain;
+  const qBO = remBudOld / remain;
+  const qCN = remCntNew / remain;
+  const qCO = remCntOld / remain;
+
+  document.getElementById('qBudgetNew').textContent = fmtShort(qBN);
+  document.getElementById('qBudgetNewSub').textContent = `เหลือ ${fmt(remBudNew)} ใน ${remain} วัน`;
+  document.getElementById('qBudgetOld').textContent = fmtShort(qBO);
+  document.getElementById('qBudgetOldSub').textContent = `เหลือ ${fmt(remBudOld)} ใน ${remain} วัน`;
+  document.getElementById('qCntNew').textContent = qCN.toFixed(1) + ' ราย';
+  document.getElementById('qCntNewSub').textContent = `เหลือ ${remCntNew} รายใน ${remain} วัน`;
+  document.getElementById('qCntOld').textContent = qCO.toFixed(1) + ' ราย';
+  document.getElementById('qCntOldSub').textContent = `เหลือ ${remCntOld} รายใน ${remain} วัน`;
+
+  // quota alerts
+  let html = '';
+  if (remBudNew <= 0 && remCntNew <= 0 && remBudOld <= 0 && remCntOld <= 0) {
+    html = `<div class="alert alert-success">🎉 บรรลุเป้าหมายทั้งหมดแล้ว!</div>`;
+  } else if (ws.remain === 0) {
+    html = `<div class="alert alert-warning">⏰ หมดวันทำงานเดือนนี้แล้ว</div>`;
+  }
+  document.getElementById('alertQuota').innerHTML = html;
+}
+
+function renderCalendar() {
+  const grid = document.getElementById('calendarGrid');
+  // remove old day cells (keep headers = first 7)
+  while (grid.children.length > 7) grid.removeChild(grid.lastChild);
+
+  const today = getTodayDate();
+  // April 2025 starts on Tuesday (index 2)
+  const firstDow = new Date(YEAR, MONTH-1, 1).getDay(); // 0=Sun
+
+  // empty cells
+  for (let i = 0; i < firstDow; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day empty';
+    grid.appendChild(el);
+  }
+
+  for (let d = 1; d <= daysInMonth(); d++) {
+    const el = document.createElement('div');
+    const key = dateKey(d);
+    const entry = data[key];
+    const mon = isMonday(d);
+    const hol = isHoliday(d);
+    const isToday = (d === today);
+
+    let cls = 'cal-day';
+    if (mon)     cls += ' monday';
+    if (hol)     cls += ' holiday';
+    if (isToday) cls += ' today';
+    if (entry)   cls += ' has-data';
+    el.className = cls;
+
+    let inner = `<div class="day-num">${d}</div>`;
+    if (isToday && !mon && !hol) inner += `<div class="day-tag tag-today">วันนี้</div>`;
+    else if (mon) inner += `<div class="day-tag tag-monday">หยุด จ.</div>`;
+    else if (hol) inner += `<div class="day-tag tag-holiday">หยุดยาว</div>`;
+
+    if (entry) {
+      inner += `<div class="day-amounts">`;
+      if (entry.amtNew) inner += `<div class="day-amount-new">🆕 ${fmtShort(entry.amtNew)}</div>`;
+      if (entry.amtOld) inner += `<div class="day-amount-old">🔄 ${fmtShort(entry.amtOld)}</div>`;
+      if (entry.cntNew || entry.cntOld) {
+        inner += `<div class="day-count">${entry.cntNew||0}+${entry.cntOld||0} ราย</div>`;
+      }
+      inner += `</div>`;
+    }
+
+    el.innerHTML = inner;
+
+    if (!mon && !hol) {
+      el.addEventListener('click', () => openModal(d));
+    }
+    grid.appendChild(el);
+  }
+}
+
+const thDays = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัส','ศุกร์','เสาร์'];
+const thMonths = ['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
+function renderTable() {
+  const tbody = document.getElementById('summaryBody');
+  const tfoot = document.getElementById('summaryFoot');
+  tbody.innerHTML = '';
+  tfoot.innerHTML = '';
+
+  const today = getTodayDate();
+  const { spentNew, spentOld, cntNew, cntOld } = calcTotals();
+
+  const workdays = getWorkdays();
+  let runBN = 0, runBO = 0, runCN = 0, runCO = 0;
+  const ws = getWorkdayStatus();
+  const remain = Math.max(1, ws.remain);
+
+  workdays.forEach(d => {
+    const key = dateKey(d);
+    const entry = data[key] || {};
+    const dow = new Date(YEAR, MONTH-1, d).getDay();
+    const isToday = (d === today);
+    const dateStr = `${d} ${thMonths[MONTH]} · ${thDays[dow]}`;
+
+    runBN += (entry.amtNew||0);
+    runBO += (entry.amtOld||0);
+    runCN += (entry.cntNew||0);
+    runCO += (entry.cntOld||0);
+
+    // daily quota remaining
+    const remBN = Math.max(0, BUDGET_NEW - runBN);
+    const remBO = Math.max(0, BUDGET_OLD - runBO);
+
+    let status = '';
+    if (entry.amtNew || entry.amtOld) {
+      const overNew = entry.amtNew > (BUDGET_NEW / ws.total * 1.3);
+      const overOld = entry.amtOld > (BUDGET_OLD / ws.total * 1.3);
+      if (overNew || overOld) {
+        status = '<span class="chip chip-over">เกินโควต้า</span>';
+      } else {
+        status = '<span class="chip chip-ok">ปกติ</span>';
+      }
+    } else if (isToday) {
+      status = '<span class="chip" style="background:rgba(6,182,212,0.15);color:var(--accent-cyan)">วันนี้</span>';
+    } else if (d < (today||99)) {
+      status = '<span class="chip" style="background:rgba(100,100,100,0.1);color:var(--text-muted)">ไม่มีข้อมูล</span>';
+    }
+
+    const total = (entry.amtNew||0) + (entry.amtOld||0);
+
+    const tr = document.createElement('tr');
+    if (isToday) tr.className = 'row-today';
+    tr.innerHTML = `
+      <td>${dateStr} ${entry.note ? `<span style="color:var(--text-muted);font-size:10px;">· ${entry.note}</span>` : ''}</td>
+      <td class="col-new">${entry.amtNew ? fmt(entry.amtNew) : '<span style="color:var(--text-dim)">—</span>'}</td>
+      <td class="col-new">${entry.cntNew || '<span style="color:var(--text-dim)">—</span>'}</td>
+      <td class="col-old">${entry.amtOld ? fmt(entry.amtOld) : '<span style="color:var(--text-dim)">—</span>'}</td>
+      <td class="col-old">${entry.cntOld || '<span style="color:var(--text-dim)">—</span>'}</td>
+      <td class="col-total">${total ? fmt(total) : '<span style="color:var(--text-dim)">—</span>'}</td>
+      <td>${status}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // footer totals
+  const total = spentNew + spentOld;
+  tfoot.innerHTML = `
+    <tr style="border-top:1px solid var(--border-bright)">
+      <td style="padding-top:12px;font-weight:700;color:var(--text-primary);background:var(--bg-surface);border-radius:6px 0 0 6px;">รวมทั้งหมด</td>
+      <td style="padding-top:12px;background:var(--bg-surface);font-family:var(--font-mono);font-weight:700;text-align:right;color:var(--accent-blue);">${fmt(spentNew)}</td>
+      <td style="padding-top:12px;background:var(--bg-surface);font-family:var(--font-mono);font-weight:700;text-align:right;color:var(--accent-blue);">${cntNew}</td>
+      <td style="padding-top:12px;background:var(--bg-surface);font-family:var(--font-mono);font-weight:700;text-align:right;color:var(--accent-green);">${fmt(spentOld)}</td>
+      <td style="padding-top:12px;background:var(--bg-surface);font-family:var(--font-mono);font-weight:700;text-align:right;color:var(--accent-green);">${cntOld}</td>
+      <td style="padding-top:12px;background:var(--bg-surface);font-family:var(--font-mono);font-weight:700;text-align:right;color:var(--text-primary);">${fmt(total)}</td>
+      <td style="padding-top:12px;background:var(--bg-surface);border-radius:0 6px 6px 0;"></td>
+    </tr>
+  `;
+}
+
+// ─── MODAL ────────────────────────────────────────────────
+function openModal(d) {
+  currentEditDate = d;
+  const key = dateKey(d);
+  const entry = data[key] || {};
+  const dow = new Date(YEAR, MONTH-1, d).getDay();
+
+  document.getElementById('modalDateTitle').textContent =
+    `📅 ${d} ${thMonths[MONTH]} ${YEAR} · ${thDays[dow]}`;
+
+  document.getElementById('inAmtNew').value = entry.amtNew || '';
+  document.getElementById('inCntNew').value = entry.cntNew || '';
+  document.getElementById('inAmtOld').value = entry.amtOld || '';
+  document.getElementById('inCntOld').value = entry.cntOld || '';
+  document.getElementById('inNote').value   = entry.note || '';
+
+  // budget remaining info
+  const { spentNew, spentOld } = calcTotals();
+  // subtract current day if editing
+  const curAmtNew = entry.amtNew || 0;
+  const curAmtOld = entry.amtOld || 0;
+  const remNew = BUDGET_NEW - spentNew + curAmtNew;
+  const remOld = BUDGET_OLD - spentOld + curAmtOld;
+
+  const ws = getWorkdayStatus();
+  document.getElementById('modalBudgetInfo').innerHTML = `
+    <div class="mbi-row"><span>งบลูกค้าใหม่คงเหลือ:</span><span class="mbi-val ${remNew<0?'mbi-over':'mbi-ok'}">${fmt(remNew)}</span></div>
+    <div class="mbi-row"><span>งบลูกค้าเก่าคงเหลือ:</span><span class="mbi-val ${remOld<0?'mbi-over':'mbi-ok'}">${fmt(remOld)}</span></div>
+    <div class="mbi-row" style="margin-bottom:0;margin-top:6px;font-size:11px;color:var(--text-muted)">
+      <span>โควต้าแนะนำใหม่:</span><span class="mbi-val">${fmtShort(remNew / Math.max(1,ws.remain))}/วัน</span>
+    </div>
+    <div class="mbi-row" style="margin-bottom:0;font-size:11px;color:var(--text-muted)">
+      <span>โควต้าแนะนำเก่า:</span><span class="mbi-val">${fmtShort(remOld / Math.max(1,ws.remain))}/วัน</span>
+    </div>
+  `;
+
+  document.getElementById('btnDelete').style.display = entry.amtNew || entry.amtOld ? 'flex' : 'none';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  currentEditDate = null;
+}
+
+function saveDay() {
+  if (!currentEditDate) return;
+  const key = dateKey(currentEditDate);
+
+  const amtNew = parseFloat(document.getElementById('inAmtNew').value) || 0;
+  const cntNew = parseInt(document.getElementById('inCntNew').value)   || 0;
+  const amtOld = parseFloat(document.getElementById('inAmtOld').value) || 0;
+  const cntOld = parseInt(document.getElementById('inCntOld').value)   || 0;
+  const note   = document.getElementById('inNote').value.trim();
+
+  if (!amtNew && !cntNew && !amtOld && !cntOld && !note) {
+    delete data[key];
+  } else {
+    data[key] = { amtNew, cntNew, amtOld, cntOld, note };
+  }
+
+  saveData();
+  closeModal();
+  render();
+}
+
+function deleteDay() {
+  if (!currentEditDate) return;
+  const key = dateKey(currentEditDate);
+  delete data[key];
+  saveData();
+  closeModal();
+  render();
+}
+
+// close on overlay click
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ─── INIT ─────────────────────────────────────────────────
+loadData();
+render();
+</script>
+</body>
+</html>
