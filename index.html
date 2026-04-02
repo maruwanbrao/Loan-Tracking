@@ -567,7 +567,10 @@
         <span class="budget-name">🆕 ลูกค้าใหม่</span>
         <span class="budget-nums" id="progressNewNum">฿0 / ฿2,500,000</span>
       </div>
-      <div class="budget-track"><div class="budget-fill" id="progressNewFill" style="width:0%;background:var(--accent-blue)"></div></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="budget-track" style="flex:1"><div class="budget-fill" id="progressNewFill" style="width:0%;background:var(--accent-blue)"></div></div>
+        <span id="progressNewPct" style="font-size:12px;font-family:var(--font-mono);color:var(--accent-blue);min-width:38px;text-align:right;">0%</span>
+      </div>
       <div class="budget-targets" id="progressNewTarget">เป้า 250 ราย · ราคาเฉลี่ย/คน: ฿10,000</div>
     </div>
     <div class="budget-section">
@@ -575,7 +578,10 @@
         <span class="budget-name">🔄 ลูกค้าเก่า</span>
         <span class="budget-nums" id="progressOldNum">฿0 / ฿1,080,000</span>
       </div>
-      <div class="budget-track"><div class="budget-fill" id="progressOldFill" style="width:0%;background:var(--accent-green)"></div></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="budget-track" style="flex:1"><div class="budget-fill" id="progressOldFill" style="width:0%;background:var(--accent-green)"></div></div>
+        <span id="progressOldPct" style="font-size:12px;font-family:var(--font-mono);color:var(--accent-green);min-width:38px;text-align:right;">0%</span>
+      </div>
       <div class="budget-targets" id="progressOldTarget">เป้า 60 ราย · ราคาเฉลี่ย/คน: ฿18,000</div>
     </div>
     <hr class="divider">
@@ -697,7 +703,7 @@ const LONG_HOLIDAYS = [13,14,15,16,17];
 let data = {}; // key: "2026-04-DD" => { amtNew, cntNew, amtOld, cntOld, note }
 let currentEditDate = null;
 
-const STORAGE_KEY = 'loan_april_2025_v2';
+const STORAGE_KEY = 'loan_april_2026_v1';
 
 function loadData() {
   try {
@@ -714,7 +720,7 @@ function dateKey(d) {
   return `${YEAR}-04-${String(d).padStart(2,'0')}`;
 }
 function isMonday(d) {
-  // April 2026: April 1 is Tuesday (day 2)
+  
   return new Date(YEAR, MONTH-1, d).getDay() === 1;
 }
 function isHoliday(d) {
@@ -758,10 +764,17 @@ function getWorkdayStatus() {
   const all = getWorkdays();
   let passed = 0, remain = 0;
   all.forEach(d => {
-    if (today && d < today) passed++;
-    else if (!today || d >= today) remain++;
+    const key = dateKey(d);
+    const hasData = !!(data[key] && (data[key].amtNew || data[key].amtOld || data[key].cntNew || data[key].cntOld));
+    // A day is "passed" if: it has data recorded, OR it's before today (and no data)
+    if (hasData) {
+      passed++;
+    } else if (today && d < today) {
+      passed++; // past day with no data still counts as passed
+    } else {
+      remain++;
+    }
   });
-  // if today is workday, it counts in remain
   return { total: all.length, passed, remain };
 }
 
@@ -794,30 +807,34 @@ function renderKPI() {
 
   document.getElementById('kpiBudgetNew').textContent = fmt(remNew);
   document.getElementById('kpiBudgetNewSub').textContent =
-    `ปล่อยแล้ว ${fmt(spentNew)} · เหลือ ${fmt(remNew)}`;
+    `ปล่อยแล้ว ${fmt(spentNew)} (${pct(spentNew,BUDGET_NEW)}%) · เหลือ ${fmt(remNew)}`;
   document.getElementById('kpiBarNew').style.width = pct(spentNew,BUDGET_NEW) + '%';
 
   document.getElementById('kpiBudgetOld').textContent = fmt(remOld);
   document.getElementById('kpiBudgetOldSub').textContent =
-    `ปล่อยแล้ว ${fmt(spentOld)} · เหลือ ${fmt(remOld)}`;
+    `ปล่อยแล้ว ${fmt(spentOld)} (${pct(spentOld,BUDGET_OLD)}%) · เหลือ ${fmt(remOld)}`;
   document.getElementById('kpiBarOld').style.width = pct(spentOld,BUDGET_OLD) + '%';
 
   document.getElementById('kpiCntNew').textContent = `${cntNew} / ${TARGET_NEW}`;
-  document.getElementById('kpiCntNewSub').textContent = `เป้าหมาย ${TARGET_NEW} ราย`;
+  document.getElementById('kpiCntNewSub').textContent = `เป้าหมาย ${TARGET_NEW} ราย · สำเร็จ ${pct(cntNew,TARGET_NEW)}%`;
   document.getElementById('kpiBarCntNew').style.width = pct(cntNew,TARGET_NEW) + '%';
 
   document.getElementById('kpiCntOld').textContent = `${cntOld} / ${TARGET_OLD}`;
-  document.getElementById('kpiCntOldSub').textContent = `เป้าหมาย ${TARGET_OLD} ราย`;
+  document.getElementById('kpiCntOldSub').textContent = `เป้าหมาย ${TARGET_OLD} ราย · สำเร็จ ${pct(cntOld,TARGET_OLD)}%`;
   document.getElementById('kpiBarCntOld').style.width = pct(cntOld,TARGET_OLD) + '%';
 
   // progress bars in card 2
+  const pNew = pct(spentNew,BUDGET_NEW);
+  const pOld = pct(spentOld,BUDGET_OLD);
   document.getElementById('progressNewNum').textContent = `${fmt(spentNew)} / ${fmt(BUDGET_NEW)}`;
-  document.getElementById('progressNewFill').style.width = pct(spentNew,BUDGET_NEW) + '%';
+  document.getElementById('progressNewFill').style.width = pNew + '%';
+  document.getElementById('progressNewPct').textContent = pNew + '%';
   document.getElementById('progressNewTarget').textContent =
     `เป้า ${TARGET_NEW} ราย · ราคาเฉลี่ย/คน: ${cntNew ? fmtShort(spentNew/cntNew) : fmt(BUDGET_NEW/TARGET_NEW)}`;
 
   document.getElementById('progressOldNum').textContent = `${fmt(spentOld)} / ${fmt(BUDGET_OLD)}`;
-  document.getElementById('progressOldFill').style.width = pct(spentOld,BUDGET_OLD) + '%';
+  document.getElementById('progressOldFill').style.width = pOld + '%';
+  document.getElementById('progressOldPct').textContent = pOld + '%';
   document.getElementById('progressOldTarget').textContent =
     `เป้า ${TARGET_OLD} ราย · ราคาเฉลี่ย/คน: ${cntOld ? fmtShort(spentOld/cntOld) : fmt(BUDGET_OLD/TARGET_OLD)}`;
 
@@ -877,7 +894,7 @@ function renderCalendar() {
   while (grid.children.length > 7) grid.removeChild(grid.lastChild);
 
   const today = getTodayDate();
-  // April 2025 starts on Tuesday (index 2)
+  
   const firstDow = new Date(YEAR, MONTH-1, 1).getDay(); // 0=Sun
 
   // empty cells
