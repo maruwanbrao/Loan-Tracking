@@ -675,6 +675,17 @@
   </div>
 </div>
 
+
+<!-- ANALYSIS SECTION -->
+<div class="card" style="margin-top:20px;" id="analysisCard">
+  <div class="section-title">🧠 บทวิเคราะห์อัจฉริยะ</div>
+  <div id="analysisContent">
+    <div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px 0;">
+      กำลังวิเคราะห์ข้อมูล...
+    </div>
+  </div>
+</div>
+
 <!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
@@ -916,46 +927,38 @@ function renderQuota() {
   document.getElementById('qCntOld').textContent = qCO.toFixed(1) + ' ราย';
   document.getElementById('qCntOldSub').textContent = `เหลือ ${remCntOld} รายใน ${remain} วัน`;
 
-  // ── วงเงินต่อคน/วัน ──────────────────────────────
-  // วงเงินต่อคน = งบ/วัน ÷ ราย/วัน
-  const baseNew = BUDGET_NEW / (TARGET_NEW || 1);   // วงเงินฐาน (เต็มเดือน)
+  // ── วงเงินต่อคน ──────────────────────────────────
+  // วงเงินฐาน = งบรวม / เป้าราย (ตลอดเดือน)
+  const baseNew = BUDGET_NEW / (TARGET_NEW || 1);
   const baseOld = BUDGET_OLD / (TARGET_OLD || 1);
-
-  const perPersonNew = qCN > 0 ? qBN / qCN : remBudNew / Math.max(remCntNew, 1);
-  const perPersonOld = qCO > 0 ? qBO / qCO : remBudOld / Math.max(remCntOld, 1);
-
-  // % เทียบกับวงเงินฐาน (cap 150% เพื่อ bar)
-  const barNew = Math.min(150, (perPersonNew / baseNew) * 100);
-  const barOld = Math.min(150, (perPersonOld / baseOld) * 100);
-
+  // วงเงิน/คนที่ควรปล่อย = งบคงเหลือ / ลูกค้าที่ยังต้องทำ
+  const perPersonNew = remBudNew / Math.max(remCntNew, 1);
+  const perPersonOld = remBudOld / Math.max(remCntOld, 1);
+  const barNew = Math.min(140, (perPersonNew / baseNew) * 100);
+  const barOld = Math.min(140, (perPersonOld / baseOld) * 100);
   const diffNew = perPersonNew - baseNew;
   const diffOld = perPersonOld - baseOld;
-  const vsNew = diffNew >= 0
-    ? `▲ สูงกว่าเกณฑ์ ${fmtShort(diffNew)}/คน`
+  const vsNew = Math.abs(diffNew) < 10 ? `≈ เท่ากับเกณฑ์ฐาน`
+    : diffNew > 0 ? `▲ สูงกว่าเกณฑ์ ${fmtShort(diffNew)}/คน`
     : `▼ ต่ำกว่าเกณฑ์ ${fmtShort(Math.abs(diffNew))}/คน`;
-  const vsOld = diffOld >= 0
-    ? `▲ สูงกว่าเกณฑ์ ${fmtShort(diffOld)}/คน`
+  const vsOld = Math.abs(diffOld) < 10 ? `≈ เท่ากับเกณฑ์ฐาน`
+    : diffOld > 0 ? `▲ สูงกว่าเกณฑ์ ${fmtShort(diffOld)}/คน`
     : `▼ ต่ำกว่าเกณฑ์ ${fmtShort(Math.abs(diffOld))}/คน`;
-
   document.getElementById('qPerPersonNew').textContent = fmtShort(perPersonNew);
   document.getElementById('qPerPersonNewSub').textContent = `เกณฑ์ฐาน ${fmtShort(baseNew)}/คน`;
   document.getElementById('qPerPersonNewBar').style.width = barNew + '%';
   document.getElementById('qPerPersonNewVsAvg').textContent = vsNew;
-  document.getElementById('qPerPersonNewVsAvg').style.color = diffNew >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
-
+  document.getElementById('qPerPersonNewVsAvg').style.color = diffNew > 10 ? 'var(--accent-green)' : diffNew < -10 ? 'var(--accent-red)' : 'var(--text-muted)';
   document.getElementById('qPerPersonOld').textContent = fmtShort(perPersonOld);
   document.getElementById('qPerPersonOldSub').textContent = `เกณฑ์ฐาน ${fmtShort(baseOld)}/คน`;
   document.getElementById('qPerPersonOldBar').style.width = barOld + '%';
   document.getElementById('qPerPersonOldVsAvg').textContent = vsOld;
-  document.getElementById('qPerPersonOldVsAvg').style.color = diffOld >= 0 ? 'var(--accent-amber)' : 'var(--accent-red)';
-
-  // รวม/วัน และเฉลี่ยรวม/คน
+  document.getElementById('qPerPersonOldVsAvg').style.color = diffOld > 10 ? 'var(--accent-amber)' : diffOld < -10 ? 'var(--accent-red)' : 'var(--text-muted)';
   const totalPerDay = qBN + qBO;
-  const totalCntPerDay = qCN + qCO;
-  const avgPerPerson = totalCntPerDay > 0 ? totalPerDay / totalCntPerDay : (perPersonNew + perPersonOld) / 2;
-
+  const avgPerPerson = (remBudNew + remBudOld) / Math.max(remCntNew + remCntOld, 1);
   document.getElementById('qTotalPerDay').textContent = fmtShort(totalPerDay);
   document.getElementById('qAvgPerPerson').textContent = fmtShort(avgPerPerson);
+  renderAnalysis(remBudNew, remBudOld, remCntNew, remCntOld, remain, baseNew, baseOld, spentNew, spentOld, cntNew, cntOld);
 
   // quota alerts
   let html = '';
@@ -1180,6 +1183,182 @@ function deleteDay() {
 document.getElementById('modalOverlay').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
+
+
+// ─── ANALYSIS ENGINE ──────────────────────────────────────
+function renderAnalysis(remBudNew, remBudOld, remCntNew, remCntOld, remain, baseNew, baseOld, spentNew, spentOld, cntNew, cntOld) {
+  const el = document.getElementById('analysisContent');
+  const cards = [];
+
+  const totalBudget = BUDGET_NEW + BUDGET_OLD;
+  const totalSpent  = spentNew + spentOld;
+  const totalRemBud = remBudNew + remBudOld;
+  const totalRemCnt = remCntNew + remCntOld;
+  const budgetUsedPct = Math.round(totalSpent / totalBudget * 100);
+
+  // ── 1. สถานะภาพรวม ──────────────────────────────
+  const progressNew = cntNew / TARGET_NEW;
+  const progressOld = cntOld / TARGET_OLD;
+  const budPaceNew  = spentNew / BUDGET_NEW;
+  const budPaceOld  = spentOld / BUDGET_OLD;
+  const daysUsedPct = (getWorkdayStatus().passed) / Math.max(getWorkdayStatus().total, 1);
+
+  let statusColor = 'var(--accent-green)';
+  let statusIcon  = '✅';
+  let statusText  = 'ดำเนินการได้ตามแผน';
+  if (budPaceNew > progressNew + 0.15 || budPaceOld > progressOld + 0.15) {
+    statusColor = 'var(--accent-red)'; statusIcon = '⚠️';
+    statusText  = 'ใช้งบเร็วกว่าความคืบหน้าลูกค้า — ควรลดวงเงินต่อคน';
+  } else if (progressNew < daysUsedPct - 0.15 || progressOld < daysUsedPct - 0.15) {
+    statusColor = 'var(--accent-amber)'; statusIcon = '🔶';
+    statusText  = 'จำนวนลูกค้าช้ากว่าเป้า — ควรเร่งปล่อยให้มากขึ้น';
+  } else if (progressNew >= 1 && progressOld >= 1) {
+    statusColor = 'var(--accent-cyan)'; statusIcon = '🎉';
+    statusText  = 'บรรลุเป้าหมายแล้ว!';
+  }
+
+  cards.push(`
+    <div style="background:rgba(0,0,0,0.2);border:1px solid var(--border-bright);border-radius:10px;padding:16px 18px;margin-bottom:12px;border-left:3px solid ${statusColor};">
+      <div style="font-size:13px;font-weight:700;color:${statusColor};margin-bottom:6px;">${statusIcon} สถานะภาพรวม</div>
+      <div style="font-size:13px;color:var(--text-primary);">${statusText}</div>
+      <div style="margin-top:8px;display:flex;gap:16px;flex-wrap:wrap;">
+        <span style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);">งบที่ใช้: <span style="color:var(--accent-blue)">${budgetUsedPct}%</span></span>
+        <span style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);">ลูกค้าใหม่: <span style="color:var(--accent-green)">${Math.round(progressNew*100)}%</span></span>
+        <span style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);">ลูกค้าเก่า: <span style="color:var(--accent-amber)">${Math.round(progressOld*100)}%</span></span>
+        <span style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);">วันทำงาน: <span style="color:var(--accent-cyan)">${Math.round(daysUsedPct*100)}%</span></span>
+      </div>
+    </div>
+  `);
+
+  // ── 2. สถานการณ์ A: ปล่อยตามเกณฑ์ฐาน ──────────────
+  const scenA_new = Math.min(remCntNew, Math.floor(remBudNew / baseNew));
+  const scenA_old = Math.min(remCntOld, Math.floor(remBudOld / baseOld));
+  const scenA_budNew = scenA_new * baseNew;
+  const scenA_budOld = scenA_old * baseOld;
+  const scenA_remBudNew = remBudNew - scenA_budNew;
+  const scenA_remBudOld = remBudOld - scenA_budOld;
+
+  cards.push(`
+    <div style="background:rgba(34,197,94,0.05);border:1px solid rgba(34,197,94,0.2);border-radius:10px;padding:16px 18px;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:700;color:var(--accent-green);margin-bottom:8px;">📊 สถานการณ์ A — ปล่อยตามเกณฑ์ฐาน</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">
+        ปล่อยสินเชื่อในวงเงิน <b style="color:var(--accent-green)">${fmtShort(baseNew)}/คน</b> (ใหม่) และ <b style="color:var(--accent-amber)">${fmtShort(baseOld)}/คน</b> (เก่า) ตามที่วางแผนไว้
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:10px;">
+          <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">ลูกค้าใหม่ที่ทำได้</div>
+          <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-green);">${scenA_new} ราย</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">งบที่ใช้ ${fmt(scenA_budNew)} · เหลือ ${fmt(scenA_remBudNew)}</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:10px;">
+          <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">ลูกค้าเก่าที่ทำได้</div>
+          <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-amber);">${scenA_old} ราย</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">งบที่ใช้ ${fmt(scenA_budOld)} · เหลือ ${fmt(scenA_remBudOld)}</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:var(--text-muted);">
+        ${scenA_new >= remCntNew && scenA_old >= remCntOld
+          ? `<span style="color:var(--accent-green)">✅ บรรลุเป้าหมายได้ภายในงบที่เหลือ</span>`
+          : `<span style="color:var(--accent-amber)">⚠️ ยังขาด ${Math.max(0,remCntNew-scenA_new)} ราย(ใหม่) และ ${Math.max(0,remCntOld-scenA_old)} ราย(เก่า)</span>`}
+      </div>
+    </div>
+  `);
+
+  // ── 3. สถานการณ์ B: ลดวงเงิน เพิ่มจำนวนลูกค้า ──────
+  const boostTarget = 1.2; // เพิ่มเป้า 20%
+  const newTargetNew = Math.ceil(TARGET_NEW * boostTarget);
+  const newTargetOld = Math.ceil(TARGET_OLD * boostTarget);
+  const extraNew = newTargetNew - cntNew;
+  const extraOld = newTargetOld - cntOld;
+  const scenB_perNew = extraNew > 0 ? remBudNew / extraNew : 0;
+  const scenB_perOld = extraOld > 0 ? remBudOld / extraOld : 0;
+
+  cards.push(`
+    <div style="background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:16px 18px;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:700;color:var(--accent-blue);margin-bottom:8px;">🚀 สถานการณ์ B — เพิ่มลูกค้า 20% เกินเป้า</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">
+        ถ้าต้องการลูกค้าใหม่ <b style="color:var(--accent-blue)">${newTargetNew} ราย</b> และเก่า <b style="color:var(--accent-blue)">${newTargetOld} ราย</b> ภายในงบเดิม
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:10px;">
+          <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">วงเงินใหม่ต่อคน (ใหม่)</div>
+          <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-blue);">${fmtShort(scenB_perNew)}</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">ลดจาก ${fmtShort(baseNew)} (${scenB_perNew < baseNew ? '▼ ' + fmtShort(baseNew - scenB_perNew) : '—'})</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:10px;">
+          <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">วงเงินใหม่ต่อคน (เก่า)</div>
+          <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-blue);">${fmtShort(scenB_perOld)}</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">ลดจาก ${fmtShort(baseOld)} (${scenB_perOld < baseOld ? '▼ ' + fmtShort(baseOld - scenB_perOld) : '—'})</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">
+        ต้องปล่อยวันละ <span style="color:var(--accent-blue)">${Math.ceil(extraNew/Math.max(remain,1))} ราย(ใหม่)</span> และ <span style="color:var(--accent-blue)">${Math.ceil(extraOld/Math.max(remain,1))} ราย(เก่า)</span> ใน ${remain} วันที่เหลือ
+      </div>
+    </div>
+  `);
+
+  // ── 4. สถานการณ์ C: ลดวงเงิน เพิ่มลูกค้า 50% ────────
+  const boost2 = 1.5;
+  const newTarget2New = Math.ceil(TARGET_NEW * boost2);
+  const newTarget2Old = Math.ceil(TARGET_OLD * boost2);
+  const extra2New = Math.max(0, newTarget2New - cntNew);
+  const extra2Old = Math.max(0, newTarget2Old - cntOld);
+  const scenC_perNew = extra2New > 0 ? remBudNew / extra2New : 0;
+  const scenC_perOld = extra2Old > 0 ? remBudOld / extra2Old : 0;
+
+  cards.push(`
+    <div style="background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.2);border-radius:10px;padding:16px 18px;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:700;color:var(--accent-purple);margin-bottom:8px;">⚡ สถานการณ์ C — เพิ่มลูกค้า 50% เกินเป้า</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">
+        ถ้าต้องการลูกค้าใหม่ <b style="color:var(--accent-purple)">${newTarget2New} ราย</b> และเก่า <b style="color:var(--accent-purple)">${newTarget2Old} ราย</b> ภายในงบเดิม
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:10px;">
+          <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">วงเงินใหม่ต่อคน (ใหม่)</div>
+          <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-purple);">${fmtShort(scenC_perNew)}</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">ลดจาก ${fmtShort(baseNew)} (${scenC_perNew < baseNew ? '▼ ' + fmtShort(baseNew - scenC_perNew) : '—'})</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:10px;">
+          <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">วงเงินใหม่ต่อคน (เก่า)</div>
+          <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-purple);">${fmtShort(scenC_perOld)}</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">ลดจาก ${fmtShort(baseOld)} (${scenC_perOld < baseOld ? '▼ ' + fmtShort(baseOld - scenC_perOld) : '—'})</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">
+        ต้องปล่อยวันละ <span style="color:var(--accent-purple)">${Math.ceil(extra2New/Math.max(remain,1))} ราย(ใหม่)</span> และ <span style="color:var(--accent-purple)">${Math.ceil(extra2Old/Math.max(remain,1))} ราย(เก่า)</span> ใน ${remain} วันที่เหลือ
+      </div>
+    </div>
+  `);
+
+  // ── 5. คำแนะนำ ──────────────────────────────────────
+  let recText = '';
+  const perNew = remBudNew / Math.max(remCntNew,1);
+  const perOld  = remBudOld / Math.max(remCntOld,1);
+  if (remain <= 3 && (remCntNew > 0 || remCntOld > 0)) {
+    recText = `<span style="color:var(--accent-red)">⚡ เร่งด่วน:</span> เหลือเพียง ${remain} วันทำงาน ต้องปล่อยวันละ ${Math.ceil(remCntNew/remain)} ราย(ใหม่) และ ${Math.ceil(remCntOld/remain)} ราย(เก่า) เพื่อให้ถึงเป้า`;
+  } else if (remBudNew < perNew * remCntNew * 0.9) {
+    recText = `<span style="color:var(--accent-amber)">💡 แนะนำ:</span> งบใหม่อาจไม่พอหากปล่อยเกิน ${fmtShort(perNew)}/คน ควรคุมวงเงินไม่เกินนี้`;
+  } else if (remCntNew / Math.max(remain,1) > 20) {
+    recText = `<span style="color:var(--accent-amber)">💡 แนะนำ:</span> เป้าลูกค้าใหม่ค่อนข้างสูง — ต้องปล่อย ${Math.ceil(remCntNew/Math.max(remain,1))} ราย/วัน วงเงินสูงสุดต่อคนไม่ควรเกิน ${fmtShort(perNew)}`;
+  } else {
+    recText = `<span style="color:var(--accent-green)">✅ แนะนำ:</span> รักษาวงเงิน <b>${fmtShort(perNew)}</b>/คน(ใหม่) และ <b>${fmtShort(perOld)}</b>/คน(เก่า) เพื่อให้งบพอถึงสิ้นเดือน`;
+  }
+
+  cards.push(`
+    <div style="background:rgba(6,182,212,0.05);border:1px solid rgba(6,182,212,0.25);border-radius:10px;padding:14px 18px;">
+      <div style="font-size:13px;font-weight:700;color:var(--accent-cyan);margin-bottom:6px;">📌 คำแนะนำสำหรับวันนี้</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">${recText}</div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+        <div style="font-size:11px;color:var(--text-muted);">วงเงินแนะนำ (ใหม่): <span style="color:var(--accent-green);font-family:var(--font-mono);">${fmtShort(perNew)}/คน</span></div>
+        <div style="font-size:11px;color:var(--text-muted);">วงเงินแนะนำ (เก่า): <span style="color:var(--accent-amber);font-family:var(--font-mono);">${fmtShort(perOld)}/คน</span></div>
+        <div style="font-size:11px;color:var(--text-muted);">งบคงเหลือรวม: <span style="color:var(--accent-blue);font-family:var(--font-mono);">${fmt(remBudNew+remBudOld)}</span></div>
+        <div style="font-size:11px;color:var(--text-muted);">วันทำงานเหลือ: <span style="color:var(--accent-cyan);font-family:var(--font-mono);">${remain} วัน</span></div>
+      </div>
+    </div>
+  `);
+
+  el.innerHTML = cards.join('');
+}
 
 // ─── INIT ─────────────────────────────────────────────────
 loadData();
