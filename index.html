@@ -127,11 +127,14 @@
     border-radius: 2px;
     background: var(--border);
     margin-top: 12px;
-    overflow: hidden;
     position: relative;
-    isolation: isolate;
+    overflow: hidden !important;
+    clip-path: inset(0 0 0 0 round 2px);
+    -webkit-clip-path: inset(0 0 0 0 round 2px);
   }
   .kpi-bar-fill {
+    position: absolute;
+    top: 0; left: 0;
     height: 100%;
     max-width: 100%;
     border-radius: 2px;
@@ -334,19 +337,18 @@
     height: 8px;
     background: var(--border);
     border-radius: 4px;
-    overflow: hidden;
     position: relative;
-    isolation: isolate;
-    contain: layout;
+    overflow: hidden !important;
+    clip-path: inset(0 0 0 0 round 4px);
+    -webkit-clip-path: inset(0 0 0 0 round 4px);
   }
   .budget-fill {
+    position: absolute;
+    top: 0; left: 0;
     height: 100%;
     max-width: 100%;
     border-radius: 4px;
     transition: width 0.8s ease;
-  }
-  .budget-fill.over-budget {
-    background: var(--accent-red) !important;
   }
   .budget-targets {
     display: flex;
@@ -578,8 +580,8 @@
           <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🆕 ลูกค้าใหม่/คน/วัน</div>
           <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-green)" id="qPerPersonNew">—</div>
           <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewSub">—</div>
-          <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);">
-            <div id="qPerPersonNewBar" style="height:100%;border-radius:1px;background:var(--accent-green);width:0%;transition:width 0.6s ease;"></div>
+          <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden!important;clip-path:inset(0 0 0 0 round 1px);">
+            <div id="qPerPersonNewBar" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-green);width:0%;transition:width 0.6s ease;"></div>
           </div>
           <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewVsAvg">—</div>
         </div>
@@ -587,8 +589,8 @@
           <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🔄 ลูกค้าเก่า/คน/วัน</div>
           <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-amber)" id="qPerPersonOld">—</div>
           <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldSub">—</div>
-          <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);">
-            <div id="qPerPersonOldBar" style="height:100%;border-radius:1px;background:var(--accent-amber);width:0%;transition:width 0.6s ease;"></div>
+          <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden!important;clip-path:inset(0 0 0 0 round 1px);">
+            <div id="qPerPersonOldBar" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-amber);width:0%;transition:width 0.6s ease;"></div>
           </div>
           <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldVsAvg">—</div>
         </div>
@@ -946,8 +948,8 @@ function renderQuota() {
   // วงเงิน/คนที่ควรปล่อย = งบคงเหลือ / ลูกค้าที่ยังต้องทำ
   const perPersonNew = remBudNew / Math.max(remCntNew, 1);
   const perPersonOld = remBudOld / Math.max(remCntOld, 1);
-  const barNew = Math.min(140, (perPersonNew / baseNew) * 100);
-  const barOld = Math.min(140, (perPersonOld / baseOld) * 100);
+  const barNew = Math.min(100, (perPersonNew / baseNew) * 100);
+  const barOld = Math.min(100, (perPersonOld / baseOld) * 100);
   const diffNew = perPersonNew - baseNew;
   const diffOld = perPersonOld - baseOld;
   const vsNew = Math.abs(diffNew) < 10 ? `≈ เท่ากับเกณฑ์ฐาน`
@@ -1313,8 +1315,8 @@ function renderAnalysis(remBudNew, remBudOld, remCntNew, remCntOld, remain, base
           <div style="font-size:11px;color:var(--text-muted);">งบเหลือหลังปล่อยครบเป้า: <b style="color:${surplusNew>=0?'var(--accent-green)':'var(--accent-red)'};">${fmt(surplusNew)}</b></div>
           <div style="margin-top:10px;">
             <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-bottom:4px;"><span>${probLabel(probNew)}</span><span>${probNew}%</span></div>
-            <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;position:relative;isolation:isolate;">
-              <div style="height:100%;max-width:100%;border-radius:3px;background:${probColor(probNew)};width:${Math.min(100,probNew)}%;transition:width 0.8s ease;"></div>
+            <div style="height:6px;background:var(--border);border-radius:3px;position:relative;overflow:hidden!important;clip-path:inset(0 0 0 0 round 3px);-webkit-clip-path:inset(0 0 0 0 round 3px);">
+              <div style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:3px;background:${probColor(probNew)};width:${Math.min(100,probNew)}%;transition:width 0.8s ease;"></div>
             </div>
           </div>
           <div style="margin-top:8px;font-size:10px;color:var(--text-muted);">ต้องปล่อยวันละ <b style="color:var(--accent-cyan);">${fixedRateNew} ราย</b> ใน ${remain} วัน · วงเงิน ${fmt(LOAN_PER_NEW)}/คน</div>
@@ -1326,8 +1328,8 @@ function renderAnalysis(remBudNew, remBudOld, remCntNew, remCntOld, remain, base
           <div style="font-size:11px;color:var(--text-muted);">งบเหลือหลังปล่อยครบเป้า: <b style="color:${surplusOld>=0?'var(--accent-green)':'var(--accent-red)'};">${fmt(surplusOld)}</b></div>
           <div style="margin-top:10px;">
             <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-bottom:4px;"><span>${probLabel(probOld)}</span><span>${probOld}%</span></div>
-            <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;position:relative;isolation:isolate;">
-              <div style="height:100%;max-width:100%;border-radius:3px;background:${probColor(probOld)};width:${Math.min(100,probOld)}%;transition:width 0.8s ease;"></div>
+            <div style="height:6px;background:var(--border);border-radius:3px;position:relative;overflow:hidden!important;clip-path:inset(0 0 0 0 round 3px);-webkit-clip-path:inset(0 0 0 0 round 3px);">
+              <div style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:3px;background:${probColor(probOld)};width:${Math.min(100,probOld)}%;transition:width 0.8s ease;"></div>
             </div>
           </div>
           <div style="margin-top:8px;font-size:10px;color:var(--text-muted);">ต้องปล่อยวันละ <b style="color:var(--accent-cyan);">${fixedRateOld} ราย</b> ใน ${remain} วัน · วงเงิน ${fmt(LOAN_PER_OLD)}/คน</div>
