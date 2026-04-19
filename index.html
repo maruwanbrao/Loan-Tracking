@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>แดชบอร์ดวิเคราะห์สินเชื่อ — เมษายน 2569</title>
+<title>ระบบวิเคราะห์สินเชื่อ 2569</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+
+
   :root {
     --bg-base: #0a0c10;
     --bg-surface: #111318;
@@ -504,10 +506,210 @@
   .legend { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:14px; }
   .legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); }
   .legend-dot  { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+
+  /* ─── NAV BAR ─── */
+  .nav-bar {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-family: var(--font-th);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    border: 1px solid var(--border-bright);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { border-color: var(--accent-blue); color: var(--text-primary); background: var(--bg-card-hover); }
+  .nav-btn.active { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; }
+
+
+  /* ─── NAV SCROLLABLE ─── */
+  .nav-bar {
+    display: flex;
+    justify-content: flex-start;
+    overflow-x: auto;
+    gap: 6px;
+    margin-bottom: 28px;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-bright) transparent;
+  }
+  .nav-bar::-webkit-scrollbar { height: 3px; }
+  .nav-bar::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+  .nav-btn { white-space: nowrap; flex-shrink: 0; }
+
+/* ─── ALLOC PAGE STYLES ─── */
+
+
+
+
+
+
+
+/* HEADER */
+.header{text-align:center;margin-bottom:30px;}
+.header::after{content:'';display:block;width:120px;height:2px;background:linear-gradient(90deg,transparent,var(--accent-amber),transparent);margin:14px auto 0;}
+.header-badge{display:inline-block;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--accent-amber);font-size:11px;font-family:var(--font-mono);letter-spacing:2px;padding:4px 14px;border-radius:20px;margin-bottom:10px;}
+.header h1{font-size:clamp(18px,3.5vw,26px);font-weight:700;}
+.header p{font-size:13px;color:var(--text-secondary);margin-top:6px;}
+
+/* LAYOUT */
+.page-grid{display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:start;}
+@media(max-width:860px){.page-grid{grid-template-columns:1fr;}}
+
+/* CARD */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;transition:border-color .2s;}
+.section-title{font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.section-title::before{content:'';width:3px;height:14px;border-radius:2px;background:var(--accent-amber);display:inline-block;}
+
+/* FORM */
+.form-group{margin-bottom:14px;}
+.form-label{display:block;font-size:10px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.form-input,.form-select{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-mono);font-size:14px;padding:9px 12px;outline:none;transition:border-color .15s;}
+.form-input:focus,.form-select:focus{border-color:var(--accent-amber);}
+.form-select option{background:var(--bg-card);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:var(--radius-sm);font-family:var(--font-th);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+.btn-amber{background:var(--accent-amber);color:#000;}
+.btn-amber:hover{background:#d97706;}
+.btn-ghost{background:transparent;color:var(--text-secondary);border:1px solid var(--border-bright);}
+.btn-ghost:hover{border-color:var(--accent-amber);color:var(--text-primary);}
+.btn-danger{background:rgba(239,68,68,.1);color:var(--accent-red);border:1px solid rgba(239,68,68,.3);}
+.btn-danger:hover{background:rgba(239,68,68,.2);}
+.btn-full{width:100%;justify-content:center;}
+
+/* TAB MODE */
+.mode-tab{display:flex;gap:6px;margin-bottom:14px;}
+.mode-btn{flex:1;text-align:center;padding:8px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border-bright);background:var(--bg-surface);color:var(--text-muted);transition:all .15s;}
+.mode-btn.active{background:rgba(245,158,11,.15);border-color:var(--accent-amber);color:var(--accent-amber);}
+
+/* RANGE SLIDER */
+.slider-wrap{margin-bottom:16px;}
+.slider-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.slider-name{font-size:12px;color:var(--text-secondary);}
+.slider-val{font-size:14px;font-weight:700;font-family:var(--font-mono);color:var(--text-primary);}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;background:var(--border);border-radius:2px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--accent-amber);border-radius:50%;border:2px solid var(--bg-base);transition:transform .1s;}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.25);}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--accent-amber);border-radius:50%;border:2px solid var(--bg-base);cursor:pointer;}
+.slider-ticks{display:flex;justify-content:space-between;font-size:9px;color:var(--text-dim);font-family:var(--font-mono);margin-top:4px;}
+
+/* BIG NUMBERS */
+.big-hero{background:linear-gradient(135deg,rgba(245,158,11,.07),rgba(59,130,246,.04));border:1px solid rgba(245,158,11,.2);border-radius:var(--radius);padding:24px 20px;margin-bottom:16px;text-align:center;position:relative;overflow:hidden;}
+.big-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(245,158,11,.07) 0%,transparent 70%);pointer-events:none;}
+.big-label{font-size:11px;font-family:var(--font-mono);color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.big-val{font-size:clamp(30px,5vw,46px);font-weight:700;font-family:var(--font-mono);line-height:1;}
+.big-sub{font-size:12px;color:var(--text-muted);margin-top:8px;}
+
+/* DONUT */
+.donut-wrap{display:flex;align-items:center;gap:20px;margin-bottom:16px;}
+.donut-legend{flex:1;}
+.donut-item{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.donut-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+.donut-name{font-size:12px;color:var(--text-secondary);}
+.donut-pct{font-size:12px;font-family:var(--font-mono);color:var(--text-primary);margin-left:auto;}
+
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+@media(max-width:500px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+.stat-box{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;}
+.stat-val{font-size:18px;font-weight:700;font-family:var(--font-mono);}
+.stat-lbl{font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-top:3px;text-transform:uppercase;letter-spacing:.8px;}
+
+/* PROGRESS BAR */
+.pbar-wrap{margin-bottom:14px;}
+.pbar-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
+.pbar-name{font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:6px;}
+.pbar-nums{font-size:11px;font-family:var(--font-mono);color:var(--text-muted);}
+.pbar-track{height:8px;background:var(--border);border-radius:4px;position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 4px);}
+.pbar-fill{position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:4px;transition:width .7s ease;}
+.pbar-sub{font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-top:4px;}
+
+/* DAILY TABLE */
+.tbl-wrap{overflow-x:auto;}
+.daily-tbl{width:100%;border-collapse:separate;border-spacing:0 3px;font-size:11px;min-width:580px;}
+.daily-tbl th{text-align:left;font-size:9px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;padding:4px 8px;}
+.daily-tbl th:not(:first-child){text-align:right;}
+.daily-tbl td{padding:7px 8px;background:var(--bg-surface);}
+.daily-tbl td:not(:first-child){text-align:right;font-family:var(--font-mono);}
+.daily-tbl tr td:first-child{border-radius:5px 0 0 5px;}
+.daily-tbl tr td:last-child{border-radius:0 5px 5px 0;}
+.daily-tbl .row-today td{outline:1px solid var(--accent-cyan);outline-offset:-1px;}
+.daily-tbl .row-over td{background:rgba(239,68,68,.06);}
+.daily-tbl .row-ok td{background:rgba(34,197,94,.04);}
+
+/* PROBABILITY CARD */
+.prob-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;}
+.prob-title{font-size:11px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.prob-bar-track{height:10px;background:var(--border);border-radius:5px;position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 5px);margin-bottom:6px;}
+.prob-bar-fill{position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:5px;transition:width .7s ease;}
+
+/* ALERT */
+.alert{border-radius:var(--radius-sm);padding:11px 14px;font-size:12px;border:1px solid;margin-bottom:10px;line-height:1.6;}
+.alert-info{background:rgba(59,130,246,.07);border-color:rgba(59,130,246,.3);color:#93c5fd;}
+.alert-warning{background:rgba(245,158,11,.07);border-color:rgba(245,158,11,.3);color:#fcd34d;}
+.alert-success{background:rgba(34,197,94,.07);border-color:rgba(34,197,94,.3);color:#86efac;}
+.alert-danger{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);color:#fca5a5;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg-card);border:1px solid var(--accent-amber);color:var(--accent-amber);font-size:13px;font-family:var(--font-mono);padding:10px 20px;border-radius:8px;transition:transform .3s ease;z-index:200;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0;}
+
+
+
+
+
+  /* ─── NAV SCROLLABLE ─── */
+  .nav-bar {
+    display: flex;
+    overflow-x: auto;
+    gap: 6px;
+    margin-bottom: 28px;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-bright) transparent;
+  }
+  .nav-bar::-webkit-scrollbar { height: 3px; }
+  .nav-bar::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+  .nav-btn { white-space: nowrap; flex-shrink: 0; }
+  /* Settings bar slide */
+  .settings-bar { animation: slideDown .2s ease; }
+  @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+
 </style>
 </head>
 <body>
 
+<div class="nav-bar" id="mainNav">
+  <a class="nav-btn active" onclick="showPage('page-dash')" id="nav-dash">📊 เม.ย.</a>
+  <a class="nav-btn" onclick="showPage('page-m5')" id="nav-m5">📅 พ.ค.</a>
+  <a class="nav-btn" onclick="showPage('page-m6')" id="nav-m6">📅 มิ.ย.</a>
+  <a class="nav-btn" onclick="showPage('page-m7')" id="nav-m7">📅 ก.ค.</a>
+  <a class="nav-btn" onclick="showPage('page-m8')" id="nav-m8">📅 ส.ค.</a>
+  <a class="nav-btn" onclick="showPage('page-m9')" id="nav-m9">📅 ก.ย.</a>
+  <a class="nav-btn" onclick="showPage('page-m10')" id="nav-m10">📅 ต.ค.</a>
+  <a class="nav-btn" onclick="showPage('page-m11')" id="nav-m11">📅 พ.ย.</a>
+  <a class="nav-btn" onclick="showPage('page-m12')" id="nav-m12">📅 ธ.ค.</a>
+</div>
+
+<div id="page-dash"  class="page-content">
 <div class="header">
   <div class="header-badge">CREDIT ANALYTICS · APRIL 2026</div>
   <h1>แดชบอร์ดวิเคราะห์สินเชื่อ — เมษายน 2569</h1>
@@ -518,27 +720,27 @@
 <div class="grid-4" id="kpiSection">
   <div class="card blue">
     <div class="card-title">งบลูกค้าใหม่คงเหลือ</div>
-    <div class="kpi-value" id="kpiBudgetNew">฿2,500,000</div>
-    <div class="kpi-sub" id="kpiBudgetNewSub">ปล่อยแล้ว ฿0 · เหลือ ฿2,500,000</div>
-    <div class="kpi-bar"><div class="kpi-bar-fill" id="kpiBarNew" style="width:0%"></div></div>
+    <div class="kpi-value" id="kpiBudgetNew-apr">฿2,500,000</div>
+    <div class="kpi-sub" id="kpiBudgetNewSub-apr">ปล่อยแล้ว ฿0 · เหลือ ฿2,500,000</div>
+    <div class="kpi-bar"><div class="kpi-bar-fill" id="kpiBarNew-apr" style="width:0%"></div></div>
   </div>
   <div class="card green">
     <div class="card-title">งบลูกค้าเก่าคงเหลือ</div>
-    <div class="kpi-value" id="kpiBudgetOld">฿1,080,000</div>
-    <div class="kpi-sub" id="kpiBudgetOldSub">ปล่อยแล้ว ฿0 · เหลือ ฿1,080,000</div>
-    <div class="kpi-bar"><div class="kpi-bar-fill" id="kpiBarOld" style="width:0%"></div></div>
+    <div class="kpi-value" id="kpiBudgetOld-apr">฿1,080,000</div>
+    <div class="kpi-sub" id="kpiBudgetOldSub-apr">ปล่อยแล้ว ฿0 · เหลือ ฿1,080,000</div>
+    <div class="kpi-bar"><div class="kpi-bar-fill" id="kpiBarOld-apr" style="width:0%"></div></div>
   </div>
   <div class="card amber">
     <div class="card-title">จำนวนลูกค้าใหม่</div>
-    <div class="kpi-value" id="kpiCntNew">0 / 250</div>
-    <div class="kpi-sub" id="kpiCntNewSub">เป้าหมาย 250 ราย</div>
-    <div class="kpi-bar"><div class="kpi-bar-fill" id="kpiBarCntNew" style="width:0%"></div></div>
+    <div class="kpi-value" id="kpiCntNew-apr">0 / 250</div>
+    <div class="kpi-sub" id="kpiCntNewSub-apr">เป้าหมาย 250 ราย</div>
+    <div class="kpi-bar"><div class="kpi-bar-fill" id="kpiBarCntNew-apr" style="width:0%"></div></div>
   </div>
   <div class="card purple">
     <div class="card-title">จำนวนลูกค้าเก่า</div>
-    <div class="kpi-value" id="kpiCntOld">0 / 60</div>
-    <div class="kpi-sub" id="kpiCntOldSub">เป้าหมาย 60 ราย</div>
-    <div class="kpi-bar"><div class="kpi-bar-fill" id="kpiBarCntOld" style="width:0%"></div></div>
+    <div class="kpi-value" id="kpiCntOld-apr">0 / 60</div>
+    <div class="kpi-sub" id="kpiCntOldSub-apr">เป้าหมาย 60 ราย</div>
+    <div class="kpi-bar"><div class="kpi-bar-fill" id="kpiBarCntOld-apr" style="width:0%"></div></div>
   </div>
 </div>
 
@@ -546,27 +748,27 @@
 <div class="grid-2" style="margin-bottom:20px;">
   <div class="card">
     <div class="section-title">โควต้าเฉลี่ยต่อวันทำงาน</div>
-    <div id="alertQuota"></div>
+    <div id="alertQuota-apr"></div>
     <div class="quota-grid">
       <div class="quota-box">
         <div class="quota-label">ลูกค้าใหม่ · งบ/วัน</div>
-        <div class="quota-val new" id="qBudgetNew">—</div>
-        <div class="quota-sub" id="qBudgetNewSub">—</div>
+        <div class="quota-val new" id="qBudgetNew-apr">—</div>
+        <div class="quota-sub" id="qBudgetNewSub-apr">—</div>
       </div>
       <div class="quota-box">
         <div class="quota-label">ลูกค้าเก่า · งบ/วัน</div>
-        <div class="quota-val old" id="qBudgetOld">—</div>
-        <div class="quota-sub" id="qBudgetOldSub">—</div>
+        <div class="quota-val old" id="qBudgetOld-apr">—</div>
+        <div class="quota-sub" id="qBudgetOldSub-apr">—</div>
       </div>
       <div class="quota-box">
         <div class="quota-label">ลูกค้าใหม่ · ราย/วัน</div>
-        <div class="quota-val new" id="qCntNew">—</div>
-        <div class="quota-sub" id="qCntNewSub">—</div>
+        <div class="quota-val new" id="qCntNew-apr">—</div>
+        <div class="quota-sub" id="qCntNewSub-apr">—</div>
       </div>
       <div class="quota-box">
         <div class="quota-label">ลูกค้าเก่า · ราย/วัน</div>
-        <div class="quota-val old" id="qCntOld">—</div>
-        <div class="quota-sub" id="qCntOldSub">—</div>
+        <div class="quota-val old" id="qCntOld-apr">—</div>
+        <div class="quota-sub" id="qCntOldSub-apr">—</div>
       </div>
     </div>
 
@@ -578,32 +780,32 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div style="background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(34,197,94,0.03));border:1px solid rgba(34,197,94,0.2);border-radius:8px;padding:12px;">
           <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🆕 ลูกค้าใหม่/คน/วัน</div>
-          <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-green)" id="qPerPersonNew">—</div>
-          <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewSub">—</div>
+          <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-green)" id="qPerPersonNew-apr">—</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewSub-apr">—</div>
           <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden!important;clip-path:inset(0 0 0 0 round 1px);">
-            <div id="qPerPersonNewBar" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-green);width:0%;transition:width 0.6s ease;"></div>
+            <div id="qPerPersonNewBar-apr" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-green);width:0%;transition:width 0.6s ease;"></div>
           </div>
-          <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewVsAvg">—</div>
+          <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewVsAvg-apr">—</div>
         </div>
         <div style="background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(245,158,11,0.03));border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:12px;">
           <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🔄 ลูกค้าเก่า/คน/วัน</div>
-          <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-amber)" id="qPerPersonOld">—</div>
-          <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldSub">—</div>
+          <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-amber)" id="qPerPersonOld-apr">—</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldSub-apr">—</div>
           <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden!important;clip-path:inset(0 0 0 0 round 1px);">
-            <div id="qPerPersonOldBar" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-amber);width:0%;transition:width 0.6s ease;"></div>
+            <div id="qPerPersonOldBar-apr" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-amber);width:0%;transition:width 0.6s ease;"></div>
           </div>
-          <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldVsAvg">—</div>
+          <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldVsAvg-apr">—</div>
         </div>
       </div>
       <!-- รวม 2 กลุ่ม -->
       <div style="margin-top:10px;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.15);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
         <div>
           <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">รวมวงเงินทั้งหมด/วัน</div>
-          <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-blue)" id="qTotalPerDay">—</div>
+          <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-blue)" id="qTotalPerDay-apr">—</div>
         </div>
         <div style="text-align:right;">
           <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">เฉลี่ยวงเงิน/คน (รวม)</div>
-          <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-cyan)" id="qAvgPerPerson">—</div>
+          <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-cyan)" id="qAvgPerPerson-apr">—</div>
         </div>
       </div>
     </div>
@@ -614,31 +816,31 @@
     <div class="budget-section">
       <div class="budget-label">
         <span class="budget-name">🆕 ลูกค้าใหม่</span>
-        <span class="budget-nums" id="progressNewNum">฿0 / ฿2,500,000</span>
+        <span class="budget-nums" id="progressNewNum-apr">฿0 / ฿2,500,000</span>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <div class="budget-track" style="flex:1"><div class="budget-fill" id="progressNewFill" style="width:0%;background:var(--accent-blue)"></div></div>
-        <span id="progressNewPct" style="font-size:12px;font-family:var(--font-mono);color:var(--accent-blue);min-width:38px;text-align:right;">0%</span>
+        <div class="budget-track" style="flex:1"><div class="budget-fill" id="progressNewFill-apr" style="width:0%;background:var(--accent-blue)"></div></div>
+        <span id="progressNewPct-apr" style="font-size:12px;font-family:var(--font-mono);color:var(--accent-blue);min-width:38px;text-align:right;">0%</span>
       </div>
-      <div class="budget-targets" id="progressNewTarget">เป้า 250 ราย · ราคาเฉลี่ย/คน: ฿10,000</div>
+      <div class="budget-targets" id="progressNewTarget-apr">เป้า 250 ราย · ราคาเฉลี่ย/คน: ฿10,000</div>
     </div>
     <div class="budget-section">
       <div class="budget-label">
         <span class="budget-name">🔄 ลูกค้าเก่า</span>
-        <span class="budget-nums" id="progressOldNum">฿0 / ฿1,080,000</span>
+        <span class="budget-nums" id="progressOldNum-apr">฿0 / ฿1,080,000</span>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
-        <div class="budget-track" style="flex:1"><div class="budget-fill" id="progressOldFill" style="width:0%;background:var(--accent-green)"></div></div>
-        <span id="progressOldPct" style="font-size:12px;font-family:var(--font-mono);color:var(--accent-green);min-width:38px;text-align:right;">0%</span>
+        <div class="budget-track" style="flex:1"><div class="budget-fill" id="progressOldFill-apr" style="width:0%;background:var(--accent-green)"></div></div>
+        <span id="progressOldPct-apr" style="font-size:12px;font-family:var(--font-mono);color:var(--accent-green);min-width:38px;text-align:right;">0%</span>
       </div>
-      <div class="budget-targets" id="progressOldTarget">เป้า 60 ราย · ราคาเฉลี่ย/คน: ฿18,000</div>
+      <div class="budget-targets" id="progressOldTarget-apr">เป้า 60 ราย · ราคาเฉลี่ย/คน: ฿18,000</div>
     </div>
     <hr class="divider">
-    <div id="budgetAlert"></div>
+    <div id="budgetAlert-apr"></div>
     <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
-      วันทำงานเดือนเมษายน: <span id="totalWorkDays" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
-      ผ่านไปแล้ว: <span id="passedWorkDays" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
-      เหลือ: <span id="remainWorkDays" style="color:var(--accent-green)">—</span> วัน
+      วันทำงานเดือนเมษายน: <span id="totalWorkDays-apr" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
+      ผ่านไปแล้ว: <span id="passedWorkDays-apr" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
+      เหลือ: <span id="remainWorkDays-apr" style="color:var(--accent-green)">—</span> วัน
     </div>
   </div>
 </div>
@@ -652,7 +854,7 @@
     <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green);opacity:0.6"></div>บันทึกแล้ว</div>
     <div class="legend-item"><div class="legend-dot" style="background:var(--accent-cyan);opacity:0.8"></div>วันนี้</div>
   </div>
-  <div class="calendar-grid" id="calendarGrid">
+  <div class="calendar-grid" id="calendarGrid-apr">
     <!-- headers -->
     <div class="cal-header">อา</div>
     <div class="cal-header" style="color:var(--accent-blue);opacity:0.6">จ</div>
@@ -680,73 +882,1289 @@
           <th>สถานะ</th>
         </tr>
       </thead>
-      <tbody id="summaryBody"></tbody>
-      <tfoot id="summaryFoot"></tfoot>
+      <tbody id="summaryBody-apr"></tbody>
+      <tfoot id="summaryFoot-apr"></tfoot>
     </table>
   </div>
 </div>
 
 
 <!-- ANALYSIS SECTION -->
-<div class="card" style="margin-top:20px;" id="analysisCard">
+<div class="card" style="margin-top:20px;" id="analysisCard-apr">
   <div class="section-title">🧠 บทวิเคราะห์อัจฉริยะ</div>
-  <div id="analysisContent">
+  <div id="analysisContent-apr">
     <div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px 0;">
       กำลังวิเคราะห์ข้อมูล...
     </div>
   </div>
 </div>
 
-<!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay">
+
+</div>
+
+
+
+
+
+<div id="page-m5" class="page-content" style="display:none">
+
+  <!-- ⚙️ SETTINGS + HOLIDAYS PANEL -->
+  <div class="settings-bar" id="settingsBar-m5" style="display:none;">
+    <div class="card" style="border-color:rgba(245,158,11,.4);margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="section-title" style="margin-bottom:0;">⚙️ ตั้งค่า — พฤษภาคม 2569</div>
+        <button onclick="mToggleSettings(5)" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;line-height:1;">✕</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- งบประมาณ -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">💵 งบประมาณ & เป้าหมาย</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">งบใหม่ (฿)</label>
+              <input type="number" class="form-input" id="s_budNew_5" placeholder="2,500,000" oninput="mApplySettings(5)">
+            </div>
+            <div>
+              <label class="form-label">เป้าใหม่ (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtNew_5" placeholder="250" oninput="mApplySettings(5)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน 1st</label>
+              <input type="number" class="form-input" id="s_loanNew_5" placeholder="10,000" oninput="mApplySettings(5)">
+            </div>
+            <div>
+              <label class="form-label">งบเก่า (฿)</label>
+              <input type="number" class="form-input" id="s_budOld_5" placeholder="1,080,000" oninput="mApplySettings(5)">
+            </div>
+            <div>
+              <label class="form-label">เป้าเก่า (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtOld_5" placeholder="60" oninput="mApplySettings(5)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน Roll</label>
+              <input type="number" class="form-input" id="s_loanOld_5" placeholder="12,000" oninput="mApplySettings(5)">
+            </div>
+          </div>
+        </div>
+
+        <!-- วันหยุด -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">📅 วันหยุดพิเศษเดือนนี้</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">วันจันทร์หยุดอัตโนมัติ · กดวันที่เพิ่มเติมที่ต้องการหยุด</div>
+          <div id="holidayPicker-m5" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;"></div>
+          <div style="font-size:11px;color:var(--text-muted);">วันทำงาน: <span id="workdayCount-m5" style="color:var(--accent-cyan);font-family:var(--font-mono);font-weight:700;">—</span> วัน</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+        <span id="s_saved_5" style="font-size:11px;color:var(--accent-green);font-family:var(--font-mono);opacity:0;transition:opacity .3s;">✓ บันทึกแล้ว</span>
+        <button class="btn" onclick="mResetSettings(5)" style="margin-left:auto;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:6px 12px;">↺ รีเซ็ต</button>
+        <button class="btn" onclick="mToggleSettings(5)" style="background:var(--accent-amber);color:#000;font-size:12px;padding:6px 16px;">✓ ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER with settings button -->
+  <div class="header">
+    <div class="header-badge">CREDIT ANALYTICS · MAY 2026</div>
+    <h1>แดชบอร์ดวิเคราะห์สินเชื่อ — พฤษภาคม 2569</h1>
+    <p>วางแผนและบันทึกการปล่อยสินเชื่อรายวัน · กดที่วันทำงานเพื่ออัพเดทข้อมูล</p>
+    <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;">
+      <button onclick="mToggleSettings(5)" class="btn" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.35);color:var(--accent-amber);font-size:12px;padding:7px 16px;">
+        ⚙️ ตั้งค่างบ & วันหยุด
+      </button>
+    </div>
+  </div>
+
+  <div id="kpi-m5" class="grid-4"></div>
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="section-title">โควต้าเฉลี่ยต่อวันทำงาน</div>
+      <div id="alertQuota-m5"></div>
+      <div class="quota-grid" id="quotaGrid-m5"></div>
+      <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;">💰 วงเงินสูงสุดต่อคน</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.03));border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🆕 ลูกค้าใหม่/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-green)" id="qPerPersonNew-m5">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewSub-m5">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonNewBar-m5" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-green);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewVsAvg-m5">—</div>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(245,158,11,.03));border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🔄 ลูกค้าเก่า/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-amber)" id="qPerPersonOld-m5">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldSub-m5">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonOldBar-m5" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-amber);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldVsAvg-m5">—</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">รวมวงเงินทั้งหมด/วัน</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-blue)" id="qTotalPerDay-m5">—</div></div>
+          <div style="text-align:right;"><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">เฉลี่ยวงเงิน/คน (รวม)</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-cyan)" id="qAvgPerPerson-m5">—</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">ความคืบหน้างบประมาณ</div>
+      <div id="progressBars-m5"></div>
+      <hr class="divider">
+      <div id="budgetAlert-m5"></div>
+      <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
+        วันทำงาน: <span id="totalWorkDays-m5" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
+        ผ่านแล้ว: <span id="passedWorkDays-m5" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
+        เหลือ: <span id="remainWorkDays-m5" style="color:var(--accent-green)">—</span> วัน
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">ปฏิทินพฤษภาคม 2569 — คลิกวันทำงานเพื่อบันทึก</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue);opacity:.4"></div>วันจันทร์ (หยุด)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple);opacity:.4"></div>วันหยุดพิเศษ</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green);opacity:.6"></div>บันทึกแล้ว</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-cyan);opacity:.8"></div>วันนี้</div>
+    </div>
+    <div class="calendar-grid" id="cal-m5">
+      <div class="cal-header">อา</div><div class="cal-header" style="color:var(--accent-blue);opacity:.6">จ</div>
+      <div class="cal-header">อ</div><div class="cal-header">พ</div>
+      <div class="cal-header">พฤ</div><div class="cal-header">ศ</div><div class="cal-header">ส</div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">สรุปรายวัน (เฉพาะวันทำงาน)</div>
+    <div style="overflow-x:auto;">
+      <table class="summary-table">
+        <thead><tr><th>วัน</th><th>งบใหม่ (฿)</th><th>ราย (ใหม่)</th><th>งบเก่า (฿)</th><th>ราย (เก่า)</th><th>รวม (฿)</th><th>สถานะ</th></tr></thead>
+        <tbody id="summaryBody-m5"></tbody>
+        <tfoot id="summaryFoot-m5"></tfoot>
+      </table>
+    </div>
+  </div>
+  <div class="card" id="analysisCard-m5">
+    <div class="section-title">🧠 บทวิเคราะห์</div>
+    <div id="analysisContent-m5"><div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px;">กำลังวิเคราะห์...</div></div>
+  </div>
+</div>
+
+<div id="page-m6" class="page-content" style="display:none">
+
+  <!-- ⚙️ SETTINGS + HOLIDAYS PANEL -->
+  <div class="settings-bar" id="settingsBar-m6" style="display:none;">
+    <div class="card" style="border-color:rgba(245,158,11,.4);margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="section-title" style="margin-bottom:0;">⚙️ ตั้งค่า — มิถุนายน 2569</div>
+        <button onclick="mToggleSettings(6)" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;line-height:1;">✕</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- งบประมาณ -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">💵 งบประมาณ & เป้าหมาย</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">งบใหม่ (฿)</label>
+              <input type="number" class="form-input" id="s_budNew_6" placeholder="2,500,000" oninput="mApplySettings(6)">
+            </div>
+            <div>
+              <label class="form-label">เป้าใหม่ (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtNew_6" placeholder="250" oninput="mApplySettings(6)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน 1st</label>
+              <input type="number" class="form-input" id="s_loanNew_6" placeholder="10,000" oninput="mApplySettings(6)">
+            </div>
+            <div>
+              <label class="form-label">งบเก่า (฿)</label>
+              <input type="number" class="form-input" id="s_budOld_6" placeholder="1,080,000" oninput="mApplySettings(6)">
+            </div>
+            <div>
+              <label class="form-label">เป้าเก่า (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtOld_6" placeholder="60" oninput="mApplySettings(6)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน Roll</label>
+              <input type="number" class="form-input" id="s_loanOld_6" placeholder="12,000" oninput="mApplySettings(6)">
+            </div>
+          </div>
+        </div>
+
+        <!-- วันหยุด -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">📅 วันหยุดพิเศษเดือนนี้</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">วันจันทร์หยุดอัตโนมัติ · กดวันที่เพิ่มเติมที่ต้องการหยุด</div>
+          <div id="holidayPicker-m6" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;"></div>
+          <div style="font-size:11px;color:var(--text-muted);">วันทำงาน: <span id="workdayCount-m6" style="color:var(--accent-cyan);font-family:var(--font-mono);font-weight:700;">—</span> วัน</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+        <span id="s_saved_6" style="font-size:11px;color:var(--accent-green);font-family:var(--font-mono);opacity:0;transition:opacity .3s;">✓ บันทึกแล้ว</span>
+        <button class="btn" onclick="mResetSettings(6)" style="margin-left:auto;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:6px 12px;">↺ รีเซ็ต</button>
+        <button class="btn" onclick="mToggleSettings(6)" style="background:var(--accent-amber);color:#000;font-size:12px;padding:6px 16px;">✓ ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER with settings button -->
+  <div class="header">
+    <div class="header-badge">CREDIT ANALYTICS · JUN 2026</div>
+    <h1>แดชบอร์ดวิเคราะห์สินเชื่อ — มิถุนายน 2569</h1>
+    <p>วางแผนและบันทึกการปล่อยสินเชื่อรายวัน · กดที่วันทำงานเพื่ออัพเดทข้อมูล</p>
+    <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;">
+      <button onclick="mToggleSettings(6)" class="btn" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.35);color:var(--accent-amber);font-size:12px;padding:7px 16px;">
+        ⚙️ ตั้งค่างบ & วันหยุด
+      </button>
+    </div>
+  </div>
+
+  <div id="kpi-m6" class="grid-4"></div>
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="section-title">โควต้าเฉลี่ยต่อวันทำงาน</div>
+      <div id="alertQuota-m6"></div>
+      <div class="quota-grid" id="quotaGrid-m6"></div>
+      <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;">💰 วงเงินสูงสุดต่อคน</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.03));border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🆕 ลูกค้าใหม่/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-green)" id="qPerPersonNew-m6">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewSub-m6">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonNewBar-m6" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-green);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewVsAvg-m6">—</div>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(245,158,11,.03));border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🔄 ลูกค้าเก่า/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-amber)" id="qPerPersonOld-m6">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldSub-m6">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonOldBar-m6" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-amber);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldVsAvg-m6">—</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">รวมวงเงินทั้งหมด/วัน</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-blue)" id="qTotalPerDay-m6">—</div></div>
+          <div style="text-align:right;"><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">เฉลี่ยวงเงิน/คน (รวม)</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-cyan)" id="qAvgPerPerson-m6">—</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">ความคืบหน้างบประมาณ</div>
+      <div id="progressBars-m6"></div>
+      <hr class="divider">
+      <div id="budgetAlert-m6"></div>
+      <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
+        วันทำงาน: <span id="totalWorkDays-m6" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
+        ผ่านแล้ว: <span id="passedWorkDays-m6" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
+        เหลือ: <span id="remainWorkDays-m6" style="color:var(--accent-green)">—</span> วัน
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">ปฏิทินมิถุนายน 2569 — คลิกวันทำงานเพื่อบันทึก</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue);opacity:.4"></div>วันจันทร์ (หยุด)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple);opacity:.4"></div>วันหยุดพิเศษ</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green);opacity:.6"></div>บันทึกแล้ว</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-cyan);opacity:.8"></div>วันนี้</div>
+    </div>
+    <div class="calendar-grid" id="cal-m6">
+      <div class="cal-header">อา</div><div class="cal-header" style="color:var(--accent-blue);opacity:.6">จ</div>
+      <div class="cal-header">อ</div><div class="cal-header">พ</div>
+      <div class="cal-header">พฤ</div><div class="cal-header">ศ</div><div class="cal-header">ส</div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">สรุปรายวัน (เฉพาะวันทำงาน)</div>
+    <div style="overflow-x:auto;">
+      <table class="summary-table">
+        <thead><tr><th>วัน</th><th>งบใหม่ (฿)</th><th>ราย (ใหม่)</th><th>งบเก่า (฿)</th><th>ราย (เก่า)</th><th>รวม (฿)</th><th>สถานะ</th></tr></thead>
+        <tbody id="summaryBody-m6"></tbody>
+        <tfoot id="summaryFoot-m6"></tfoot>
+      </table>
+    </div>
+  </div>
+  <div class="card" id="analysisCard-m6">
+    <div class="section-title">🧠 บทวิเคราะห์</div>
+    <div id="analysisContent-m6"><div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px;">กำลังวิเคราะห์...</div></div>
+  </div>
+</div>
+
+<div id="page-m7" class="page-content" style="display:none">
+
+  <!-- ⚙️ SETTINGS + HOLIDAYS PANEL -->
+  <div class="settings-bar" id="settingsBar-m7" style="display:none;">
+    <div class="card" style="border-color:rgba(245,158,11,.4);margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="section-title" style="margin-bottom:0;">⚙️ ตั้งค่า — กรกฎาคม 2569</div>
+        <button onclick="mToggleSettings(7)" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;line-height:1;">✕</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- งบประมาณ -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">💵 งบประมาณ & เป้าหมาย</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">งบใหม่ (฿)</label>
+              <input type="number" class="form-input" id="s_budNew_7" placeholder="2,500,000" oninput="mApplySettings(7)">
+            </div>
+            <div>
+              <label class="form-label">เป้าใหม่ (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtNew_7" placeholder="250" oninput="mApplySettings(7)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน 1st</label>
+              <input type="number" class="form-input" id="s_loanNew_7" placeholder="10,000" oninput="mApplySettings(7)">
+            </div>
+            <div>
+              <label class="form-label">งบเก่า (฿)</label>
+              <input type="number" class="form-input" id="s_budOld_7" placeholder="1,080,000" oninput="mApplySettings(7)">
+            </div>
+            <div>
+              <label class="form-label">เป้าเก่า (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtOld_7" placeholder="60" oninput="mApplySettings(7)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน Roll</label>
+              <input type="number" class="form-input" id="s_loanOld_7" placeholder="12,000" oninput="mApplySettings(7)">
+            </div>
+          </div>
+        </div>
+
+        <!-- วันหยุด -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">📅 วันหยุดพิเศษเดือนนี้</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">วันจันทร์หยุดอัตโนมัติ · กดวันที่เพิ่มเติมที่ต้องการหยุด</div>
+          <div id="holidayPicker-m7" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;"></div>
+          <div style="font-size:11px;color:var(--text-muted);">วันทำงาน: <span id="workdayCount-m7" style="color:var(--accent-cyan);font-family:var(--font-mono);font-weight:700;">—</span> วัน</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+        <span id="s_saved_7" style="font-size:11px;color:var(--accent-green);font-family:var(--font-mono);opacity:0;transition:opacity .3s;">✓ บันทึกแล้ว</span>
+        <button class="btn" onclick="mResetSettings(7)" style="margin-left:auto;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:6px 12px;">↺ รีเซ็ต</button>
+        <button class="btn" onclick="mToggleSettings(7)" style="background:var(--accent-amber);color:#000;font-size:12px;padding:6px 16px;">✓ ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER with settings button -->
+  <div class="header">
+    <div class="header-badge">CREDIT ANALYTICS · JUL 2026</div>
+    <h1>แดชบอร์ดวิเคราะห์สินเชื่อ — กรกฎาคม 2569</h1>
+    <p>วางแผนและบันทึกการปล่อยสินเชื่อรายวัน · กดที่วันทำงานเพื่ออัพเดทข้อมูล</p>
+    <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;">
+      <button onclick="mToggleSettings(7)" class="btn" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.35);color:var(--accent-amber);font-size:12px;padding:7px 16px;">
+        ⚙️ ตั้งค่างบ & วันหยุด
+      </button>
+    </div>
+  </div>
+
+  <div id="kpi-m7" class="grid-4"></div>
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="section-title">โควต้าเฉลี่ยต่อวันทำงาน</div>
+      <div id="alertQuota-m7"></div>
+      <div class="quota-grid" id="quotaGrid-m7"></div>
+      <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;">💰 วงเงินสูงสุดต่อคน</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.03));border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🆕 ลูกค้าใหม่/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-green)" id="qPerPersonNew-m7">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewSub-m7">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonNewBar-m7" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-green);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewVsAvg-m7">—</div>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(245,158,11,.03));border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🔄 ลูกค้าเก่า/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-amber)" id="qPerPersonOld-m7">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldSub-m7">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonOldBar-m7" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-amber);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldVsAvg-m7">—</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">รวมวงเงินทั้งหมด/วัน</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-blue)" id="qTotalPerDay-m7">—</div></div>
+          <div style="text-align:right;"><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">เฉลี่ยวงเงิน/คน (รวม)</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-cyan)" id="qAvgPerPerson-m7">—</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">ความคืบหน้างบประมาณ</div>
+      <div id="progressBars-m7"></div>
+      <hr class="divider">
+      <div id="budgetAlert-m7"></div>
+      <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
+        วันทำงาน: <span id="totalWorkDays-m7" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
+        ผ่านแล้ว: <span id="passedWorkDays-m7" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
+        เหลือ: <span id="remainWorkDays-m7" style="color:var(--accent-green)">—</span> วัน
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">ปฏิทินกรกฎาคม 2569 — คลิกวันทำงานเพื่อบันทึก</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue);opacity:.4"></div>วันจันทร์ (หยุด)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple);opacity:.4"></div>วันหยุดพิเศษ</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green);opacity:.6"></div>บันทึกแล้ว</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-cyan);opacity:.8"></div>วันนี้</div>
+    </div>
+    <div class="calendar-grid" id="cal-m7">
+      <div class="cal-header">อา</div><div class="cal-header" style="color:var(--accent-blue);opacity:.6">จ</div>
+      <div class="cal-header">อ</div><div class="cal-header">พ</div>
+      <div class="cal-header">พฤ</div><div class="cal-header">ศ</div><div class="cal-header">ส</div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">สรุปรายวัน (เฉพาะวันทำงาน)</div>
+    <div style="overflow-x:auto;">
+      <table class="summary-table">
+        <thead><tr><th>วัน</th><th>งบใหม่ (฿)</th><th>ราย (ใหม่)</th><th>งบเก่า (฿)</th><th>ราย (เก่า)</th><th>รวม (฿)</th><th>สถานะ</th></tr></thead>
+        <tbody id="summaryBody-m7"></tbody>
+        <tfoot id="summaryFoot-m7"></tfoot>
+      </table>
+    </div>
+  </div>
+  <div class="card" id="analysisCard-m7">
+    <div class="section-title">🧠 บทวิเคราะห์</div>
+    <div id="analysisContent-m7"><div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px;">กำลังวิเคราะห์...</div></div>
+  </div>
+</div>
+
+<div id="page-m8" class="page-content" style="display:none">
+
+  <!-- ⚙️ SETTINGS + HOLIDAYS PANEL -->
+  <div class="settings-bar" id="settingsBar-m8" style="display:none;">
+    <div class="card" style="border-color:rgba(245,158,11,.4);margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="section-title" style="margin-bottom:0;">⚙️ ตั้งค่า — สิงหาคม 2569</div>
+        <button onclick="mToggleSettings(8)" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;line-height:1;">✕</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- งบประมาณ -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">💵 งบประมาณ & เป้าหมาย</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">งบใหม่ (฿)</label>
+              <input type="number" class="form-input" id="s_budNew_8" placeholder="2,500,000" oninput="mApplySettings(8)">
+            </div>
+            <div>
+              <label class="form-label">เป้าใหม่ (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtNew_8" placeholder="250" oninput="mApplySettings(8)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน 1st</label>
+              <input type="number" class="form-input" id="s_loanNew_8" placeholder="10,000" oninput="mApplySettings(8)">
+            </div>
+            <div>
+              <label class="form-label">งบเก่า (฿)</label>
+              <input type="number" class="form-input" id="s_budOld_8" placeholder="1,080,000" oninput="mApplySettings(8)">
+            </div>
+            <div>
+              <label class="form-label">เป้าเก่า (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtOld_8" placeholder="60" oninput="mApplySettings(8)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน Roll</label>
+              <input type="number" class="form-input" id="s_loanOld_8" placeholder="12,000" oninput="mApplySettings(8)">
+            </div>
+          </div>
+        </div>
+
+        <!-- วันหยุด -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">📅 วันหยุดพิเศษเดือนนี้</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">วันจันทร์หยุดอัตโนมัติ · กดวันที่เพิ่มเติมที่ต้องการหยุด</div>
+          <div id="holidayPicker-m8" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;"></div>
+          <div style="font-size:11px;color:var(--text-muted);">วันทำงาน: <span id="workdayCount-m8" style="color:var(--accent-cyan);font-family:var(--font-mono);font-weight:700;">—</span> วัน</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+        <span id="s_saved_8" style="font-size:11px;color:var(--accent-green);font-family:var(--font-mono);opacity:0;transition:opacity .3s;">✓ บันทึกแล้ว</span>
+        <button class="btn" onclick="mResetSettings(8)" style="margin-left:auto;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:6px 12px;">↺ รีเซ็ต</button>
+        <button class="btn" onclick="mToggleSettings(8)" style="background:var(--accent-amber);color:#000;font-size:12px;padding:6px 16px;">✓ ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER with settings button -->
+  <div class="header">
+    <div class="header-badge">CREDIT ANALYTICS · AUG 2026</div>
+    <h1>แดชบอร์ดวิเคราะห์สินเชื่อ — สิงหาคม 2569</h1>
+    <p>วางแผนและบันทึกการปล่อยสินเชื่อรายวัน · กดที่วันทำงานเพื่ออัพเดทข้อมูล</p>
+    <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;">
+      <button onclick="mToggleSettings(8)" class="btn" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.35);color:var(--accent-amber);font-size:12px;padding:7px 16px;">
+        ⚙️ ตั้งค่างบ & วันหยุด
+      </button>
+    </div>
+  </div>
+
+  <div id="kpi-m8" class="grid-4"></div>
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="section-title">โควต้าเฉลี่ยต่อวันทำงาน</div>
+      <div id="alertQuota-m8"></div>
+      <div class="quota-grid" id="quotaGrid-m8"></div>
+      <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;">💰 วงเงินสูงสุดต่อคน</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.03));border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🆕 ลูกค้าใหม่/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-green)" id="qPerPersonNew-m8">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewSub-m8">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonNewBar-m8" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-green);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewVsAvg-m8">—</div>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(245,158,11,.03));border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🔄 ลูกค้าเก่า/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-amber)" id="qPerPersonOld-m8">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldSub-m8">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonOldBar-m8" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-amber);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldVsAvg-m8">—</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">รวมวงเงินทั้งหมด/วัน</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-blue)" id="qTotalPerDay-m8">—</div></div>
+          <div style="text-align:right;"><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">เฉลี่ยวงเงิน/คน (รวม)</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-cyan)" id="qAvgPerPerson-m8">—</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">ความคืบหน้างบประมาณ</div>
+      <div id="progressBars-m8"></div>
+      <hr class="divider">
+      <div id="budgetAlert-m8"></div>
+      <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
+        วันทำงาน: <span id="totalWorkDays-m8" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
+        ผ่านแล้ว: <span id="passedWorkDays-m8" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
+        เหลือ: <span id="remainWorkDays-m8" style="color:var(--accent-green)">—</span> วัน
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">ปฏิทินสิงหาคม 2569 — คลิกวันทำงานเพื่อบันทึก</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue);opacity:.4"></div>วันจันทร์ (หยุด)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple);opacity:.4"></div>วันหยุดพิเศษ</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green);opacity:.6"></div>บันทึกแล้ว</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-cyan);opacity:.8"></div>วันนี้</div>
+    </div>
+    <div class="calendar-grid" id="cal-m8">
+      <div class="cal-header">อา</div><div class="cal-header" style="color:var(--accent-blue);opacity:.6">จ</div>
+      <div class="cal-header">อ</div><div class="cal-header">พ</div>
+      <div class="cal-header">พฤ</div><div class="cal-header">ศ</div><div class="cal-header">ส</div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">สรุปรายวัน (เฉพาะวันทำงาน)</div>
+    <div style="overflow-x:auto;">
+      <table class="summary-table">
+        <thead><tr><th>วัน</th><th>งบใหม่ (฿)</th><th>ราย (ใหม่)</th><th>งบเก่า (฿)</th><th>ราย (เก่า)</th><th>รวม (฿)</th><th>สถานะ</th></tr></thead>
+        <tbody id="summaryBody-m8"></tbody>
+        <tfoot id="summaryFoot-m8"></tfoot>
+      </table>
+    </div>
+  </div>
+  <div class="card" id="analysisCard-m8">
+    <div class="section-title">🧠 บทวิเคราะห์</div>
+    <div id="analysisContent-m8"><div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px;">กำลังวิเคราะห์...</div></div>
+  </div>
+</div>
+
+<div id="page-m9" class="page-content" style="display:none">
+
+  <!-- ⚙️ SETTINGS + HOLIDAYS PANEL -->
+  <div class="settings-bar" id="settingsBar-m9" style="display:none;">
+    <div class="card" style="border-color:rgba(245,158,11,.4);margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="section-title" style="margin-bottom:0;">⚙️ ตั้งค่า — กันยายน 2569</div>
+        <button onclick="mToggleSettings(9)" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;line-height:1;">✕</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- งบประมาณ -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">💵 งบประมาณ & เป้าหมาย</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">งบใหม่ (฿)</label>
+              <input type="number" class="form-input" id="s_budNew_9" placeholder="2,500,000" oninput="mApplySettings(9)">
+            </div>
+            <div>
+              <label class="form-label">เป้าใหม่ (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtNew_9" placeholder="250" oninput="mApplySettings(9)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน 1st</label>
+              <input type="number" class="form-input" id="s_loanNew_9" placeholder="10,000" oninput="mApplySettings(9)">
+            </div>
+            <div>
+              <label class="form-label">งบเก่า (฿)</label>
+              <input type="number" class="form-input" id="s_budOld_9" placeholder="1,080,000" oninput="mApplySettings(9)">
+            </div>
+            <div>
+              <label class="form-label">เป้าเก่า (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtOld_9" placeholder="60" oninput="mApplySettings(9)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน Roll</label>
+              <input type="number" class="form-input" id="s_loanOld_9" placeholder="12,000" oninput="mApplySettings(9)">
+            </div>
+          </div>
+        </div>
+
+        <!-- วันหยุด -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">📅 วันหยุดพิเศษเดือนนี้</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">วันจันทร์หยุดอัตโนมัติ · กดวันที่เพิ่มเติมที่ต้องการหยุด</div>
+          <div id="holidayPicker-m9" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;"></div>
+          <div style="font-size:11px;color:var(--text-muted);">วันทำงาน: <span id="workdayCount-m9" style="color:var(--accent-cyan);font-family:var(--font-mono);font-weight:700;">—</span> วัน</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+        <span id="s_saved_9" style="font-size:11px;color:var(--accent-green);font-family:var(--font-mono);opacity:0;transition:opacity .3s;">✓ บันทึกแล้ว</span>
+        <button class="btn" onclick="mResetSettings(9)" style="margin-left:auto;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:6px 12px;">↺ รีเซ็ต</button>
+        <button class="btn" onclick="mToggleSettings(9)" style="background:var(--accent-amber);color:#000;font-size:12px;padding:6px 16px;">✓ ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER with settings button -->
+  <div class="header">
+    <div class="header-badge">CREDIT ANALYTICS · SEP 2026</div>
+    <h1>แดชบอร์ดวิเคราะห์สินเชื่อ — กันยายน 2569</h1>
+    <p>วางแผนและบันทึกการปล่อยสินเชื่อรายวัน · กดที่วันทำงานเพื่ออัพเดทข้อมูล</p>
+    <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;">
+      <button onclick="mToggleSettings(9)" class="btn" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.35);color:var(--accent-amber);font-size:12px;padding:7px 16px;">
+        ⚙️ ตั้งค่างบ & วันหยุด
+      </button>
+    </div>
+  </div>
+
+  <div id="kpi-m9" class="grid-4"></div>
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="section-title">โควต้าเฉลี่ยต่อวันทำงาน</div>
+      <div id="alertQuota-m9"></div>
+      <div class="quota-grid" id="quotaGrid-m9"></div>
+      <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;">💰 วงเงินสูงสุดต่อคน</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.03));border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🆕 ลูกค้าใหม่/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-green)" id="qPerPersonNew-m9">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewSub-m9">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonNewBar-m9" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-green);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewVsAvg-m9">—</div>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(245,158,11,.03));border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🔄 ลูกค้าเก่า/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-amber)" id="qPerPersonOld-m9">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldSub-m9">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonOldBar-m9" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-amber);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldVsAvg-m9">—</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">รวมวงเงินทั้งหมด/วัน</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-blue)" id="qTotalPerDay-m9">—</div></div>
+          <div style="text-align:right;"><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">เฉลี่ยวงเงิน/คน (รวม)</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-cyan)" id="qAvgPerPerson-m9">—</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">ความคืบหน้างบประมาณ</div>
+      <div id="progressBars-m9"></div>
+      <hr class="divider">
+      <div id="budgetAlert-m9"></div>
+      <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
+        วันทำงาน: <span id="totalWorkDays-m9" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
+        ผ่านแล้ว: <span id="passedWorkDays-m9" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
+        เหลือ: <span id="remainWorkDays-m9" style="color:var(--accent-green)">—</span> วัน
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">ปฏิทินกันยายน 2569 — คลิกวันทำงานเพื่อบันทึก</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue);opacity:.4"></div>วันจันทร์ (หยุด)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple);opacity:.4"></div>วันหยุดพิเศษ</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green);opacity:.6"></div>บันทึกแล้ว</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-cyan);opacity:.8"></div>วันนี้</div>
+    </div>
+    <div class="calendar-grid" id="cal-m9">
+      <div class="cal-header">อา</div><div class="cal-header" style="color:var(--accent-blue);opacity:.6">จ</div>
+      <div class="cal-header">อ</div><div class="cal-header">พ</div>
+      <div class="cal-header">พฤ</div><div class="cal-header">ศ</div><div class="cal-header">ส</div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">สรุปรายวัน (เฉพาะวันทำงาน)</div>
+    <div style="overflow-x:auto;">
+      <table class="summary-table">
+        <thead><tr><th>วัน</th><th>งบใหม่ (฿)</th><th>ราย (ใหม่)</th><th>งบเก่า (฿)</th><th>ราย (เก่า)</th><th>รวม (฿)</th><th>สถานะ</th></tr></thead>
+        <tbody id="summaryBody-m9"></tbody>
+        <tfoot id="summaryFoot-m9"></tfoot>
+      </table>
+    </div>
+  </div>
+  <div class="card" id="analysisCard-m9">
+    <div class="section-title">🧠 บทวิเคราะห์</div>
+    <div id="analysisContent-m9"><div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px;">กำลังวิเคราะห์...</div></div>
+  </div>
+</div>
+
+<div id="page-m10" class="page-content" style="display:none">
+
+  <!-- ⚙️ SETTINGS + HOLIDAYS PANEL -->
+  <div class="settings-bar" id="settingsBar-m10" style="display:none;">
+    <div class="card" style="border-color:rgba(245,158,11,.4);margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="section-title" style="margin-bottom:0;">⚙️ ตั้งค่า — ตุลาคม 2569</div>
+        <button onclick="mToggleSettings(10)" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;line-height:1;">✕</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- งบประมาณ -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">💵 งบประมาณ & เป้าหมาย</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">งบใหม่ (฿)</label>
+              <input type="number" class="form-input" id="s_budNew_10" placeholder="2,500,000" oninput="mApplySettings(10)">
+            </div>
+            <div>
+              <label class="form-label">เป้าใหม่ (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtNew_10" placeholder="250" oninput="mApplySettings(10)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน 1st</label>
+              <input type="number" class="form-input" id="s_loanNew_10" placeholder="10,000" oninput="mApplySettings(10)">
+            </div>
+            <div>
+              <label class="form-label">งบเก่า (฿)</label>
+              <input type="number" class="form-input" id="s_budOld_10" placeholder="1,080,000" oninput="mApplySettings(10)">
+            </div>
+            <div>
+              <label class="form-label">เป้าเก่า (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtOld_10" placeholder="60" oninput="mApplySettings(10)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน Roll</label>
+              <input type="number" class="form-input" id="s_loanOld_10" placeholder="12,000" oninput="mApplySettings(10)">
+            </div>
+          </div>
+        </div>
+
+        <!-- วันหยุด -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">📅 วันหยุดพิเศษเดือนนี้</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">วันจันทร์หยุดอัตโนมัติ · กดวันที่เพิ่มเติมที่ต้องการหยุด</div>
+          <div id="holidayPicker-m10" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;"></div>
+          <div style="font-size:11px;color:var(--text-muted);">วันทำงาน: <span id="workdayCount-m10" style="color:var(--accent-cyan);font-family:var(--font-mono);font-weight:700;">—</span> วัน</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+        <span id="s_saved_10" style="font-size:11px;color:var(--accent-green);font-family:var(--font-mono);opacity:0;transition:opacity .3s;">✓ บันทึกแล้ว</span>
+        <button class="btn" onclick="mResetSettings(10)" style="margin-left:auto;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:6px 12px;">↺ รีเซ็ต</button>
+        <button class="btn" onclick="mToggleSettings(10)" style="background:var(--accent-amber);color:#000;font-size:12px;padding:6px 16px;">✓ ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER with settings button -->
+  <div class="header">
+    <div class="header-badge">CREDIT ANALYTICS · OCT 2026</div>
+    <h1>แดชบอร์ดวิเคราะห์สินเชื่อ — ตุลาคม 2569</h1>
+    <p>วางแผนและบันทึกการปล่อยสินเชื่อรายวัน · กดที่วันทำงานเพื่ออัพเดทข้อมูล</p>
+    <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;">
+      <button onclick="mToggleSettings(10)" class="btn" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.35);color:var(--accent-amber);font-size:12px;padding:7px 16px;">
+        ⚙️ ตั้งค่างบ & วันหยุด
+      </button>
+    </div>
+  </div>
+
+  <div id="kpi-m10" class="grid-4"></div>
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="section-title">โควต้าเฉลี่ยต่อวันทำงาน</div>
+      <div id="alertQuota-m10"></div>
+      <div class="quota-grid" id="quotaGrid-m10"></div>
+      <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;">💰 วงเงินสูงสุดต่อคน</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.03));border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🆕 ลูกค้าใหม่/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-green)" id="qPerPersonNew-m10">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewSub-m10">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonNewBar-m10" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-green);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewVsAvg-m10">—</div>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(245,158,11,.03));border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🔄 ลูกค้าเก่า/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-amber)" id="qPerPersonOld-m10">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldSub-m10">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonOldBar-m10" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-amber);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldVsAvg-m10">—</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">รวมวงเงินทั้งหมด/วัน</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-blue)" id="qTotalPerDay-m10">—</div></div>
+          <div style="text-align:right;"><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">เฉลี่ยวงเงิน/คน (รวม)</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-cyan)" id="qAvgPerPerson-m10">—</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">ความคืบหน้างบประมาณ</div>
+      <div id="progressBars-m10"></div>
+      <hr class="divider">
+      <div id="budgetAlert-m10"></div>
+      <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
+        วันทำงาน: <span id="totalWorkDays-m10" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
+        ผ่านแล้ว: <span id="passedWorkDays-m10" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
+        เหลือ: <span id="remainWorkDays-m10" style="color:var(--accent-green)">—</span> วัน
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">ปฏิทินตุลาคม 2569 — คลิกวันทำงานเพื่อบันทึก</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue);opacity:.4"></div>วันจันทร์ (หยุด)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple);opacity:.4"></div>วันหยุดพิเศษ</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green);opacity:.6"></div>บันทึกแล้ว</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-cyan);opacity:.8"></div>วันนี้</div>
+    </div>
+    <div class="calendar-grid" id="cal-m10">
+      <div class="cal-header">อา</div><div class="cal-header" style="color:var(--accent-blue);opacity:.6">จ</div>
+      <div class="cal-header">อ</div><div class="cal-header">พ</div>
+      <div class="cal-header">พฤ</div><div class="cal-header">ศ</div><div class="cal-header">ส</div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">สรุปรายวัน (เฉพาะวันทำงาน)</div>
+    <div style="overflow-x:auto;">
+      <table class="summary-table">
+        <thead><tr><th>วัน</th><th>งบใหม่ (฿)</th><th>ราย (ใหม่)</th><th>งบเก่า (฿)</th><th>ราย (เก่า)</th><th>รวม (฿)</th><th>สถานะ</th></tr></thead>
+        <tbody id="summaryBody-m10"></tbody>
+        <tfoot id="summaryFoot-m10"></tfoot>
+      </table>
+    </div>
+  </div>
+  <div class="card" id="analysisCard-m10">
+    <div class="section-title">🧠 บทวิเคราะห์</div>
+    <div id="analysisContent-m10"><div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px;">กำลังวิเคราะห์...</div></div>
+  </div>
+</div>
+
+<div id="page-m11" class="page-content" style="display:none">
+
+  <!-- ⚙️ SETTINGS + HOLIDAYS PANEL -->
+  <div class="settings-bar" id="settingsBar-m11" style="display:none;">
+    <div class="card" style="border-color:rgba(245,158,11,.4);margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="section-title" style="margin-bottom:0;">⚙️ ตั้งค่า — พฤศจิกายน 2569</div>
+        <button onclick="mToggleSettings(11)" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;line-height:1;">✕</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- งบประมาณ -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">💵 งบประมาณ & เป้าหมาย</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">งบใหม่ (฿)</label>
+              <input type="number" class="form-input" id="s_budNew_11" placeholder="2,500,000" oninput="mApplySettings(11)">
+            </div>
+            <div>
+              <label class="form-label">เป้าใหม่ (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtNew_11" placeholder="250" oninput="mApplySettings(11)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน 1st</label>
+              <input type="number" class="form-input" id="s_loanNew_11" placeholder="10,000" oninput="mApplySettings(11)">
+            </div>
+            <div>
+              <label class="form-label">งบเก่า (฿)</label>
+              <input type="number" class="form-input" id="s_budOld_11" placeholder="1,080,000" oninput="mApplySettings(11)">
+            </div>
+            <div>
+              <label class="form-label">เป้าเก่า (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtOld_11" placeholder="60" oninput="mApplySettings(11)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน Roll</label>
+              <input type="number" class="form-input" id="s_loanOld_11" placeholder="12,000" oninput="mApplySettings(11)">
+            </div>
+          </div>
+        </div>
+
+        <!-- วันหยุด -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">📅 วันหยุดพิเศษเดือนนี้</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">วันจันทร์หยุดอัตโนมัติ · กดวันที่เพิ่มเติมที่ต้องการหยุด</div>
+          <div id="holidayPicker-m11" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;"></div>
+          <div style="font-size:11px;color:var(--text-muted);">วันทำงาน: <span id="workdayCount-m11" style="color:var(--accent-cyan);font-family:var(--font-mono);font-weight:700;">—</span> วัน</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+        <span id="s_saved_11" style="font-size:11px;color:var(--accent-green);font-family:var(--font-mono);opacity:0;transition:opacity .3s;">✓ บันทึกแล้ว</span>
+        <button class="btn" onclick="mResetSettings(11)" style="margin-left:auto;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:6px 12px;">↺ รีเซ็ต</button>
+        <button class="btn" onclick="mToggleSettings(11)" style="background:var(--accent-amber);color:#000;font-size:12px;padding:6px 16px;">✓ ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER with settings button -->
+  <div class="header">
+    <div class="header-badge">CREDIT ANALYTICS · NOV 2026</div>
+    <h1>แดชบอร์ดวิเคราะห์สินเชื่อ — พฤศจิกายน 2569</h1>
+    <p>วางแผนและบันทึกการปล่อยสินเชื่อรายวัน · กดที่วันทำงานเพื่ออัพเดทข้อมูล</p>
+    <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;">
+      <button onclick="mToggleSettings(11)" class="btn" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.35);color:var(--accent-amber);font-size:12px;padding:7px 16px;">
+        ⚙️ ตั้งค่างบ & วันหยุด
+      </button>
+    </div>
+  </div>
+
+  <div id="kpi-m11" class="grid-4"></div>
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="section-title">โควต้าเฉลี่ยต่อวันทำงาน</div>
+      <div id="alertQuota-m11"></div>
+      <div class="quota-grid" id="quotaGrid-m11"></div>
+      <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;">💰 วงเงินสูงสุดต่อคน</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.03));border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🆕 ลูกค้าใหม่/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-green)" id="qPerPersonNew-m11">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewSub-m11">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonNewBar-m11" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-green);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewVsAvg-m11">—</div>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(245,158,11,.03));border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🔄 ลูกค้าเก่า/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-amber)" id="qPerPersonOld-m11">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldSub-m11">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonOldBar-m11" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-amber);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldVsAvg-m11">—</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">รวมวงเงินทั้งหมด/วัน</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-blue)" id="qTotalPerDay-m11">—</div></div>
+          <div style="text-align:right;"><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">เฉลี่ยวงเงิน/คน (รวม)</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-cyan)" id="qAvgPerPerson-m11">—</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">ความคืบหน้างบประมาณ</div>
+      <div id="progressBars-m11"></div>
+      <hr class="divider">
+      <div id="budgetAlert-m11"></div>
+      <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
+        วันทำงาน: <span id="totalWorkDays-m11" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
+        ผ่านแล้ว: <span id="passedWorkDays-m11" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
+        เหลือ: <span id="remainWorkDays-m11" style="color:var(--accent-green)">—</span> วัน
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">ปฏิทินพฤศจิกายน 2569 — คลิกวันทำงานเพื่อบันทึก</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue);opacity:.4"></div>วันจันทร์ (หยุด)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple);opacity:.4"></div>วันหยุดพิเศษ</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green);opacity:.6"></div>บันทึกแล้ว</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-cyan);opacity:.8"></div>วันนี้</div>
+    </div>
+    <div class="calendar-grid" id="cal-m11">
+      <div class="cal-header">อา</div><div class="cal-header" style="color:var(--accent-blue);opacity:.6">จ</div>
+      <div class="cal-header">อ</div><div class="cal-header">พ</div>
+      <div class="cal-header">พฤ</div><div class="cal-header">ศ</div><div class="cal-header">ส</div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">สรุปรายวัน (เฉพาะวันทำงาน)</div>
+    <div style="overflow-x:auto;">
+      <table class="summary-table">
+        <thead><tr><th>วัน</th><th>งบใหม่ (฿)</th><th>ราย (ใหม่)</th><th>งบเก่า (฿)</th><th>ราย (เก่า)</th><th>รวม (฿)</th><th>สถานะ</th></tr></thead>
+        <tbody id="summaryBody-m11"></tbody>
+        <tfoot id="summaryFoot-m11"></tfoot>
+      </table>
+    </div>
+  </div>
+  <div class="card" id="analysisCard-m11">
+    <div class="section-title">🧠 บทวิเคราะห์</div>
+    <div id="analysisContent-m11"><div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px;">กำลังวิเคราะห์...</div></div>
+  </div>
+</div>
+
+<div id="page-m12" class="page-content" style="display:none">
+
+  <!-- ⚙️ SETTINGS + HOLIDAYS PANEL -->
+  <div class="settings-bar" id="settingsBar-m12" style="display:none;">
+    <div class="card" style="border-color:rgba(245,158,11,.4);margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div class="section-title" style="margin-bottom:0;">⚙️ ตั้งค่า — ธันวาคม 2569</div>
+        <button onclick="mToggleSettings(12)" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;line-height:1;">✕</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <!-- งบประมาณ -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-amber);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">💵 งบประมาณ & เป้าหมาย</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">งบใหม่ (฿)</label>
+              <input type="number" class="form-input" id="s_budNew_12" placeholder="2,500,000" oninput="mApplySettings(12)">
+            </div>
+            <div>
+              <label class="form-label">เป้าใหม่ (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtNew_12" placeholder="250" oninput="mApplySettings(12)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน 1st</label>
+              <input type="number" class="form-input" id="s_loanNew_12" placeholder="10,000" oninput="mApplySettings(12)">
+            </div>
+            <div>
+              <label class="form-label">งบเก่า (฿)</label>
+              <input type="number" class="form-input" id="s_budOld_12" placeholder="1,080,000" oninput="mApplySettings(12)">
+            </div>
+            <div>
+              <label class="form-label">เป้าเก่า (ราย)</label>
+              <input type="number" class="form-input" id="s_tgtOld_12" placeholder="60" oninput="mApplySettings(12)">
+            </div>
+            <div>
+              <label class="form-label">วงเงิน/คน Roll</label>
+              <input type="number" class="form-input" id="s_loanOld_12" placeholder="12,000" oninput="mApplySettings(12)">
+            </div>
+          </div>
+        </div>
+
+        <!-- วันหยุด -->
+        <div>
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">📅 วันหยุดพิเศษเดือนนี้</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">วันจันทร์หยุดอัตโนมัติ · กดวันที่เพิ่มเติมที่ต้องการหยุด</div>
+          <div id="holidayPicker-m12" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;"></div>
+          <div style="font-size:11px;color:var(--text-muted);">วันทำงาน: <span id="workdayCount-m12" style="color:var(--accent-cyan);font-family:var(--font-mono);font-weight:700;">—</span> วัน</div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+        <span id="s_saved_12" style="font-size:11px;color:var(--accent-green);font-family:var(--font-mono);opacity:0;transition:opacity .3s;">✓ บันทึกแล้ว</span>
+        <button class="btn" onclick="mResetSettings(12)" style="margin-left:auto;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:6px 12px;">↺ รีเซ็ต</button>
+        <button class="btn" onclick="mToggleSettings(12)" style="background:var(--accent-amber);color:#000;font-size:12px;padding:6px 16px;">✓ ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER with settings button -->
+  <div class="header">
+    <div class="header-badge">CREDIT ANALYTICS · DEC 2026</div>
+    <h1>แดชบอร์ดวิเคราะห์สินเชื่อ — ธันวาคม 2569</h1>
+    <p>วางแผนและบันทึกการปล่อยสินเชื่อรายวัน · กดที่วันทำงานเพื่ออัพเดทข้อมูล</p>
+    <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;">
+      <button onclick="mToggleSettings(12)" class="btn" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.35);color:var(--accent-amber);font-size:12px;padding:7px 16px;">
+        ⚙️ ตั้งค่างบ & วันหยุด
+      </button>
+    </div>
+  </div>
+
+  <div id="kpi-m12" class="grid-4"></div>
+  <div class="grid-2" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="section-title">โควต้าเฉลี่ยต่อวันทำงาน</div>
+      <div id="alertQuota-m12"></div>
+      <div class="quota-grid" id="quotaGrid-m12"></div>
+      <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;">💰 วงเงินสูงสุดต่อคน</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.03));border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🆕 ลูกค้าใหม่/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-green)" id="qPerPersonNew-m12">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewSub-m12">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonNewBar-m12" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-green);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonNewVsAvg-m12">—</div>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(245,158,11,.03));border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:12px;">
+            <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">🔄 ลูกค้าเก่า/คน/วัน</div>
+            <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--accent-amber)" id="qPerPersonOld-m12">—</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldSub-m12">—</div>
+            <div style="margin-top:8px;height:2px;border-radius:1px;background:var(--border);position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 1px);">
+              <div id="qPerPersonOldBar-m12" style="position:absolute;top:0;left:0;height:100%;max-width:100%;border-radius:1px;background:var(--accent-amber);width:0%;transition:width .6s ease;"></div>
+            </div>
+            <div style="font-size:9px;color:var(--text-muted);margin-top:4px;" id="qPerPersonOldVsAvg-m12">—</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:8px;padding:11px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">รวมวงเงินทั้งหมด/วัน</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-blue)" id="qTotalPerDay-m12">—</div></div>
+          <div style="text-align:right;"><div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">เฉลี่ยวงเงิน/คน (รวม)</div>
+            <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-cyan)" id="qAvgPerPerson-m12">—</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">ความคืบหน้างบประมาณ</div>
+      <div id="progressBars-m12"></div>
+      <hr class="divider">
+      <div id="budgetAlert-m12"></div>
+      <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
+        วันทำงาน: <span id="totalWorkDays-m12" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
+        ผ่านแล้ว: <span id="passedWorkDays-m12" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
+        เหลือ: <span id="remainWorkDays-m12" style="color:var(--accent-green)">—</span> วัน
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">ปฏิทินธันวาคม 2569 — คลิกวันทำงานเพื่อบันทึก</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue);opacity:.4"></div>วันจันทร์ (หยุด)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple);opacity:.4"></div>วันหยุดพิเศษ</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-green);opacity:.6"></div>บันทึกแล้ว</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent-cyan);opacity:.8"></div>วันนี้</div>
+    </div>
+    <div class="calendar-grid" id="cal-m12">
+      <div class="cal-header">อา</div><div class="cal-header" style="color:var(--accent-blue);opacity:.6">จ</div>
+      <div class="cal-header">อ</div><div class="cal-header">พ</div>
+      <div class="cal-header">พฤ</div><div class="cal-header">ศ</div><div class="cal-header">ส</div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="section-title">สรุปรายวัน (เฉพาะวันทำงาน)</div>
+    <div style="overflow-x:auto;">
+      <table class="summary-table">
+        <thead><tr><th>วัน</th><th>งบใหม่ (฿)</th><th>ราย (ใหม่)</th><th>งบเก่า (฿)</th><th>ราย (เก่า)</th><th>รวม (฿)</th><th>สถานะ</th></tr></thead>
+        <tbody id="summaryBody-m12"></tbody>
+        <tfoot id="summaryFoot-m12"></tfoot>
+      </table>
+    </div>
+  </div>
+  <div class="card" id="analysisCard-m12">
+    <div class="section-title">🧠 บทวิเคราะห์</div>
+    <div id="analysisContent-m12"><div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px;">กำลังวิเคราะห์...</div></div>
+  </div>
+</div>
+
+
+<!-- APRIL MODAL -->
+<div class="modal-overlay" id="modalOverlay-apr">
   <div class="modal">
     <div class="modal-title">
-      <span id="modalDateTitle">บันทึกข้อมูลประจำวัน</span>
+      <span id="modalDateTitle-apr">บันทึกข้อมูลประจำวัน</span>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-
-    <div class="modal-budget-info" id="modalBudgetInfo"></div>
-
-    <div class="alert alert-info" style="margin-bottom:14px;">
-      💡 กรอกเฉพาะค่าที่ต้องการบันทึก — ระบบจะคำนวณงบคงเหลืออัตโนมัติ
-    </div>
-
+    <div class="modal-budget-info" id="modalBudgetInfo-apr"></div>
+    <div class="alert alert-info" style="margin-bottom:14px;">💡 กรอกเฉพาะค่าที่ต้องการบันทึก — ระบบจะคำนวณงบคงเหลืออัตโนมัติ</div>
     <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">💵 งบลูกค้าใหม่ (฿)</label>
-        <input type="number" class="form-input" id="inAmtNew" placeholder="0" min="0">
-      </div>
-      <div class="form-group">
-        <label class="form-label">👤 จำนวนลูกค้าใหม่ (ราย)</label>
-        <input type="number" class="form-input" id="inCntNew" placeholder="0" min="0">
-      </div>
+      <div class="form-group"><label class="form-label">💵 งบลูกค้าใหม่ (฿)</label>
+        <input type="number" class="form-input" id="inAmtNew-apr" placeholder="0" min="0"></div>
+      <div class="form-group"><label class="form-label">👤 จำนวนลูกค้าใหม่ (ราย)</label>
+        <input type="number" class="form-input" id="inCntNew-apr" placeholder="0" min="0"></div>
     </div>
     <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">💵 งบลูกค้าเก่า (฿)</label>
-        <input type="number" class="form-input" id="inAmtOld" placeholder="0" min="0">
-      </div>
-      <div class="form-group">
-        <label class="form-label">👤 จำนวนลูกค้าเก่า (ราย)</label>
-        <input type="number" class="form-input" id="inCntOld" placeholder="0" min="0">
-      </div>
+      <div class="form-group"><label class="form-label">💵 งบลูกค้าเก่า (฿)</label>
+        <input type="number" class="form-input" id="inAmtOld-apr" placeholder="0" min="0"></div>
+      <div class="form-group"><label class="form-label">👤 จำนวนลูกค้าเก่า (ราย)</label>
+        <input type="number" class="form-input" id="inCntOld-apr" placeholder="0" min="0"></div>
     </div>
-    <div class="form-group">
-      <label class="form-label">📝 หมายเหตุ</label>
-      <input type="text" class="form-input" id="inNote" placeholder="บันทึกเพิ่มเติม...">
-    </div>
-
+    <div class="form-group"><label class="form-label">📝 หมายเหตุ</label>
+      <input type="text" class="form-input" id="inNote-apr" placeholder="บันทึกเพิ่มเติม..."></div>
     <div style="display:flex;gap:10px;justify-content:space-between;margin-top:6px;">
-      <button class="btn btn-danger" id="btnDelete" onclick="deleteDay()">🗑 ลบข้อมูล</button>
-      <div style="display:flex;gap:8px;">
+      <button class="btn btn-danger" id="btnDelete-apr" onclick="deleteDay()" style="display:none">🗑 ลบข้อมูล</button>
+      <div style="display:flex;gap:8px;margin-left:auto;">
         <button class="btn btn-ghost" onclick="closeModal()">ยกเลิก</button>
         <button class="btn btn-primary" onclick="saveDay()">💾 บันทึก</button>
       </div>
     </div>
   </div>
 </div>
+<!-- MONTH MODAL (shared) -->
+<div class="modal-overlay" id="monthModal">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="mModalTitle">บันทึกข้อมูล</span>
+      <button class="modal-close" onclick="mCloseModal()">✕</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">💵 งบลูกค้าใหม่ (฿)</label>
+        <input type="number" class="form-input" id="mInAmtNew" placeholder="0" min="0"></div>
+      <div class="form-group"><label class="form-label">👤 จำนวนลูกค้าใหม่ (ราย)</label>
+        <input type="number" class="form-input" id="mInCntNew" placeholder="0" min="0"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">💵 งบลูกค้าเก่า (฿)</label>
+        <input type="number" class="form-input" id="mInAmtOld" placeholder="0" min="0"></div>
+      <div class="form-group"><label class="form-label">👤 จำนวนลูกค้าเก่า (ราย)</label>
+        <input type="number" class="form-input" id="mInCntOld" placeholder="0" min="0"></div>
+    </div>
+    <div class="form-group"><label class="form-label">📝 หมายเหตุ</label>
+      <input type="text" class="form-input" id="mInNote" placeholder="บันทึกเพิ่มเติม..."></div>
+    <div style="display:flex;gap:10px;justify-content:space-between;margin-top:6px;">
+      <button class="btn btn-danger" id="mBtnDelete" onclick="mDeleteDay()" style="display:none">🗑 ลบ</button>
+      <div style="display:flex;gap:8px;margin-left:auto;">
+        <button class="btn btn-ghost" onclick="mCloseModal()">ยกเลิก</button>
+        <button class="btn btn-primary" onclick="mSaveDay()">💾 บันทึก</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
+
+
 // ─── CONFIG ───────────────────────────────────────────────
 const BUDGET_NEW  = 2500000;
 const BUDGET_OLD  = 1080000;
@@ -868,44 +2286,44 @@ function renderKPI() {
   const remNew = BUDGET_NEW - spentNew;
   const remOld = BUDGET_OLD - spentOld;
 
-  document.getElementById('kpiBudgetNew').textContent = fmt(remNew);
-  document.getElementById('kpiBudgetNewSub').textContent =
+  document.getElementById('kpiBudgetNew-apr').textContent = fmt(remNew);
+  document.getElementById('kpiBudgetNewSub-apr').textContent =
     `ปล่อยแล้ว ${fmt(spentNew)} (${pct(spentNew,BUDGET_NEW)}%) · เหลือ ${fmt(remNew)}`;
-  document.getElementById('kpiBarNew').style.width = pct(spentNew,BUDGET_NEW) + '%';
+  document.getElementById('kpiBarNew-apr').style.width = pct(spentNew,BUDGET_NEW) + '%';
 
-  document.getElementById('kpiBudgetOld').textContent = fmt(remOld);
-  document.getElementById('kpiBudgetOldSub').textContent =
+  document.getElementById('kpiBudgetOld-apr').textContent = fmt(remOld);
+  document.getElementById('kpiBudgetOldSub-apr').textContent =
     `ปล่อยแล้ว ${fmt(spentOld)} (${pct(spentOld,BUDGET_OLD)}%) · เหลือ ${fmt(remOld)}`;
-  document.getElementById('kpiBarOld').style.width = pct(spentOld,BUDGET_OLD) + '%';
+  document.getElementById('kpiBarOld-apr').style.width = pct(spentOld,BUDGET_OLD) + '%';
 
-  document.getElementById('kpiCntNew').textContent = `${cntNew} / ${TARGET_NEW}`;
-  document.getElementById('kpiCntNewSub').textContent = `เป้าหมาย ${TARGET_NEW} ราย · สำเร็จ ${pct(cntNew,TARGET_NEW)}%`;
-  document.getElementById('kpiBarCntNew').style.width = pct(cntNew,TARGET_NEW) + '%';
+  document.getElementById('kpiCntNew-apr').textContent = `${cntNew} / ${TARGET_NEW}`;
+  document.getElementById('kpiCntNewSub-apr').textContent = `เป้าหมาย ${TARGET_NEW} ราย · สำเร็จ ${pct(cntNew,TARGET_NEW)}%`;
+  document.getElementById('kpiBarCntNew-apr').style.width = pct(cntNew,TARGET_NEW) + '%';
 
-  document.getElementById('kpiCntOld').textContent = `${cntOld} / ${TARGET_OLD}`;
-  document.getElementById('kpiCntOldSub').textContent = `เป้าหมาย ${TARGET_OLD} ราย · สำเร็จ ${pct(cntOld,TARGET_OLD)}%`;
-  document.getElementById('kpiBarCntOld').style.width = pct(cntOld,TARGET_OLD) + '%';
+  document.getElementById('kpiCntOld-apr').textContent = `${cntOld} / ${TARGET_OLD}`;
+  document.getElementById('kpiCntOldSub-apr').textContent = `เป้าหมาย ${TARGET_OLD} ราย · สำเร็จ ${pct(cntOld,TARGET_OLD)}%`;
+  document.getElementById('kpiBarCntOld-apr').style.width = pct(cntOld,TARGET_OLD) + '%';
 
   // progress bars in card 2
   const pNew = pct(spentNew,BUDGET_NEW);
   const pOld = pct(spentOld,BUDGET_OLD);
-  document.getElementById('progressNewNum').textContent = `${fmt(spentNew)} / ${fmt(BUDGET_NEW)}`;
-  document.getElementById('progressNewFill').style.width = pNew + '%';
-  document.getElementById('progressNewPct').textContent = pNew + '%';
-  document.getElementById('progressNewTarget').textContent =
+  document.getElementById('progressNewNum-apr').textContent = `${fmt(spentNew)} / ${fmt(BUDGET_NEW)}`;
+  document.getElementById('progressNewFill-apr').style.width = pNew + '%';
+  document.getElementById('progressNewPct-apr').textContent = pNew + '%';
+  document.getElementById('progressNewTarget-apr').textContent =
     `เป้า ${TARGET_NEW} ราย · ราคาเฉลี่ย/คน: ${cntNew ? fmtShort(spentNew/cntNew) : fmt(BUDGET_NEW/TARGET_NEW)}`;
 
-  document.getElementById('progressOldNum').textContent = `${fmt(spentOld)} / ${fmt(BUDGET_OLD)}`;
-  document.getElementById('progressOldFill').style.width = pOld + '%';
-  document.getElementById('progressOldPct').textContent = pOld + '%';
-  document.getElementById('progressOldTarget').textContent =
+  document.getElementById('progressOldNum-apr').textContent = `${fmt(spentOld)} / ${fmt(BUDGET_OLD)}`;
+  document.getElementById('progressOldFill-apr').style.width = pOld + '%';
+  document.getElementById('progressOldPct-apr').textContent = pOld + '%';
+  document.getElementById('progressOldTarget-apr').textContent =
     `เป้า ${TARGET_OLD} ราย · ราคาเฉลี่ย/คน: ${cntOld ? fmtShort(spentOld/cntOld) : fmt(BUDGET_OLD/TARGET_OLD)}`;
 
   // workday stats
   const ws = getWorkdayStatus();
-  document.getElementById('totalWorkDays').textContent = ws.total;
-  document.getElementById('passedWorkDays').textContent = ws.passed;
-  document.getElementById('remainWorkDays').textContent = ws.remain;
+  document.getElementById('totalWorkDays-apr').textContent = ws.total;
+  document.getElementById('passedWorkDays-apr').textContent = ws.passed;
+  document.getElementById('remainWorkDays-apr').textContent = ws.remain;
 
   // budget alert
   let alertHTML = '';
@@ -914,7 +2332,7 @@ function renderKPI() {
   if (!alertHTML && (pct(spentNew,BUDGET_NEW) >= 90 || pct(spentOld,BUDGET_OLD) >= 90)) {
     alertHTML = `<div class="alert alert-warning">⚠️ งบใกล้หมดแล้ว ควรระมัดระวังการปล่อยสินเชื่อ</div>`;
   }
-  document.getElementById('budgetAlert').innerHTML = alertHTML;
+  document.getElementById('budgetAlert-apr').innerHTML = alertHTML;
 }
 
 function renderQuota() {
@@ -932,14 +2350,14 @@ function renderQuota() {
   const qCN = remCntNew / remain;   // ราย(ใหม่)/วัน
   const qCO = remCntOld / remain;   // ราย(เก่า)/วัน
 
-  document.getElementById('qBudgetNew').textContent = fmtShort(qBN);
-  document.getElementById('qBudgetNewSub').textContent = `เหลือ ${fmt(remBudNew)} ใน ${remain} วัน`;
-  document.getElementById('qBudgetOld').textContent = fmtShort(qBO);
-  document.getElementById('qBudgetOldSub').textContent = `เหลือ ${fmt(remBudOld)} ใน ${remain} วัน`;
-  document.getElementById('qCntNew').textContent = qCN.toFixed(1) + ' ราย';
-  document.getElementById('qCntNewSub').textContent = `เหลือ ${remCntNew} รายใน ${remain} วัน`;
-  document.getElementById('qCntOld').textContent = qCO.toFixed(1) + ' ราย';
-  document.getElementById('qCntOldSub').textContent = `เหลือ ${remCntOld} รายใน ${remain} วัน`;
+  document.getElementById('qBudgetNew-apr').textContent = fmtShort(qBN);
+  document.getElementById('qBudgetNewSub-apr').textContent = `เหลือ ${fmt(remBudNew)} ใน ${remain} วัน`;
+  document.getElementById('qBudgetOld-apr').textContent = fmtShort(qBO);
+  document.getElementById('qBudgetOldSub-apr').textContent = `เหลือ ${fmt(remBudOld)} ใน ${remain} วัน`;
+  document.getElementById('qCntNew-apr').textContent = qCN.toFixed(1) + ' ราย';
+  document.getElementById('qCntNewSub-apr').textContent = `เหลือ ${remCntNew} รายใน ${remain} วัน`;
+  document.getElementById('qCntOld-apr').textContent = qCO.toFixed(1) + ' ราย';
+  document.getElementById('qCntOldSub-apr').textContent = `เหลือ ${remCntOld} รายใน ${remain} วัน`;
 
   // ── วงเงินต่อคน ──────────────────────────────────
   // วงเงินฐาน = งบรวม / เป้าราย (ตลอดเดือน)
@@ -958,20 +2376,20 @@ function renderQuota() {
   const vsOld = Math.abs(diffOld) < 10 ? `≈ เท่ากับเกณฑ์ฐาน`
     : diffOld > 0 ? `▲ สูงกว่าเกณฑ์ ${fmtShort(diffOld)}/คน`
     : `▼ ต่ำกว่าเกณฑ์ ${fmtShort(Math.abs(diffOld))}/คน`;
-  document.getElementById('qPerPersonNew').textContent = fmtShort(perPersonNew);
-  document.getElementById('qPerPersonNewSub').textContent = `เกณฑ์ฐาน ${fmtShort(baseNew)}/คน`;
-  document.getElementById('qPerPersonNewBar').style.width = barNew + '%';
-  document.getElementById('qPerPersonNewVsAvg').textContent = vsNew;
-  document.getElementById('qPerPersonNewVsAvg').style.color = diffNew > 10 ? 'var(--accent-green)' : diffNew < -10 ? 'var(--accent-red)' : 'var(--text-muted)';
-  document.getElementById('qPerPersonOld').textContent = fmtShort(perPersonOld);
-  document.getElementById('qPerPersonOldSub').textContent = `เกณฑ์ฐาน ${fmtShort(baseOld)}/คน`;
-  document.getElementById('qPerPersonOldBar').style.width = barOld + '%';
-  document.getElementById('qPerPersonOldVsAvg').textContent = vsOld;
-  document.getElementById('qPerPersonOldVsAvg').style.color = diffOld > 10 ? 'var(--accent-amber)' : diffOld < -10 ? 'var(--accent-red)' : 'var(--text-muted)';
+  document.getElementById('qPerPersonNew-apr').textContent = fmtShort(perPersonNew);
+  document.getElementById('qPerPersonNewSub-apr').textContent = `เกณฑ์ฐาน ${fmtShort(baseNew)}/คน`;
+  document.getElementById('qPerPersonNewBar-apr').style.width = barNew + '%';
+  document.getElementById('qPerPersonNewVsAvg-apr').textContent = vsNew;
+  document.getElementById('qPerPersonNewVsAvg-apr').style.color = diffNew > 10 ? 'var(--accent-green)' : diffNew < -10 ? 'var(--accent-red)' : 'var(--text-muted)';
+  document.getElementById('qPerPersonOld-apr').textContent = fmtShort(perPersonOld);
+  document.getElementById('qPerPersonOldSub-apr').textContent = `เกณฑ์ฐาน ${fmtShort(baseOld)}/คน`;
+  document.getElementById('qPerPersonOldBar-apr').style.width = barOld + '%';
+  document.getElementById('qPerPersonOldVsAvg-apr').textContent = vsOld;
+  document.getElementById('qPerPersonOldVsAvg-apr').style.color = diffOld > 10 ? 'var(--accent-amber)' : diffOld < -10 ? 'var(--accent-red)' : 'var(--text-muted)';
   const totalPerDay = qBN + qBO;
   const avgPerPerson = (remBudNew + remBudOld) / Math.max(remCntNew + remCntOld, 1);
-  document.getElementById('qTotalPerDay').textContent = fmtShort(totalPerDay);
-  document.getElementById('qAvgPerPerson').textContent = fmtShort(avgPerPerson);
+  document.getElementById('qTotalPerDay-apr').textContent = fmtShort(totalPerDay);
+  document.getElementById('qAvgPerPerson-apr').textContent = fmtShort(avgPerPerson);
   renderAnalysis(remBudNew, remBudOld, remCntNew, remCntOld, remain, baseNew, baseOld, spentNew, spentOld, cntNew, cntOld);
 
   // quota alerts
@@ -981,11 +2399,11 @@ function renderQuota() {
   } else if (ws.remain === 0) {
     html = `<div class="alert alert-warning">⏰ หมดวันทำงานเดือนนี้แล้ว</div>`;
   }
-  document.getElementById('alertQuota').innerHTML = html;
+  document.getElementById('alertQuota-apr').innerHTML = html;
 }
 
 function renderCalendar() {
-  const grid = document.getElementById('calendarGrid');
+  const grid = document.getElementById('calendarGrid-apr');
   // remove old day cells (keep headers = first 7)
   while (grid.children.length > 7) grid.removeChild(grid.lastChild);
 
@@ -1043,8 +2461,8 @@ const thDays = ['อาทิตย์','จันทร์','อังคาร
 const thMonths = ['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 
 function renderTable() {
-  const tbody = document.getElementById('summaryBody');
-  const tfoot = document.getElementById('summaryFoot');
+  const tbody = document.getElementById('summaryBody-apr');
+  const tfoot = document.getElementById('summaryFoot-apr');
   tbody.innerHTML = '';
   tfoot.innerHTML = '';
 
@@ -1125,14 +2543,14 @@ function openModal(d) {
   const entry = data[key] || {};
   const dow = new Date(YEAR, MONTH-1, d).getDay();
 
-  document.getElementById('modalDateTitle').textContent =
+  document.getElementById('modalDateTitle-apr').textContent =
     `📅 ${d} ${thMonths[MONTH]} ${YEAR} · ${thDays[dow]}`;
 
-  document.getElementById('inAmtNew').value = entry.amtNew || '';
-  document.getElementById('inCntNew').value = entry.cntNew || '';
-  document.getElementById('inAmtOld').value = entry.amtOld || '';
-  document.getElementById('inCntOld').value = entry.cntOld || '';
-  document.getElementById('inNote').value   = entry.note || '';
+  document.getElementById('inAmtNew-apr').value = entry.amtNew || '';
+  document.getElementById('inCntNew-apr').value = entry.cntNew || '';
+  document.getElementById('inAmtOld-apr').value = entry.amtOld || '';
+  document.getElementById('inCntOld-apr').value = entry.cntOld || '';
+  document.getElementById('inNote-apr').value   = entry.note || '';
 
   // budget remaining info
   const { spentNew, spentOld } = calcTotals();
@@ -1143,7 +2561,7 @@ function openModal(d) {
   const remOld = BUDGET_OLD - spentOld + curAmtOld;
 
   const ws = getWorkdayStatus();
-  document.getElementById('modalBudgetInfo').innerHTML = `
+  document.getElementById('modalBudgetInfo-apr').innerHTML = `
     <div class="mbi-row"><span>งบลูกค้าใหม่คงเหลือ:</span><span class="mbi-val ${remNew<0?'mbi-over':'mbi-ok'}">${fmt(remNew)}</span></div>
     <div class="mbi-row"><span>งบลูกค้าเก่าคงเหลือ:</span><span class="mbi-val ${remOld<0?'mbi-over':'mbi-ok'}">${fmt(remOld)}</span></div>
     <div class="mbi-row" style="margin-bottom:0;margin-top:6px;font-size:11px;color:var(--text-muted)">
@@ -1154,12 +2572,12 @@ function openModal(d) {
     </div>
   `;
 
-  document.getElementById('btnDelete').style.display = entry.amtNew || entry.amtOld ? 'flex' : 'none';
-  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('btnDelete-apr').style.display = entry.amtNew || entry.amtOld ? 'flex' : 'none';
+  document.getElementById('modalOverlay-apr').classList.add('open');
 }
 
 function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('modalOverlay-apr').classList.remove('open');
   currentEditDate = null;
 }
 
@@ -1167,11 +2585,11 @@ function saveDay() {
   if (!currentEditDate) return;
   const key = dateKey(currentEditDate);
 
-  const amtNew = parseFloat(document.getElementById('inAmtNew').value) || 0;
-  const cntNew = parseInt(document.getElementById('inCntNew').value)   || 0;
-  const amtOld = parseFloat(document.getElementById('inAmtOld').value) || 0;
-  const cntOld = parseInt(document.getElementById('inCntOld').value)   || 0;
-  const note   = document.getElementById('inNote').value.trim();
+  const amtNew = parseFloat(document.getElementById('inAmtNew-apr').value) || 0;
+  const cntNew = parseInt(document.getElementById('inCntNew-apr').value)   || 0;
+  const amtOld = parseFloat(document.getElementById('inAmtOld-apr').value) || 0;
+  const cntOld = parseInt(document.getElementById('inCntOld-apr').value)   || 0;
+  const note   = document.getElementById('inNote-apr').value.trim();
 
   if (!amtNew && !cntNew && !amtOld && !cntOld && !note) {
     delete data[key];
@@ -1194,14 +2612,14 @@ function deleteDay() {
 }
 
 // close on overlay click
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
+document.getElementById('modalOverlay-apr').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
 
 
 // ─── ANALYSIS ENGINE ──────────────────────────────────────
 function renderAnalysis(remBudNew, remBudOld, remCntNew, remCntOld, remain, baseNew, baseOld, spentNew, spentOld, cntNew, cntOld) {
-  const el = document.getElementById('analysisContent');
+  const el = document.getElementById('analysisContent-apr');
   const ws = getWorkdayStatus();
 
   // ── ตัวเลขพื้นฐาน ──
@@ -1482,6 +2900,440 @@ function renderAnalysis(remBudNew, remBudOld, remCntNew, remCntOld, remain, base
 // ─── INIT ─────────────────────────────────────────────────
 loadData();
 render();
+
+
+
+
+// ─── MONTH ENGINE ─────────────────────────────────────────
+const MONTH_CFGS = {
+  5:{year:2026,month:5,storageKey:'loan_2026_5_v1',thName:'พฤษภาคม',defaultHolidays:[]},
+  6:{year:2026,month:6,storageKey:'loan_2026_6_v1',thName:'มิถุนายน',defaultHolidays:[]},
+  7:{year:2026,month:7,storageKey:'loan_2026_7_v1',thName:'กรกฎาคม', defaultHolidays:[28]},
+  8:{year:2026,month:8,storageKey:'loan_2026_8_v1',thName:'สิงหาคม', defaultHolidays:[12]},
+  9:{year:2026,month:9,storageKey:'loan_2026_9_v1',thName:'กันยายน', defaultHolidays:[]},
+  10:{year:2026,month:10,storageKey:'loan_2026_10_v1',thName:'ตุลาคม',  defaultHolidays:[13,23]},
+  11:{year:2026,month:11,storageKey:'loan_2026_11_v1',thName:'พฤศจิกายน',defaultHolidays:[]},
+  12:{year:2026,month:12,storageKey:'loan_2026_12_v1',thName:'ธันวาคม', defaultHolidays:[5,10,31]},
+};
+const mData = {};
+
+// ── Settings & Holidays Storage ──
+const M_SETTINGS_KEY = 'month_settings_v2';
+let mSettings = {};
+function mLoadSettings(){ try{ const r=localStorage.getItem(M_SETTINGS_KEY); if(r) mSettings=JSON.parse(r); }catch(e){} }
+function mSaveSettings(){ localStorage.setItem(M_SETTINGS_KEY,JSON.stringify(mSettings)); }
+function mGetSetting(mo,key,def){ return (mSettings[mo]&&mSettings[mo][key]!==undefined)?mSettings[mo][key]:def; }
+function mCfg(mo){
+  return {
+    budNew:  mGetSetting(mo,'budNew',  2500000),
+    budOld:  mGetSetting(mo,'budOld',  1080000),
+    tgtNew:  mGetSetting(mo,'tgtNew',  250),
+    tgtOld:  mGetSetting(mo,'tgtOld',  60),
+    loanNew: mGetSetting(mo,'loanNew', 10000),
+    loanOld: mGetSetting(mo,'loanOld', 12000),
+  };
+}
+function mGetHolidays(mo){
+  const saved = mGetSetting(mo,'holidays', null);
+  return saved !== null ? saved : (MONTH_CFGS[mo].defaultHolidays || []);
+}
+mLoadSettings();
+
+// ── Data ──
+function mLoadData(mo){
+  try{ const r=localStorage.getItem(MONTH_CFGS[mo].storageKey); mData[mo]=r?JSON.parse(r):{};
+  }catch(e){ mData[mo]={}; }
+}
+function mSaveData(mo){ localStorage.setItem(MONTH_CFGS[mo].storageKey,JSON.stringify(mData[mo])); }
+function mDateKey(mo,d){ return `2026-${String(mo).padStart(2,"0")}-${String(d).padStart(2,"0")}`; }
+function mIsMonday(mo,d){ return new Date(2026,mo-1,d).getDay()===1; }
+function mIsHoliday(mo,d){ return mGetHolidays(mo).includes(d); }
+function mIsWorkday(mo,d){ return !mIsMonday(mo,d)&&!mIsHoliday(mo,d); }
+function mDaysInMonth(mo){ return new Date(2026,mo,0).getDate(); }
+function mGetWorkdays(mo){
+  const days=[];
+  for(let d=1;d<=mDaysInMonth(mo);d++) if(mIsWorkday(mo,d)) days.push(d);
+  return days;
+}
+function mGetTodayDate(mo){
+  const now=new Date();
+  return (now.getFullYear()===2026&&now.getMonth()===mo-1)?now.getDate():null;
+}
+function mCalcTotals(mo){
+  let spentNew=0,spentOld=0,cntNew=0,cntOld=0;
+  Object.values(mData[mo]||{}).forEach(d=>{
+    spentNew+=(d.amtNew||0); spentOld+=(d.amtOld||0);
+    cntNew+=(d.cntNew||0);   cntOld+=(d.cntOld||0);
+  });
+  return {spentNew,spentOld,cntNew,cntOld};
+}
+function mGetWorkdayStatus(mo){
+  const today=mGetTodayDate(mo),all=mGetWorkdays(mo);
+  let passed=0,remain=0;
+  all.forEach(d=>{
+    const key=mDateKey(mo,d);
+    const hasData=!!(mData[mo]&&mData[mo][key]&&(mData[mo][key].amtNew||mData[mo][key].amtOld));
+    if(hasData||(today&&d<today)) passed++; else remain++;
+  });
+  return {total:all.length,passed,remain};
+}
+
+const TH_DAYS_M=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัส','ศุกร์','เสาร์'];
+const TH_MONTHS_M=['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+function mFmt(n){ return '฿'+Math.round(n).toLocaleString('th-TH'); }
+function mFmtS(n){ if(n>=1e6) return '฿'+(n/1e6).toFixed(2)+'M'; if(n>=1e3) return '฿'+(n/1e3).toFixed(1)+'K'; return '฿'+Math.round(n).toLocaleString(); }
+function mPct(v,t){ return t?Math.min(100,Math.round(v/t*100)):0; }
+function g(id){ return document.getElementById(id); }
+
+// ── Settings Panel ──
+function mToggleSettings(mo){
+  const el=g('settingsBar-m'+mo); if(!el) return;
+  const isHidden=el.style.display==='none'||el.style.display==='';
+  el.style.display=isHidden?'block':'none';
+  if(isHidden){ mRestoreSettingsForm(mo); mRenderHolidayPicker(mo); }
+}
+function mRestoreSettingsForm(mo){
+  const mc=mCfg(mo);
+  const s=(id,val,def)=>{ const e=g(id); if(e) e.value=(val!==def)?val:''; };
+  s('s_budNew_'+mo,  mc.budNew,  2500000);
+  s('s_tgtNew_'+mo,  mc.tgtNew,  250);
+  s('s_loanNew_'+mo, mc.loanNew, 10000);
+  s('s_budOld_'+mo,  mc.budOld,  1080000);
+  s('s_tgtOld_'+mo,  mc.tgtOld,  60);
+  s('s_loanOld_'+mo, mc.loanOld, 12000);
+}
+function mApplySettings(mo){
+  const getV=(id,def)=>{ const e=g(id); return (e&&e.value!=='')?parseFloat(e.value):def; };
+  if(!mSettings[mo]) mSettings[mo]={};
+  mSettings[mo].budNew  = getV('s_budNew_'+mo,  2500000);
+  mSettings[mo].tgtNew  = getV('s_tgtNew_'+mo,  250);
+  mSettings[mo].loanNew = getV('s_loanNew_'+mo, 10000);
+  mSettings[mo].budOld  = getV('s_budOld_'+mo,  1080000);
+  mSettings[mo].tgtOld  = getV('s_tgtOld_'+mo,  60);
+  mSettings[mo].loanOld = getV('s_loanOld_'+mo, 12000);
+  // keep existing holidays
+  if(mSettings[mo].holidays===undefined) mSettings[mo].holidays=mGetHolidays(mo);
+  mSaveSettings();
+  const msg=g('s_saved_'+mo); if(msg){msg.style.opacity='1';setTimeout(()=>msg.style.opacity='0',1500);}
+  mRenderHolidayPicker(mo);
+  renderMonth(mo);
+}
+function mResetSettings(mo){
+  if(!confirm('รีเซ็ตการตั้งค่าเดือนนี้กลับค่าเริ่มต้น?')) return;
+  delete mSettings[mo];
+  mSaveSettings();
+  mRestoreSettingsForm(mo);
+  mRenderHolidayPicker(mo);
+  renderMonth(mo);
+}
+
+// ── Holiday Picker ──
+function mRenderHolidayPicker(mo){
+  const wrap=g('holidayPicker-m'+mo); if(!wrap) return;
+  const dim=mDaysInMonth(mo);
+  const holidays=mGetHolidays(mo);
+  const days=[];
+  for(let d=1;d<=dim;d++){
+    if(mIsMonday(mo,d)) continue; // mondays already off
+    days.push(d);
+  }
+  wrap.innerHTML=days.map(d=>{
+    const isHol=holidays.includes(d);
+    const dow=new Date(2026,mo-1,d).getDay();
+    const dayLabel=TH_DAYS_M[dow].slice(0,2);
+    return `<button type="button" onclick="mToggleHoliday(${mo},${d})"
+      style="padding:4px 8px;border-radius:5px;font-size:11px;font-family:var(--font-mono);cursor:pointer;transition:all .15s;
+      border:1px solid ${isHol?'var(--accent-purple)':'var(--border-bright)'};
+      background:${isHol?'rgba(168,85,247,.2)':'var(--bg-surface)'};
+      color:${isHol?'var(--accent-purple)':'var(--text-muted)'};">${d}<br><span style="font-size:9px;">${dayLabel}</span></button>`;
+  }).join('');
+  // update workday count
+  const wdEl=g('workdayCount-m'+mo);
+  if(wdEl) wdEl.textContent=mGetWorkdays(mo).length;
+}
+function mToggleHoliday(mo,d){
+  if(!mSettings[mo]) mSettings[mo]={};
+  let holidays=[...mGetHolidays(mo)];
+  if(holidays.includes(d)) holidays=holidays.filter(x=>x!==d);
+  else holidays.push(d);
+  holidays.sort((a,b)=>a-b);
+  mSettings[mo].holidays=holidays;
+  mSaveSettings();
+  mRenderHolidayPicker(mo);
+  renderMonth(mo);
+}
+
+// ── Main render ──
+function renderMonth(mo){
+  if(!mData[mo]) mLoadData(mo);
+  const mc=mCfg(mo);
+  const {spentNew,spentOld,cntNew,cntOld}=mCalcTotals(mo);
+  const ws=mGetWorkdayStatus(mo);
+  const remBudNew=Math.max(0,mc.budNew-spentNew), remBudOld=Math.max(0,mc.budOld-spentOld);
+  const remCntNew=Math.max(0,mc.tgtNew-cntNew),   remCntOld=Math.max(0,mc.tgtOld-cntOld);
+  const remain=Math.max(1,ws.remain);
+
+  // KPI
+  const kpiEl=g('kpi-m'+mo);
+  if(kpiEl){
+    const pN=mPct(spentNew,mc.budNew),pO=mPct(spentOld,mc.budOld);
+    const pCN=mPct(cntNew,mc.tgtNew),pCO=mPct(cntOld,mc.tgtOld);
+    kpiEl.innerHTML=`
+      <div class="card blue"><div class="card-title">งบลูกค้าใหม่คงเหลือ</div>
+        <div class="kpi-value" style="color:var(--accent-blue)">${mFmt(mc.budNew-spentNew)}</div>
+        <div class="kpi-sub">ปล่อยแล้ว ${mFmt(spentNew)} (${pN}%)</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:${pN}%;background:var(--accent-blue)"></div></div></div>
+      <div class="card green"><div class="card-title">งบลูกค้าเก่าคงเหลือ</div>
+        <div class="kpi-value" style="color:var(--accent-green)">${mFmt(mc.budOld-spentOld)}</div>
+        <div class="kpi-sub">ปล่อยแล้ว ${mFmt(spentOld)} (${mPct(spentOld,mc.budOld)}%)</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:${mPct(spentOld,mc.budOld)}%;background:var(--accent-green)"></div></div></div>
+      <div class="card amber"><div class="card-title">จำนวนลูกค้าใหม่</div>
+        <div class="kpi-value" style="color:var(--accent-amber)">${cntNew} / ${mc.tgtNew}</div>
+        <div class="kpi-sub">สำเร็จ ${pCN}%</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:${pCN}%;background:var(--accent-amber)"></div></div></div>
+      <div class="card purple"><div class="card-title">จำนวนลูกค้าเก่า</div>
+        <div class="kpi-value" style="color:var(--accent-purple)">${cntOld} / ${mc.tgtOld}</div>
+        <div class="kpi-sub">สำเร็จ ${pCO}%</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:${pCO}%;background:var(--accent-purple)"></div></div></div>`;
+  }
+
+  // Quota grid
+  const qg=g('quotaGrid-m'+mo);
+  if(qg){
+    const qBN=remBudNew/remain,qBO=remBudOld/remain,qCN=remCntNew/remain,qCO=remCntOld/remain;
+    qg.innerHTML=`
+      <div class="quota-box"><div class="quota-label">ลูกค้าใหม่ · งบ/วัน</div>
+        <div class="quota-val new">${mFmtS(qBN)}</div>
+        <div class="quota-sub">เหลือ ${mFmt(remBudNew)} ใน ${remain} วัน</div></div>
+      <div class="quota-box"><div class="quota-label">ลูกค้าเก่า · งบ/วัน</div>
+        <div class="quota-val old">${mFmtS(qBO)}</div>
+        <div class="quota-sub">เหลือ ${mFmt(remBudOld)} ใน ${remain} วัน</div></div>
+      <div class="quota-box"><div class="quota-label">ลูกค้าใหม่ · ราย/วัน</div>
+        <div class="quota-val new">${qCN.toFixed(1)} ราย</div>
+        <div class="quota-sub">เหลือ ${remCntNew} ราย ใน ${remain} วัน</div></div>
+      <div class="quota-box"><div class="quota-label">ลูกค้าเก่า · ราย/วัน</div>
+        <div class="quota-val old">${qCO.toFixed(1)} ราย</div>
+        <div class="quota-sub">เหลือ ${remCntOld} ราย ใน ${remain} วัน</div></div>`;
+    // per-person
+    const baseNew=mc.budNew/mc.tgtNew, baseOld=mc.budOld/mc.tgtOld;
+    const ppN=remBudNew/Math.max(remCntNew,1), ppO=remBudOld/Math.max(remCntOld,1);
+    const el=id=>g(id+'-m'+mo);
+    if(el('qPerPersonNew')){
+      el('qPerPersonNew').textContent=mFmtS(ppN);
+      el('qPerPersonNewSub').textContent=`เกณฑ์ฐาน ${mFmtS(baseNew)}/คน`;
+      el('qPerPersonNewBar').style.width=Math.min(100,(ppN/baseNew)*100)+'%';
+      const dN=ppN-baseNew;
+      el('qPerPersonNewVsAvg').textContent=Math.abs(dN)<10?'≈ เท่ากับเกณฑ์':dN>0?`▲ สูงกว่า ${mFmtS(dN)}`:`▼ ต่ำกว่า ${mFmtS(Math.abs(dN))}`;
+      el('qPerPersonOld').textContent=mFmtS(ppO);
+      el('qPerPersonOldSub').textContent=`เกณฑ์ฐาน ${mFmtS(baseOld)}/คน`;
+      el('qPerPersonOldBar').style.width=Math.min(100,(ppO/baseOld)*100)+'%';
+      const dO=ppO-baseOld;
+      el('qPerPersonOldVsAvg').textContent=Math.abs(dO)<10?'≈ เท่ากับเกณฑ์':dO>0?`▲ สูงกว่า ${mFmtS(dO)}`:`▼ ต่ำกว่า ${mFmtS(Math.abs(dO))}`;
+      el('qTotalPerDay').textContent=mFmtS(qBN+qBO);
+      el('qAvgPerPerson').textContent=mFmtS((remBudNew+remBudOld)/Math.max(remCntNew+remCntOld,1));
+    }
+  }
+
+  // Progress bars
+  const pb=g('progressBars-m'+mo);
+  if(pb){
+    const pN=mPct(spentNew,mc.budNew),pO=mPct(spentOld,mc.budOld);
+    pb.innerHTML=`
+      <div class="budget-section">
+        <div class="budget-label"><span class="budget-name">🆕 ลูกค้าใหม่</span><span class="budget-nums">${mFmt(spentNew)} / ${mFmt(mc.budNew)}</span></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="budget-track" style="flex:1"><div class="budget-fill" style="width:${pN}%;background:var(--accent-blue)"></div></div>
+          <span style="font-size:12px;font-family:var(--font-mono);color:var(--accent-blue);min-width:38px;text-align:right;">${pN}%</span>
+        </div><div class="budget-targets">เป้า ${mc.tgtNew} ราย · วงเงิน ${mFmt(mc.loanNew)}/คน</div>
+      </div>
+      <div class="budget-section">
+        <div class="budget-label"><span class="budget-name">🔄 ลูกค้าเก่า</span><span class="budget-nums">${mFmt(spentOld)} / ${mFmt(mc.budOld)}</span></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="budget-track" style="flex:1"><div class="budget-fill" style="width:${pO}%;background:var(--accent-green)"></div></div>
+          <span style="font-size:12px;font-family:var(--font-mono);color:var(--accent-green);min-width:38px;text-align:right;">${pO}%</span>
+        </div><div class="budget-targets">เป้า ${mc.tgtOld} ราย · วงเงิน ${mFmt(mc.loanOld)}/คน</div>
+      </div>`;
+    g('totalWorkDays-m'+mo).textContent=ws.total;
+    g('passedWorkDays-m'+mo).textContent=ws.passed;
+    g('remainWorkDays-m'+mo).textContent=ws.remain;
+    let bAlert='';
+    if(spentNew>mc.budNew) bAlert+=`<div class="alert alert-danger">⚠️ งบลูกค้าใหม่เกิน ${mFmt(spentNew-mc.budNew)}</div>`;
+    if(spentOld>mc.budOld) bAlert+=`<div class="alert alert-danger">⚠️ งบลูกค้าเก่าเกิน ${mFmt(spentOld-mc.budOld)}</div>`;
+    const ba=g('budgetAlert-m'+mo); if(ba) ba.innerHTML=bAlert;
+  }
+
+  mRenderCalendar(mo);
+  mRenderTable(mo);
+  mRenderAnalysis(mo);
+}
+
+function mRenderCalendar(mo){
+  const grid=g('cal-m'+mo); if(!grid) return;
+  while(grid.children.length>7) grid.removeChild(grid.lastChild);
+  const today=mGetTodayDate(mo);
+  const firstDow=new Date(2026,mo-1,1).getDay();
+  const holidays=mGetHolidays(mo);
+  for(let i=0;i<firstDow;i++){const e=document.createElement('div');e.className='cal-day empty';grid.appendChild(e);}
+  for(let d=1;d<=mDaysInMonth(mo);d++){
+    const el=document.createElement('div');
+    const key=mDateKey(mo,d); const entry=mData[mo]&&mData[mo][key];
+    const mon=mIsMonday(mo,d), hol=mIsHoliday(mo,d), isToday=(d===today);
+    let cls='cal-day';
+    if(mon) cls+=' monday'; if(hol) cls+=' holiday'; if(isToday) cls+=' today'; if(entry) cls+=' has-data';
+    el.className=cls;
+    let inner=`<div class="day-num">${d}</div>`;
+    if(isToday&&!mon&&!hol) inner+=`<div class="day-tag tag-today">วันนี้</div>`;
+    else if(mon) inner+=`<div class="day-tag tag-monday">หยุด จ.</div>`;
+    else if(hol) inner+=`<div class="day-tag tag-holiday">หยุด</div>`;
+    if(entry){
+      inner+=`<div class="day-amounts">`;
+      if(entry.amtNew) inner+=`<div class="day-amount-new">🆕 ${mFmtS(entry.amtNew)}</div>`;
+      if(entry.amtOld) inner+=`<div class="day-amount-old">🔄 ${mFmtS(entry.amtOld)}</div>`;
+      if(entry.cntNew||entry.cntOld) inner+=`<div class="day-count">${entry.cntNew||0}+${entry.cntOld||0} ราย</div>`;
+      inner+='</div>';
+    }
+    el.innerHTML=inner;
+    if(!mon&&!hol) el.addEventListener('click',()=>mOpenModal(mo,d));
+    grid.appendChild(el);
+  }
+}
+
+function mRenderTable(mo){
+  const tbody=g('summaryBody-m'+mo),tfoot=g('summaryFoot-m'+mo); if(!tbody) return;
+  tbody.innerHTML=''; tfoot.innerHTML='';
+  const mc=mCfg(mo);
+  const today=mGetTodayDate(mo),ws=mGetWorkdayStatus(mo);
+  const {spentNew,spentOld,cntNew,cntOld}=mCalcTotals(mo);
+  mGetWorkdays(mo).forEach(d=>{
+    const key=mDateKey(mo,d),entry=(mData[mo]&&mData[mo][key])||{};
+    const dow=new Date(2026,mo-1,d).getDay(),isToday=(d===today);
+    const total=(entry.amtNew||0)+(entry.amtOld||0);
+    let status='';
+    if(entry.amtNew||entry.amtOld){
+      const over=(entry.amtNew||0)>(mc.budNew/ws.total*1.3)||(entry.amtOld||0)>(mc.budOld/ws.total*1.3);
+      status=over?'<span class="chip chip-over">เกินโควต้า</span>':'<span class="chip chip-ok">ปกติ</span>';
+    } else if(isToday) status='<span class="chip" style="background:rgba(6,182,212,.15);color:var(--accent-cyan)">วันนี้</span>';
+    else if(d<(today||99)) status='<span class="chip" style="background:rgba(100,100,100,.1);color:var(--text-muted)">ไม่มีข้อมูล</span>';
+    const tr=document.createElement('tr');
+    if(isToday) tr.className='row-today';
+    tr.innerHTML=`<td>${d} ${TH_MONTHS_M[mo]} · ${TH_DAYS_M[dow]}</td>
+      <td class="col-new">${entry.amtNew?mFmt(entry.amtNew):'<span style="color:var(--text-dim)">—</span>'}</td>
+      <td class="col-new">${entry.cntNew||'<span style="color:var(--text-dim)">—</span>'}</td>
+      <td class="col-old">${entry.amtOld?mFmt(entry.amtOld):'<span style="color:var(--text-dim)">—</span>'}</td>
+      <td class="col-old">${entry.cntOld||'<span style="color:var(--text-dim)">—</span>'}</td>
+      <td class="col-total">${total?mFmt(total):'<span style="color:var(--text-dim)">—</span>'}</td>
+      <td>${status}</td>`;
+    tbody.appendChild(tr);
+  });
+  const tot=spentNew+spentOld;
+  tfoot.innerHTML=`<tr><td style="font-weight:700;padding-top:10px;background:var(--bg-surface);border-radius:6px 0 0 6px;">รวมทั้งหมด</td>
+    <td style="text-align:right;font-family:var(--font-mono);font-weight:700;color:var(--accent-blue);padding-top:10px;background:var(--bg-surface);">${mFmt(spentNew)}</td>
+    <td style="text-align:right;font-family:var(--font-mono);font-weight:700;color:var(--accent-blue);padding-top:10px;background:var(--bg-surface);">${cntNew}</td>
+    <td style="text-align:right;font-family:var(--font-mono);font-weight:700;color:var(--accent-green);padding-top:10px;background:var(--bg-surface);">${mFmt(spentOld)}</td>
+    <td style="text-align:right;font-family:var(--font-mono);font-weight:700;color:var(--accent-green);padding-top:10px;background:var(--bg-surface);">${cntOld}</td>
+    <td style="text-align:right;font-family:var(--font-mono);font-weight:700;padding-top:10px;background:var(--bg-surface);">${mFmt(tot)}</td>
+    <td style="padding-top:10px;background:var(--bg-surface);border-radius:0 6px 6px 0;"></td></tr>`;
+}
+
+function mRenderAnalysis(mo){
+  const el=g('analysisContent-m'+mo); if(!el) return;
+  const mc=mCfg(mo), ws=mGetWorkdayStatus(mo);
+  const {spentNew,spentOld,cntNew,cntOld}=mCalcTotals(mo);
+  const remBudNew=Math.max(0,mc.budNew-spentNew),remBudOld=Math.max(0,mc.budOld-spentOld);
+  const remCntNew=Math.max(0,mc.tgtNew-cntNew),  remCntOld=Math.max(0,mc.tgtOld-cntOld);
+  const remain=Math.max(1,ws.remain);
+  const ppN=remBudNew/Math.max(remCntNew,1), ppO=remBudOld/Math.max(remCntOld,1);
+  const todayNeedNew=remCntNew/remain, todayNeedOld=remCntOld/remain;
+  const hasData=ws.passed>0&&(cntNew>0||cntOld>0);
+  const can1st =mc.loanNew>0?Math.floor(remBudNew/mc.loanNew):0;
+  const canRoll=mc.loanOld>0?Math.floor(remBudOld/mc.loanOld):0;
+  const probNew=mc.tgtNew>0?Math.min(100,Math.round((can1st+cntNew)/mc.tgtNew*100)):0;
+  const probOld=mc.tgtOld>0?Math.min(100,Math.round((canRoll+cntOld)/mc.tgtOld*100)):0;
+  const pColor=p=>p>=100?'var(--accent-green)':p>=80?'var(--accent-amber)':'var(--accent-red)';
+  const pLabel=p=>p>=100?'✅ บรรลุเป้า':p>=80?'🔶 น่าจะถึงเป้า':'⚠️ เสี่ยง';
+  el.innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px;border-top:2px solid ${pColor(probNew)};">
+        <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">🆕 ลูกค้าใหม่ — ทำได้รวม</div>
+        <div style="font-size:24px;font-weight:700;font-family:var(--font-mono);color:${pColor(probNew)};">${can1st+cntNew} / ${mc.tgtNew} ราย</div>
+        <div style="font-size:10px;color:var(--text-muted);">${pLabel(probNew)} ${probNew}%</div>
+        <div style="height:5px;background:var(--border);border-radius:3px;margin-top:6px;position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 3px);">
+          <div style="position:absolute;top:0;left:0;height:100%;max-width:100%;background:${pColor(probNew)};width:${probNew}%;"></div></div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">วงเงินแนะนำ: <b style="color:var(--accent-green);">${mFmtS(ppN)}/คน</b> · ต้องปล่อย ${todayNeedNew.toFixed(1)} ราย/วัน</div>
+      </div>
+      <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px;border-top:2px solid ${pColor(probOld)};">
+        <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">🔄 ลูกค้าเก่า — ทำได้รวม</div>
+        <div style="font-size:24px;font-weight:700;font-family:var(--font-mono);color:${pColor(probOld)};">${canRoll+cntOld} / ${mc.tgtOld} ราย</div>
+        <div style="font-size:10px;color:var(--text-muted);">${pLabel(probOld)} ${probOld}%</div>
+        <div style="height:5px;background:var(--border);border-radius:3px;margin-top:6px;position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 3px);">
+          <div style="position:absolute;top:0;left:0;height:100%;max-width:100%;background:${pColor(probOld)};width:${probOld}%;"></div></div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">วงเงินแนะนำ: <b style="color:var(--accent-amber);">${mFmtS(ppO)}/คน</b> · ต้องปล่อย ${todayNeedOld.toFixed(1)} ราย/วัน</div>
+      </div>
+    </div>
+    <div style="background:rgba(6,182,212,.04);border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text-secondary);line-height:1.7;">
+      <b style="color:var(--accent-cyan);">📌 คำแนะนำ:</b>
+      ${!hasData?`เริ่มบันทึกข้อมูล — วงเงินฐาน: ใหม่ <b>${mFmtS(mc.loanNew)}/คน</b> · เก่า <b>${mFmtS(mc.loanOld)}/คน</b>`:
+        remain<=3?`⚡ เร่งด่วน! เหลือ ${remain} วัน — ต้องปล่อยวันละ ${Math.ceil(todayNeedNew)} ราย(ใหม่) + ${Math.ceil(todayNeedOld)} ราย(เก่า)`:
+        `ต้องปล่อยวันนี้: <b>${todayNeedNew.toFixed(1)} ราย(ใหม่)</b> ${mFmt(mc.loanNew)}/คน + <b>${todayNeedOld.toFixed(1)} ราย(เก่า)</b> ${mFmt(mc.loanOld)}/คน · งบใช้วันนี้รวม ${mFmtS(Math.ceil(todayNeedNew)*mc.loanNew+Math.ceil(todayNeedOld)*mc.loanOld)}`}
+    </div>`;
+}
+
+// ── Month Modal ──
+let mCurrentModal=null;
+function mOpenModal(mo,d){
+  mCurrentModal={mo,d};
+  const key=mDateKey(mo,d),entry=(mData[mo]&&mData[mo][key])||{};
+  const dow=new Date(2026,mo-1,d).getDay();
+  document.getElementById('mModalTitle').textContent=`📅 ${d} ${TH_MONTHS_M[mo]} 2026 · ${TH_DAYS_M[dow]}`;
+  document.getElementById('mInAmtNew').value=entry.amtNew||'';
+  document.getElementById('mInCntNew').value=entry.cntNew||'';
+  document.getElementById('mInAmtOld').value=entry.amtOld||'';
+  document.getElementById('mInCntOld').value=entry.cntOld||'';
+  document.getElementById('mInNote').value=entry.note||'';
+  document.getElementById('mBtnDelete').style.display=entry.amtNew||entry.amtOld?'flex':'none';
+  document.getElementById('monthModal').classList.add('open');
+}
+function mCloseModal(){ document.getElementById('monthModal').classList.remove('open'); mCurrentModal=null; }
+function mSaveDay(){
+  if(!mCurrentModal) return;
+  const {mo,d}=mCurrentModal;
+  const key=mDateKey(mo,d);
+  if(!mData[mo]) mData[mo]={};
+  const amtNew=parseFloat(document.getElementById('mInAmtNew').value)||0;
+  const cntNew=parseInt(document.getElementById('mInCntNew').value)||0;
+  const amtOld=parseFloat(document.getElementById('mInAmtOld').value)||0;
+  const cntOld=parseInt(document.getElementById('mInCntOld').value)||0;
+  const note=document.getElementById('mInNote').value.trim();
+  if(!amtNew&&!cntNew&&!amtOld&&!cntOld&&!note) delete mData[mo][key];
+  else mData[mo][key]={amtNew,cntNew,amtOld,cntOld,note};
+  mSaveData(mo); mCloseModal(); renderMonth(mo);
+}
+function mDeleteDay(){
+  if(!mCurrentModal) return;
+  const {mo,d}=mCurrentModal;
+  if(mData[mo]) delete mData[mo][mDateKey(mo,d)];
+  mSaveData(mo); mCloseModal(); renderMonth(mo);
+}
+document.getElementById('monthModal').addEventListener('click',function(e){if(e.target===this)mCloseModal();});
+
+
+// ─── PAGE SWITCHER ─────────────────────────────────────────
+const ALL_PAGES=['page-dash','page-m5','page-m6','page-m7','page-m8','page-m9','page-m10','page-m11','page-m12'];
+function showPage(id){
+  ALL_PAGES.forEach(pid=>{
+    const el=document.getElementById(pid);
+    if(el) el.style.display=pid===id?'':'none';
+  });
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const nb=document.getElementById('nav-'+id.replace('page-',''));
+  if(nb) nb.classList.add('active');
+  localStorage.setItem('active_page',id);
+  const mo=parseInt(id.replace('page-m',''));
+  if(!isNaN(mo)&&mo>=5&&mo<=12) renderMonth(mo);
+}
+const lastPage=(()=>{const p=localStorage.getItem('active_page'); return(p&&p!=='page-alloc')?p:'page-dash';})();
+showPage(lastPage);
+
 </script>
 </body>
 </html>
