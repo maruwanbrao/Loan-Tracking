@@ -822,7 +822,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
         <div class="budget-track" style="flex:1"><div class="budget-fill" id="progressNewFill-apr" style="width:0%;background:var(--accent-blue)"></div></div>
         <span id="progressNewPct-apr" style="font-size:12px;font-family:var(--font-mono);color:var(--accent-blue);min-width:38px;text-align:right;">0%</span>
       </div>
-      <div class="budget-targets" id="progressNewTarget-apr">เป้า 250 ราย · ราคาเฉลี่ย/คน: ฿10,000</div>
+      <div class="budget-targets" id="progressNewTarget-apr">เป้า 250 ราย · ยอดกู้เฉลี่ย/คน: ฿10,000</div>
     </div>
     <div class="budget-section">
       <div class="budget-label">
@@ -833,7 +833,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
         <div class="budget-track" style="flex:1"><div class="budget-fill" id="progressOldFill-apr" style="width:0%;background:var(--accent-green)"></div></div>
         <span id="progressOldPct-apr" style="font-size:12px;font-family:var(--font-mono);color:var(--accent-green);min-width:38px;text-align:right;">0%</span>
       </div>
-      <div class="budget-targets" id="progressOldTarget-apr">เป้า 60 ราย · ราคาเฉลี่ย/คน: ฿18,000</div>
+      <div class="budget-targets" id="progressOldTarget-apr">เป้า 60 ราย · ยอดกู้เฉลี่ย/คน: ฿18,000</div>
     </div>
     <hr class="divider">
     <div id="budgetAlert-apr"></div>
@@ -2311,13 +2311,13 @@ function renderKPI() {
   document.getElementById('progressNewFill-apr').style.width = pNew + '%';
   document.getElementById('progressNewPct-apr').textContent = pNew + '%';
   document.getElementById('progressNewTarget-apr').textContent =
-    `เป้า ${TARGET_NEW} ราย · ราคาเฉลี่ย/คน: ${cntNew ? fmtShort(spentNew/cntNew) : fmt(BUDGET_NEW/TARGET_NEW)}`;
+    `เป้า ${TARGET_NEW} ราย · ยอดกู้เฉลี่ย/คน: ${cntNew ? fmtShort(spentNew/cntNew) : fmt(BUDGET_NEW/TARGET_NEW)}`;
 
   document.getElementById('progressOldNum-apr').textContent = `${fmt(spentOld)} / ${fmt(BUDGET_OLD)}`;
   document.getElementById('progressOldFill-apr').style.width = pOld + '%';
   document.getElementById('progressOldPct-apr').textContent = pOld + '%';
   document.getElementById('progressOldTarget-apr').textContent =
-    `เป้า ${TARGET_OLD} ราย · ราคาเฉลี่ย/คน: ${cntOld ? fmtShort(spentOld/cntOld) : fmt(BUDGET_OLD/TARGET_OLD)}`;
+    `เป้า ${TARGET_OLD} ราย · ยอดกู้เฉลี่ย/คน: ${cntOld ? fmtShort(spentOld/cntOld) : fmt(BUDGET_OLD/TARGET_OLD)}`;
 
   // workday stats
   const ws = getWorkdayStatus();
