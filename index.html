@@ -2978,6 +2978,86 @@ function mGetWorkdayStatus(mo){
   return {total:all.length,passed,remain};
 }
 
+
+// ─── CARRYOVER ENGINE ─────────────────────────────────────
+// April (mo=4) totals — read from april's localStorage
+function mCalcAprilTotals(){
+  let spentNew=0, spentOld=0;
+  try {
+    const raw = localStorage.getItem('loan_april_2026_v1');
+    if(raw){
+      Object.values(JSON.parse(raw)).forEach(d=>{
+        spentNew+=(d.amtNew||0); spentOld+=(d.amtOld||0);
+      });
+    }
+  } catch(e){}
+  return {spentNew, spentOld};
+}
+function mAprilBudget(){
+  // April's configured budget (from april constants in page 1)
+  return { budNew: 2500000, budOld: 1080000 };
+}
+
+// Get surplus from a specific month (positive = money left over, carry forward)
+// mo=4 means April
+function mGetSurplus(mo){
+  if(mo === 4){
+    const ab = mAprilBudget();
+    const at = mCalcAprilTotals();
+    return {
+      surplusNew: Math.max(0, ab.budNew - at.spentNew),
+      surplusOld: Math.max(0, ab.budOld - at.spentOld),
+    };
+  }
+  if(mo < 5 || mo > 12) return {surplusNew:0, surplusOld:0};
+  if(!mData[mo]) mLoadData(mo);
+  const mc = mCfg(mo);
+  const {spentNew, spentOld} = mCalcTotals(mo);
+  return {
+    surplusNew: Math.max(0, mc.budNew - spentNew),
+    surplusOld: Math.max(0, mc.budOld - spentOld),
+  };
+}
+
+// Accumulate carryover from all previous months into current month
+// Returns {carryNew, carryOld, breakdown: [{mo, surplusNew, surplusOld}]}
+function mGetCarryover(mo){
+  const breakdown = [];
+  let carryNew = 0, carryOld = 0;
+  const startMo = 4; // April is the origin
+  for(let m = startMo; m < mo; m++){
+    // Preload data for previous months
+    if(m >= 5 && m <= 12 && !mData[m]) mLoadData(m);
+    const {surplusNew, surplusOld} = mGetSurplus(m);
+    if(surplusNew > 0 || surplusOld > 0){
+      breakdown.push({mo: m, surplusNew, surplusOld});
+      carryNew += surplusNew;
+      carryOld += surplusOld;
+    }
+  }
+  return {carryNew, carryOld, breakdown};
+}
+
+// Effective budget = base budget + carryover from all previous months
+function mEffectiveBudget(mo){
+  const mc = mCfg(mo);
+  const {carryNew, carryOld, breakdown} = mGetCarryover(mo);
+  return {
+    budNew:  mc.budNew  + carryNew,
+    budOld:  mc.budOld  + carryOld,
+    baseBudNew: mc.budNew,
+    baseBudOld: mc.budOld,
+    carryNew, carryOld,
+    breakdown,
+    tgtNew:  mc.tgtNew,
+    tgtOld:  mc.tgtOld,
+    loanNew: mc.loanNew,
+    loanOld: mc.loanOld,
+  };
+}
+
+const TH_MONTHS_SHORT_M=['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
 const TH_DAYS_M=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัส','ศุกร์','เสาร์'];
 const TH_MONTHS_M=['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 function mFmt(n){ return '฿'+Math.round(n).toLocaleString('th-TH'); }
@@ -3066,26 +3146,30 @@ function mToggleHoliday(mo,d){
 // ── Main render ──
 function renderMonth(mo){
   if(!mData[mo]) mLoadData(mo);
-  const mc=mCfg(mo);
+  const mc=mEffectiveBudget(mo);  // includes carryover from previous months
   const {spentNew,spentOld,cntNew,cntOld}=mCalcTotals(mo);
   const ws=mGetWorkdayStatus(mo);
   const remBudNew=Math.max(0,mc.budNew-spentNew), remBudOld=Math.max(0,mc.budOld-spentOld);
   const remCntNew=Math.max(0,mc.tgtNew-cntNew),   remCntOld=Math.max(0,mc.tgtOld-cntOld);
   const remain=Math.max(1,ws.remain);
+  // Carryover badge data
+  const hasCarry = mc.carryNew > 0 || mc.carryOld > 0;
 
   // KPI
   const kpiEl=g('kpi-m'+mo);
   if(kpiEl){
     const pN=mPct(spentNew,mc.budNew),pO=mPct(spentOld,mc.budOld);
     const pCN=mPct(cntNew,mc.tgtNew),pCO=mPct(cntOld,mc.tgtOld);
+    const carryBadgeNew = mc.carryNew>0 ? `<span style="font-size:9px;background:rgba(6,182,212,.15);color:var(--accent-cyan);border-radius:3px;padding:1px 5px;margin-left:4px;">+${mFmtS(mc.carryNew)} carry</span>` : '';
+    const carryBadgeOld = mc.carryOld>0 ? `<span style="font-size:9px;background:rgba(6,182,212,.15);color:var(--accent-cyan);border-radius:3px;padding:1px 5px;margin-left:4px;">+${mFmtS(mc.carryOld)} carry</span>` : '';
     kpiEl.innerHTML=`
-      <div class="card blue"><div class="card-title">งบลูกค้าใหม่คงเหลือ</div>
+      <div class="card blue"><div class="card-title">งบลูกค้าใหม่คงเหลือ${carryBadgeNew}</div>
         <div class="kpi-value" style="color:var(--accent-blue)">${mFmt(mc.budNew-spentNew)}</div>
-        <div class="kpi-sub">ปล่อยแล้ว ${mFmt(spentNew)} (${pN}%)</div>
+        <div class="kpi-sub">ปล่อยแล้ว ${mFmt(spentNew)} (${pN}%) · รวม carry ${mFmt(mc.budNew)}</div>
         <div class="kpi-bar"><div class="kpi-bar-fill" style="width:${pN}%;background:var(--accent-blue)"></div></div></div>
-      <div class="card green"><div class="card-title">งบลูกค้าเก่าคงเหลือ</div>
+      <div class="card green"><div class="card-title">งบลูกค้าเก่าคงเหลือ${carryBadgeOld}</div>
         <div class="kpi-value" style="color:var(--accent-green)">${mFmt(mc.budOld-spentOld)}</div>
-        <div class="kpi-sub">ปล่อยแล้ว ${mFmt(spentOld)} (${mPct(spentOld,mc.budOld)}%)</div>
+        <div class="kpi-sub">ปล่อยแล้ว ${mFmt(spentOld)} (${mPct(spentOld,mc.budOld)}%) · รวม carry ${mFmt(mc.budOld)}</div>
         <div class="kpi-bar"><div class="kpi-bar-fill" style="width:${mPct(spentOld,mc.budOld)}%;background:var(--accent-green)"></div></div></div>
       <div class="card amber"><div class="card-title">จำนวนลูกค้าใหม่</div>
         <div class="kpi-value" style="color:var(--accent-amber)">${cntNew} / ${mc.tgtNew}</div>
@@ -3138,20 +3222,47 @@ function renderMonth(mo){
   const pb=g('progressBars-m'+mo);
   if(pb){
     const pN=mPct(spentNew,mc.budNew),pO=mPct(spentOld,mc.budOld);
+    // Carryover breakdown rows
+    const carryRowsNew = mc.breakdown.filter(b=>b.surplusNew>0).map(b=>
+      `<span style="font-size:10px;color:var(--accent-cyan);font-family:var(--font-mono);">${TH_MONTHS_SHORT_M[b.mo]} +${mFmtS(b.surplusNew)}</span>`).join(' ');
+    const carryRowsOld = mc.breakdown.filter(b=>b.surplusOld>0).map(b=>
+      `<span style="font-size:10px;color:var(--accent-cyan);font-family:var(--font-mono);">${TH_MONTHS_SHORT_M[b.mo]} +${mFmtS(b.surplusOld)}</span>`).join(' ');
     pb.innerHTML=`
       <div class="budget-section">
-        <div class="budget-label"><span class="budget-name">🆕 ลูกค้าใหม่</span><span class="budget-nums">${mFmt(spentNew)} / ${mFmt(mc.budNew)}</span></div>
+        <div class="budget-label">
+          <span class="budget-name">🆕 ลูกค้าใหม่</span>
+          <span class="budget-nums">${mFmt(spentNew)} / ${mFmt(mc.budNew)}</span>
+        </div>
         <div style="display:flex;align-items:center;gap:8px;">
-          <div class="budget-track" style="flex:1"><div class="budget-fill" style="width:${pN}%;background:var(--accent-blue)"></div></div>
+          <div class="budget-track" style="flex:1;position:relative;">
+            <div class="budget-fill" style="width:${pN}%;background:var(--accent-blue)"></div>
+            ${mc.carryNew>0?`<div style="position:absolute;top:0;right:0;height:100%;width:${mPct(mc.carryNew,mc.budNew)}%;background:rgba(6,182,212,.35);border-radius:0 4px 4px 0;pointer-events:none;"></div>`:''}
+          </div>
           <span style="font-size:12px;font-family:var(--font-mono);color:var(--accent-blue);min-width:38px;text-align:right;">${pN}%</span>
-        </div><div class="budget-targets">เป้า ${mc.tgtNew} ราย · วงเงิน ${mFmt(mc.loanNew)}/คน</div>
+        </div>
+        <div class="budget-targets">
+          งบตั้งต้น ${mFmt(mc.baseBudNew)} ${mc.carryNew>0?`· <span style="color:var(--accent-cyan);">+ carry ${mFmt(mc.carryNew)}</span>`:''}
+          ${carryRowsNew?`<div style="margin-top:3px;">${carryRowsNew}</div>`:''}
+        </div>
+        <div class="budget-targets" style="margin-top:2px;">เป้า ${mc.tgtNew} ราย · วงเงิน ${mFmt(mc.loanNew)}/คน</div>
       </div>
       <div class="budget-section">
-        <div class="budget-label"><span class="budget-name">🔄 ลูกค้าเก่า</span><span class="budget-nums">${mFmt(spentOld)} / ${mFmt(mc.budOld)}</span></div>
+        <div class="budget-label">
+          <span class="budget-name">🔄 ลูกค้าเก่า</span>
+          <span class="budget-nums">${mFmt(spentOld)} / ${mFmt(mc.budOld)}</span>
+        </div>
         <div style="display:flex;align-items:center;gap:8px;">
-          <div class="budget-track" style="flex:1"><div class="budget-fill" style="width:${pO}%;background:var(--accent-green)"></div></div>
+          <div class="budget-track" style="flex:1;position:relative;">
+            <div class="budget-fill" style="width:${pO}%;background:var(--accent-green)"></div>
+            ${mc.carryOld>0?`<div style="position:absolute;top:0;right:0;height:100%;width:${mPct(mc.carryOld,mc.budOld)}%;background:rgba(6,182,212,.35);border-radius:0 4px 4px 0;pointer-events:none;"></div>`:''}
+          </div>
           <span style="font-size:12px;font-family:var(--font-mono);color:var(--accent-green);min-width:38px;text-align:right;">${pO}%</span>
-        </div><div class="budget-targets">เป้า ${mc.tgtOld} ราย · วงเงิน ${mFmt(mc.loanOld)}/คน</div>
+        </div>
+        <div class="budget-targets">
+          งบตั้งต้น ${mFmt(mc.baseBudOld)} ${mc.carryOld>0?`· <span style="color:var(--accent-cyan);">+ carry ${mFmt(mc.carryOld)}</span>`:''}
+          ${carryRowsOld?`<div style="margin-top:3px;">${carryRowsOld}</div>`:''}
+        </div>
+        <div class="budget-targets" style="margin-top:2px;">เป้า ${mc.tgtOld} ราย · วงเงิน ${mFmt(mc.loanOld)}/คน</div>
       </div>`;
     g('totalWorkDays-m'+mo).textContent=ws.total;
     g('passedWorkDays-m'+mo).textContent=ws.passed;
@@ -3201,7 +3312,7 @@ function mRenderCalendar(mo){
 function mRenderTable(mo){
   const tbody=g('summaryBody-m'+mo),tfoot=g('summaryFoot-m'+mo); if(!tbody) return;
   tbody.innerHTML=''; tfoot.innerHTML='';
-  const mc=mCfg(mo);
+  const mc=mEffectiveBudget(mo);
   const today=mGetTodayDate(mo),ws=mGetWorkdayStatus(mo);
   const {spentNew,spentOld,cntNew,cntOld}=mCalcTotals(mo);
   mGetWorkdays(mo).forEach(d=>{
@@ -3237,7 +3348,7 @@ function mRenderTable(mo){
 
 function mRenderAnalysis(mo){
   const el=g('analysisContent-m'+mo); if(!el) return;
-  const mc=mCfg(mo), ws=mGetWorkdayStatus(mo);
+  const mc=mEffectiveBudget(mo), ws=mGetWorkdayStatus(mo);
   const {spentNew,spentOld,cntNew,cntOld}=mCalcTotals(mo);
   const remBudNew=Math.max(0,mc.budNew-spentNew),remBudOld=Math.max(0,mc.budOld-spentOld);
   const remCntNew=Math.max(0,mc.tgtNew-cntNew),  remCntOld=Math.max(0,mc.tgtOld-cntOld);
@@ -3270,12 +3381,31 @@ function mRenderAnalysis(mo){
         <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">วงเงินแนะนำ: <b style="color:var(--accent-amber);">${mFmtS(ppO)}/คน</b> · ต้องปล่อย ${todayNeedOld.toFixed(1)} ราย/วัน</div>
       </div>
     </div>
-    <div style="background:rgba(6,182,212,.04);border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text-secondary);line-height:1.7;">
+    <div style="background:rgba(6,182,212,.04);border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text-secondary);line-height:1.7;margin-bottom:${mc.carryNew>0||mc.carryOld>0?'10px':'0'}">
       <b style="color:var(--accent-cyan);">📌 คำแนะนำ:</b>
       ${!hasData?`เริ่มบันทึกข้อมูล — วงเงินฐาน: ใหม่ <b>${mFmtS(mc.loanNew)}/คน</b> · เก่า <b>${mFmtS(mc.loanOld)}/คน</b>`:
         remain<=3?`⚡ เร่งด่วน! เหลือ ${remain} วัน — ต้องปล่อยวันละ ${Math.ceil(todayNeedNew)} ราย(ใหม่) + ${Math.ceil(todayNeedOld)} ราย(เก่า)`:
         `ต้องปล่อยวันนี้: <b>${todayNeedNew.toFixed(1)} ราย(ใหม่)</b> ${mFmt(mc.loanNew)}/คน + <b>${todayNeedOld.toFixed(1)} ราย(เก่า)</b> ${mFmt(mc.loanOld)}/คน · งบใช้วันนี้รวม ${mFmtS(Math.ceil(todayNeedNew)*mc.loanNew+Math.ceil(todayNeedOld)*mc.loanOld)}`}
-    </div>`;
+    </div>
+    ${(mc.carryNew>0||mc.carryOld>0)?`
+    <div style="background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.25);border-radius:8px;padding:12px 14px;">
+      <div style="font-size:12px;font-weight:600;color:var(--accent-cyan);margin-bottom:8px;">🔄 งบสะสม Carryover จากเดือนก่อนหน้า</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+        <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:10px;">
+          <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">1st Loan carry</div>
+          <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-cyan);">${mc.carryNew>0?mFmt(mc.carryNew):'—'}</div>
+          <div style="font-size:10px;color:var(--text-muted);">งบตั้งต้น ${mFmt(mc.baseBudNew)} + carry = ${mFmt(mc.budNew)}</div>
+        </div>
+        <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:10px;">
+          <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">Rollover carry</div>
+          <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-cyan);">${mc.carryOld>0?mFmt(mc.carryOld):'—'}</div>
+          <div style="font-size:10px;color:var(--text-muted);">งบตั้งต้น ${mFmt(mc.baseBudOld)} + carry = ${mFmt(mc.budOld)}</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);">
+        ${mc.breakdown.map(b=>`<span style="display:inline-block;background:rgba(6,182,212,.1);border-radius:4px;padding:2px 8px;margin:2px;font-family:var(--font-mono);">${TH_MONTHS_SHORT_M[b.mo]}: 1st +${mFmtS(b.surplusNew)} · Roll +${mFmtS(b.surplusOld)}</span>`).join('')}
+      </div>
+    </div>`:''}`;
 }
 
 // ── Month Modal ──
