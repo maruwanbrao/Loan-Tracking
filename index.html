@@ -693,6 +693,12 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
   .settings-bar { animation: slideDown .2s ease; }
   @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
 
+
+  @keyframes fbPulse {
+    0%,100% { opacity:1; }
+    50%      { opacity:0.4; }
+  }
+
 </style>
 
   <!-- Firebase SDK -->
@@ -704,185 +710,85 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
 // ══════════════════════════════════════════════════════════
 // FIREBASE REALTIME SYNC ENGINE
 // ══════════════════════════════════════════════════════════
-const FB_CFG_KEY  = 'fb_config_v1';
+// ── Firebase Config (hardcoded) ──
+const FB_CONFIG = {
+  apiKey:            "AIzaSyAjhoLKkEBzSvyGM4Ga5prCXklZtj9qqbE",
+  authDomain:        "loan-tracking-9d28e.firebaseapp.com",
+  databaseURL:       "https://loan-tracking-9d28e-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:         "loan-tracking-9d28e",
+  storageBucket:     "loan-tracking-9d28e.firebasestorage.app",
+  messagingSenderId: "709725329526",
+  appId:             "1:709725329526:web:97f9870977f1f16981e7757",
+};
+
 let fbApp = null, fbDb = null, fbConnected = false;
-let fbListeners = {}; // path -> unsubscribe fn
-
-function fbLoadConfig(){
-  try{
-    const saved = JSON.parse(localStorage.getItem(FB_CFG_KEY)||'{}');
-    // Pre-fill known values if not saved yet
-    if(!saved.projectId)   saved.projectId   = "loan-tracking-9d28e";
-    if(!saved.databaseURL) saved.databaseURL = "https://loan-tracking-9d28e-default-rtdb.asia-southeast1.firebasedatabase.app";
-    return saved;
-  }catch(e){return {projectId:"loan-tracking-9d28e", databaseURL:"https://loan-tracking-9d28e-default-rtdb.asia-southeast1.firebasedatabase.app"};}
-}
-function fbSaveConfig(cfg){ localStorage.setItem(FB_CFG_KEY,JSON.stringify(cfg)); }
-
-function toggleFbConfig(){
-  const bar = document.getElementById('fbConfigBar');
-  if(!bar){ console.warn('fbConfigBar not found'); return; }
-  // Use data attribute to track state reliably
-  const isOpen = bar.getAttribute('data-open') === '1';
-  if(isOpen){
-    bar.setAttribute('data-open','0');
-    bar.style.display = 'none';
-  } else {
-    bar.setAttribute('data-open','1');
-    bar.style.display = 'block';
-    const cfg = fbLoadConfig();
-    const apiEl = document.getElementById('fbApiKey');
-    if(apiEl && cfg.apiKey){ apiEl.value = cfg.apiKey; }
-    const btn = document.getElementById('fbConnectBtn');
-    if(btn) btn.disabled = !(apiEl && apiEl.value.trim());
-  }
-}
-
-async function fbConnect(){
-  const projectId   = document.getElementById('fbProjectId').value.trim();
-  const databaseURL = document.getElementById('fbDbUrl').value.trim();
-  const apiKey      = document.getElementById('fbApiKey').value.trim();
-  if(!projectId||!databaseURL||!apiKey){ fbSetStatus('⚠️ กรุณากรอกข้อมูลให้ครบ','var(--accent-amber)'); return; }
-
-  fbSetStatus('⏳ กำลังเชื่อมต่อ...','var(--accent-amber)');
-  try {
-    // Wait for module to load
-    let attempts=0;
-    while(!window._fbModules && attempts<20){ await new Promise(r=>setTimeout(r,200)); attempts++; }
-    if(!window._fbModules) throw new Error('Firebase SDK ไม่โหลด');
-
-    const {initializeApp, getDatabase} = window._fbModules;
-    const firebaseConfig = { apiKey, projectId, databaseURL };
-
-    // Re-init or init
-    if(fbApp){ try{ fbApp.delete(); }catch(e){} }
-    fbApp = initializeApp(firebaseConfig, 'loan-app-'+Date.now());
-    fbDb  = getDatabase(fbApp);
-
-    fbConnected = true;
-    fbSaveConfig({projectId, databaseURL, apiKey});
-    fbSetStatus('✅ เชื่อมต่อสำเร็จ — กำลังซิงค์ข้อมูล...','var(--accent-green)');
-    fbUpdatePill(true);
-
-    // Start listening to all paths
-    await fbSyncAll();
-    fbSetStatus('🟢 เชื่อมต่อและซิงค์แล้ว · real-time active','var(--accent-green)');
-    document.getElementById('fbConfigBar').style.display = 'none';
-  } catch(err){
-    fbConnected = false;
-    fbSetStatus('❌ เชื่อมต่อไม่ได้: '+err.message,'var(--accent-red)');
-    fbUpdatePill(false);
-    console.error('Firebase error:', err);
-  }
-}
-
-function fbDisconnect(){
-  fbConnected = false;
-  // Remove all listeners
-  Object.keys(fbListeners).forEach(path=>{ try{ fbListeners[path](); }catch(e){} });
-  fbListeners = {};
-  if(fbApp){ try{ fbApp.delete(); }catch(e){} }
-  fbApp = null; fbDb = null;
-  fbSetStatus('⭕ ตัดการเชื่อมต่อแล้ว (ใช้ localStorage แทน)','var(--text-muted)');
-  fbUpdatePill(false);
-  localStorage.removeItem(FB_CFG_KEY);
-  const apiEl = document.getElementById('fbApiKey');
-  if(apiEl) apiEl.value='';
-  const btn = document.getElementById('fbConnectBtn');
-  if(btn) btn.disabled = true;
-}
+let fbListeners = {};
 
 function fbSetStatus(msg, color){
   const el=document.getElementById('fbStatus');
   if(el){ el.textContent=msg; el.style.color=color; }
+  console.log('[Firebase]', msg);
 }
 function fbUpdatePill(connected){
-  const dot  = document.getElementById('fbPillDot');
-  const lbl  = document.getElementById('fbPillLabel');
-  const pill = document.getElementById('fbPill');
+  const dot=document.getElementById('fbPillDot');
+  const lbl=document.getElementById('fbPillLabel');
+  if(!dot||!lbl) return;
   if(connected){
     dot.style.background='var(--accent-green)';
-    dot.style.boxShadow='0 0 6px var(--accent-green)';
-    lbl.textContent='Firebase Live';
+    dot.style.boxShadow='0 0 8px var(--accent-green)';
+    dot.style.animation='none';
+    lbl.textContent='🟢 Live';
     lbl.style.color='var(--accent-green)';
   } else {
-    dot.style.background='var(--text-muted)';
+    dot.style.background='var(--accent-amber)';
     dot.style.boxShadow='none';
-    lbl.textContent='Firebase';
-    lbl.style.color='var(--text-muted)';
+    dot.style.animation='fbPulse 2s infinite';
+    lbl.textContent='⏳ กำลังเชื่อมต่อ...';
+    lbl.style.color='var(--accent-amber)';
   }
 }
 
-// ── Sync paths ──
-// /loan2026/april       → april data
-// /loan2026/month/{mo}  → month 5-12 data
-// /loan2026/settings    → month settings
-// /loan2026/activePage  → current page (optional)
+async function fbConnect(){
+  fbSetStatus('⏳ กำลังเชื่อมต่อ Firebase...','var(--accent-amber)');
+  fbUpdatePill(false);
+  try {
+    // Wait for Firebase module
+    let attempts=0;
+    while(!window._fbModules && attempts<30){ await new Promise(r=>setTimeout(r,200)); attempts++; }
+    if(!window._fbModules) throw new Error('Firebase SDK โหลดไม่ได้ — ตรวจสอบ internet connection');
 
-async function fbSyncAll(){
-  if(!fbDb) return;
-  const {ref, onValue} = window._fbModules;
-
-  // April data
-  fbListen('loan2026/april', snapshot=>{
-    const val = snapshot.val();
-    if(val && JSON.stringify(val)!==JSON.stringify(data)){
-      data = val;
-      render();
-    }
-  });
-
-  // Month 5-12 data
-  for(let mo=5; mo<=12; mo++){
-    const moKey = mo; // capture
-    fbListen('loan2026/month/'+moKey, snapshot=>{
-      const val = snapshot.val();
-      if(val){
-        const prev = JSON.stringify(mData[moKey]||{});
-        if(JSON.stringify(val) !== prev){
-          mData[moKey] = val;
-          // re-render if this month is currently visible
-          if(document.getElementById('page-m'+moKey)?.style.display !== 'none'){
-            renderMonth(moKey);
-          }
-        }
-      }
-    });
+    const {initializeApp, getDatabase} = window._fbModules;
+    if(fbApp){ try{ await fbApp.delete(); }catch(e){} }
+    fbApp = initializeApp(FB_CONFIG, 'loan-app');
+    fbDb  = getDatabase(fbApp);
+    fbConnected = true;
+    fbUpdatePill(true);
+    fbSetStatus('✅ เชื่อมต่อสำเร็จ — กำลังเปิด real-time sync...','var(--accent-green)');
+    await fbSyncAll();
+    fbSetStatus('🟢 Real-time sync เปิดอยู่','var(--accent-green)');
+  } catch(err){
+    fbConnected = false;
+    fbSetStatus('❌ '+err.message,'var(--accent-red)');
+    const dot=document.getElementById('fbPillDot');
+    const lbl=document.getElementById('fbPillLabel');
+    if(dot){ dot.style.background='var(--accent-red)'; dot.style.animation='none'; }
+    if(lbl){ lbl.textContent='❌ Error'; lbl.style.color='var(--accent-red)'; }
+    console.error('[Firebase Error]', err);
   }
-
-  // Settings
-  fbListen('loan2026/settings', snapshot=>{
-    const val = snapshot.val();
-    if(val && JSON.stringify(val)!==JSON.stringify(mSettings)){
-      mSettings = val;
-      localStorage.setItem(M_SETTINGS_KEY, JSON.stringify(mSettings));
-      // Re-render current month page if applicable
-      const cur = localStorage.getItem('active_page')||'page-dash';
-      const mo=parseInt(cur.replace('page-m',''));
-      if(!isNaN(mo)&&mo>=5&&mo<=12) renderMonth(mo);
-    }
-  });
 }
 
-function fbListen(path, callback){
-  if(!fbDb) return;
-  const {ref, onValue, off} = window._fbModules;
-  const r = ref(fbDb, path);
-  const unsub = onValue(r, callback, err=>console.warn('fbListen error:',path,err));
-  if(fbListeners[path]) try{ fbListeners[path](); }catch(e){}
-  fbListeners[path] = ()=>off(r);
+function fbDisconnect(){
+  fbConnected=false;
+  Object.keys(fbListeners).forEach(p=>{ try{fbListeners[p]();}catch(e){} });
+  fbListeners={};
+  if(fbApp){ try{fbApp.delete();}catch(e){} }
+  fbApp=null; fbDb=null;
+  fbUpdatePill(false);
+  const lbl=document.getElementById('fbPillLabel');
+  if(lbl){ lbl.textContent='Firebase Off'; lbl.style.color='var(--text-muted)'; }
 }
 
-// ── Write helpers ──
-async function fbWrite(path, value){
-  if(!fbDb||!fbConnected) return false;
-  try{
-    const {ref, set} = window._fbModules;
-    await set(ref(fbDb, path), value);
-    return true;
-  }catch(err){ console.warn('fbWrite error:',path,err); return false; }
-}
-
+// ── Override save functions to also write to Firebase ──
 // ── Override save functions to also write to Firebase ──
 const _origSaveData = saveData;
 window.saveData = function(){
@@ -902,18 +808,8 @@ window.mSaveSettings = function(){
   fbWrite('loan2026/settings', mSettings);
 };
 
-// ── Auto-reconnect on load if config saved (delayed to ensure DOM ready) ──
-setTimeout(async function fbAutoConnect(){
-  const cfg = fbLoadConfig();
-  if(cfg.projectId && cfg.databaseURL && cfg.apiKey){
-    const apiEl = document.getElementById('fbApiKey');
-    if(apiEl && cfg.apiKey) apiEl.value = cfg.apiKey;
-    const btn = document.getElementById('fbConnectBtn');
-    if(btn) btn.disabled = false;
-    fbSetStatus('⏳ กำลังเชื่อมต่ออัตโนมัติ...','var(--accent-amber)');
-    await fbConnect();
-  }
-}, 800);
+// ── Auto-connect on load ──
+setTimeout(fbConnect, 600);
 
 // ── Firebase status in title ──
 setInterval(()=>{
@@ -941,43 +837,12 @@ setInterval(()=>{
   <a class="nav-btn" onclick="showPage('page-m12')" id="nav-m12">📅 ธ.ค.</a>
 </div>
 
-<!-- Firebase Config Bar -->
-<div id="fbConfigBar" data-open="0" style="background:var(--bg-card);border:1px solid rgba(59,130,246,.3);padding:16px 18px;margin-bottom:14px;border-radius:var(--radius);display:none;box-shadow:0 4px 20px rgba(0,0,0,.3);">
-  <div style="margin-bottom:10px;">
-    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">
-      🔥 Firebase Project: <span style="font-family:var(--font-mono);color:var(--accent-cyan);">loan-tracking-9d28e</span> &nbsp;·&nbsp;
-      DB: <span style="font-family:var(--font-mono);color:var(--accent-cyan);font-size:11px;">https://loan-tracking-9d28e-default-rtdb.asia-southeast1.firebasedatabase.app</span>
-    </div>
-    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
-      <div style="flex:2;min-width:260px;">
-        <div class="form-label">🔑 Firebase API Key</div>
-        <input type="text" class="form-input" id="fbApiKey" placeholder="AIzaSy..." style="font-size:13px;padding:9px 12px;"
-          oninput="document.getElementById('fbConnectBtn').disabled=!this.value.trim();">
-      </div>
-      <!-- Hidden fields still needed for fbConnect() -->
-      <input type="hidden" id="fbProjectId" value="loan-tracking-9d28e">
-      <input type="hidden" id="fbDbUrl" value="https://loan-tracking-9d28e-default-rtdb.asia-southeast1.firebasedatabase.app">
-      <div style="display:flex;gap:6px;flex-shrink:0;">
-        <button class="btn" id="fbConnectBtn" onclick="fbConnect()" disabled
-          style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:var(--accent-green);font-size:13px;padding:9px 18px;">
-          🔗 เชื่อมต่อ
-        </button>
-        <button class="btn" onclick="fbDisconnect()"
-          style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:13px;padding:9px 14px;">
-          ✕ ตัด
-        </button>
-      </div>
-    </div>
-  </div>
-  <div id="fbStatus" style="font-size:11px;font-family:var(--font-mono);margin-top:6px;color:var(--text-muted);">กรอก API Key แล้วกดเชื่อมต่อ</div>
-</div>
-
 <!-- Firebase Status Pill (always visible) -->
 <div style="position:fixed;bottom:20px;right:20px;z-index:500;">
-  <button id="fbPill" onclick="toggleFbConfig()" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:20px;font-family:var(--font-th);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border-bright);background:var(--bg-card);color:var(--text-muted);transition:all .2s;box-shadow:0 2px 12px rgba(0,0,0,.4);">
-    <span id="fbPillDot" style="width:8px;height:8px;border-radius:50%;background:var(--text-muted);transition:background .3s;flex-shrink:0;"></span>
+  <div id="fbPill" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:20px;font-family:var(--font-th);font-size:12px;font-weight:600;border:1px solid var(--border-bright);background:var(--bg-card);color:var(--text-muted);box-shadow:0 2px 12px rgba(0,0,0,.4);">
+    <span id="fbPillDot" style="width:8px;height:8px;border-radius:50%;background:var(--text-muted);transition:background .3s;animation:fbPulse 2s infinite;flex-shrink:0;"></span>
     <span id="fbPillLabel">Firebase</span>
-  </button>
+  </div>
 </div>
 
 
