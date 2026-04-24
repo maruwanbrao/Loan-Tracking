@@ -715,13 +715,20 @@ function fbSaveConfig(cfg){ localStorage.setItem(FB_CFG_KEY,JSON.stringify(cfg))
 
 function toggleFbConfig(){
   const bar = document.getElementById('fbConfigBar');
-  const isHidden = bar.style.display==='none';
-  bar.style.display = isHidden ? 'block' : 'none';
-  if(isHidden){
+  if(!bar){ console.warn('fbConfigBar not found'); return; }
+  // Use data attribute to track state reliably
+  const isOpen = bar.getAttribute('data-open') === '1';
+  if(isOpen){
+    bar.setAttribute('data-open','0');
+    bar.style.display = 'none';
+  } else {
+    bar.setAttribute('data-open','1');
+    bar.style.display = 'block';
     const cfg = fbLoadConfig();
-    if(cfg.projectId) document.getElementById('fbProjectId').value = cfg.projectId||'';
-    if(cfg.databaseURL) document.getElementById('fbDbUrl').value = cfg.databaseURL||'';
-    if(cfg.apiKey) document.getElementById('fbApiKey').value = cfg.apiKey||'';
+    const set = (id,val) => { const e=document.getElementById(id); if(e&&val) e.value=val; };
+    set('fbProjectId', cfg.projectId);
+    set('fbDbUrl',     cfg.databaseURL);
+    set('fbApiKey',    cfg.apiKey);
   }
 }
 
@@ -888,18 +895,18 @@ window.mSaveSettings = function(){
   fbWrite('loan2026/settings', mSettings);
 };
 
-// ── Auto-reconnect on load if config saved ──
-(async function fbAutoConnect(){
+// ── Auto-reconnect on load if config saved (delayed to ensure DOM ready) ──
+setTimeout(async function fbAutoConnect(){
   const cfg = fbLoadConfig();
   if(cfg.projectId && cfg.databaseURL && cfg.apiKey){
-    document.getElementById('fbProjectId').value = cfg.projectId;
-    document.getElementById('fbDbUrl').value     = cfg.databaseURL;
-    document.getElementById('fbApiKey').value    = cfg.apiKey;
+    const setVal = (id,val) => { const e=document.getElementById(id); if(e&&val) e.value=val; };
+    setVal('fbProjectId', cfg.projectId);
+    setVal('fbDbUrl',     cfg.databaseURL);
+    setVal('fbApiKey',    cfg.apiKey);
     fbSetStatus('⏳ กำลังเชื่อมต่ออัตโนมัติ...','var(--accent-amber)');
-    fbUpdatePill(false);
     await fbConnect();
   }
-})();
+}, 800);
 
 // ── Firebase status in title ──
 setInterval(()=>{
@@ -914,8 +921,21 @@ setInterval(()=>{
 <body>
 
 
+
+<div class="nav-bar" id="mainNav">
+  <a class="nav-btn active" onclick="showPage('page-dash')" id="nav-dash">📊 เม.ย.</a>
+  <a class="nav-btn" onclick="showPage('page-m5')" id="nav-m5">📅 พ.ค.</a>
+  <a class="nav-btn" onclick="showPage('page-m6')" id="nav-m6">📅 มิ.ย.</a>
+  <a class="nav-btn" onclick="showPage('page-m7')" id="nav-m7">📅 ก.ค.</a>
+  <a class="nav-btn" onclick="showPage('page-m8')" id="nav-m8">📅 ส.ค.</a>
+  <a class="nav-btn" onclick="showPage('page-m9')" id="nav-m9">📅 ก.ย.</a>
+  <a class="nav-btn" onclick="showPage('page-m10')" id="nav-m10">📅 ต.ค.</a>
+  <a class="nav-btn" onclick="showPage('page-m11')" id="nav-m11">📅 พ.ย.</a>
+  <a class="nav-btn" onclick="showPage('page-m12')" id="nav-m12">📅 ธ.ค.</a>
+</div>
+
 <!-- Firebase Config Bar -->
-<div id="fbConfigBar" style="background:var(--bg-card);border:1px solid var(--border);border-bottom:1px solid var(--border-bright);padding:10px 16px;margin-bottom:12px;border-radius:var(--radius);display:none;">
+<div id="fbConfigBar" data-open="0" style="background:var(--bg-card);border:1px solid rgba(59,130,246,.3);padding:16px 18px;margin-bottom:14px;border-radius:var(--radius);display:none;box-shadow:0 4px 20px rgba(0,0,0,.3);">
   <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;">
     <div style="flex:1;min-width:200px;">
       <div class="form-label">Firebase Project ID</div>
@@ -945,17 +965,6 @@ setInterval(()=>{
   </button>
 </div>
 
-<div class="nav-bar" id="mainNav">
-  <a class="nav-btn active" onclick="showPage('page-dash')" id="nav-dash">📊 เม.ย.</a>
-  <a class="nav-btn" onclick="showPage('page-m5')" id="nav-m5">📅 พ.ค.</a>
-  <a class="nav-btn" onclick="showPage('page-m6')" id="nav-m6">📅 มิ.ย.</a>
-  <a class="nav-btn" onclick="showPage('page-m7')" id="nav-m7">📅 ก.ค.</a>
-  <a class="nav-btn" onclick="showPage('page-m8')" id="nav-m8">📅 ส.ค.</a>
-  <a class="nav-btn" onclick="showPage('page-m9')" id="nav-m9">📅 ก.ย.</a>
-  <a class="nav-btn" onclick="showPage('page-m10')" id="nav-m10">📅 ต.ค.</a>
-  <a class="nav-btn" onclick="showPage('page-m11')" id="nav-m11">📅 พ.ย.</a>
-  <a class="nav-btn" onclick="showPage('page-m12')" id="nav-m12">📅 ธ.ค.</a>
-</div>
 
 <div id="page-dash"  class="page-content">
 <div class="header">
