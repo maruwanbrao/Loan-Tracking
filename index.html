@@ -709,7 +709,13 @@ let fbApp = null, fbDb = null, fbConnected = false;
 let fbListeners = {}; // path -> unsubscribe fn
 
 function fbLoadConfig(){
-  try{ return JSON.parse(localStorage.getItem(FB_CFG_KEY)||'{}'); }catch(e){return {};}
+  try{
+    const saved = JSON.parse(localStorage.getItem(FB_CFG_KEY)||'{}');
+    // Pre-fill known values if not saved yet
+    if(!saved.projectId)   saved.projectId   = "loan-tracking-9d28e";
+    if(!saved.databaseURL) saved.databaseURL = "https://loan-tracking-9d28e-default-rtdb.asia-southeast1.firebasedatabase.app";
+    return saved;
+  }catch(e){return {projectId:"loan-tracking-9d28e", databaseURL:"https://loan-tracking-9d28e-default-rtdb.asia-southeast1.firebasedatabase.app"};}
 }
 function fbSaveConfig(cfg){ localStorage.setItem(FB_CFG_KEY,JSON.stringify(cfg)); }
 
@@ -725,10 +731,10 @@ function toggleFbConfig(){
     bar.setAttribute('data-open','1');
     bar.style.display = 'block';
     const cfg = fbLoadConfig();
-    const set = (id,val) => { const e=document.getElementById(id); if(e&&val) e.value=val; };
-    set('fbProjectId', cfg.projectId);
-    set('fbDbUrl',     cfg.databaseURL);
-    set('fbApiKey',    cfg.apiKey);
+    const apiEl = document.getElementById('fbApiKey');
+    if(apiEl && cfg.apiKey){ apiEl.value = cfg.apiKey; }
+    const btn = document.getElementById('fbConnectBtn');
+    if(btn) btn.disabled = !(apiEl && apiEl.value.trim());
   }
 }
 
@@ -780,9 +786,10 @@ function fbDisconnect(){
   fbSetStatus('⭕ ตัดการเชื่อมต่อแล้ว (ใช้ localStorage แทน)','var(--text-muted)');
   fbUpdatePill(false);
   localStorage.removeItem(FB_CFG_KEY);
-  document.getElementById('fbProjectId').value='';
-  document.getElementById('fbDbUrl').value='';
-  document.getElementById('fbApiKey').value='';
+  const apiEl = document.getElementById('fbApiKey');
+  if(apiEl) apiEl.value='';
+  const btn = document.getElementById('fbConnectBtn');
+  if(btn) btn.disabled = true;
 }
 
 function fbSetStatus(msg, color){
@@ -899,10 +906,10 @@ window.mSaveSettings = function(){
 setTimeout(async function fbAutoConnect(){
   const cfg = fbLoadConfig();
   if(cfg.projectId && cfg.databaseURL && cfg.apiKey){
-    const setVal = (id,val) => { const e=document.getElementById(id); if(e&&val) e.value=val; };
-    setVal('fbProjectId', cfg.projectId);
-    setVal('fbDbUrl',     cfg.databaseURL);
-    setVal('fbApiKey',    cfg.apiKey);
+    const apiEl = document.getElementById('fbApiKey');
+    if(apiEl && cfg.apiKey) apiEl.value = cfg.apiKey;
+    const btn = document.getElementById('fbConnectBtn');
+    if(btn) btn.disabled = false;
     fbSetStatus('⏳ กำลังเชื่อมต่ออัตโนมัติ...','var(--accent-amber)');
     await fbConnect();
   }
@@ -936,25 +943,33 @@ setInterval(()=>{
 
 <!-- Firebase Config Bar -->
 <div id="fbConfigBar" data-open="0" style="background:var(--bg-card);border:1px solid rgba(59,130,246,.3);padding:16px 18px;margin-bottom:14px;border-radius:var(--radius);display:none;box-shadow:0 4px 20px rgba(0,0,0,.3);">
-  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;">
-    <div style="flex:1;min-width:200px;">
-      <div class="form-label">Firebase Project ID</div>
-      <input type="text" class="form-input" id="fbProjectId" placeholder="your-project-id" style="font-size:12px;padding:7px 10px;">
+  <div style="margin-bottom:10px;">
+    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">
+      🔥 Firebase Project: <span style="font-family:var(--font-mono);color:var(--accent-cyan);">loan-tracking-9d28e</span> &nbsp;·&nbsp;
+      DB: <span style="font-family:var(--font-mono);color:var(--accent-cyan);font-size:11px;">https://loan-tracking-9d28e-default-rtdb.asia-southeast1.firebasedatabase.app</span>
     </div>
-    <div style="flex:2;min-width:260px;">
-      <div class="form-label">Database URL</div>
-      <input type="text" class="form-input" id="fbDbUrl" placeholder="https://your-project-default-rtdb.firebaseio.com" style="font-size:12px;padding:7px 10px;">
-    </div>
-    <div style="flex:2;min-width:260px;">
-      <div class="form-label">API Key</div>
-      <input type="text" class="form-input" id="fbApiKey" placeholder="AIzaSy..." style="font-size:12px;padding:7px 10px;">
-    </div>
-    <div style="display:flex;gap:6px;flex-shrink:0;">
-      <button class="btn" onclick="fbConnect()" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:var(--accent-green);font-size:12px;padding:7px 14px;">🔗 เชื่อมต่อ</button>
-      <button class="btn" onclick="fbDisconnect()" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:7px 12px;">✕</button>
+    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+      <div style="flex:2;min-width:260px;">
+        <div class="form-label">🔑 Firebase API Key</div>
+        <input type="text" class="form-input" id="fbApiKey" placeholder="AIzaSy..." style="font-size:13px;padding:9px 12px;"
+          oninput="document.getElementById('fbConnectBtn').disabled=!this.value.trim();">
+      </div>
+      <!-- Hidden fields still needed for fbConnect() -->
+      <input type="hidden" id="fbProjectId" value="loan-tracking-9d28e">
+      <input type="hidden" id="fbDbUrl" value="https://loan-tracking-9d28e-default-rtdb.asia-southeast1.firebasedatabase.app">
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="btn" id="fbConnectBtn" onclick="fbConnect()" disabled
+          style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:var(--accent-green);font-size:13px;padding:9px 18px;">
+          🔗 เชื่อมต่อ
+        </button>
+        <button class="btn" onclick="fbDisconnect()"
+          style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:13px;padding:9px 14px;">
+          ✕ ตัด
+        </button>
+      </div>
     </div>
   </div>
-  <div id="fbStatus" style="font-size:11px;font-family:var(--font-mono);margin-top:8px;color:var(--text-muted);">ยังไม่ได้เชื่อมต่อ</div>
+  <div id="fbStatus" style="font-size:11px;font-family:var(--font-mono);margin-top:6px;color:var(--text-muted);">กรอก API Key แล้วกดเชื่อมต่อ</div>
 </div>
 
 <!-- Firebase Status Pill (always visible) -->
