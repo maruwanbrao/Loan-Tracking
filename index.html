@@ -694,8 +694,256 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
   @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
 
 </style>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set, get, onValue, off } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    window._fbModules = { initializeApp, getDatabase, ref, set, get, onValue, off };
+  
+// ══════════════════════════════════════════════════════════
+// FIREBASE REALTIME SYNC ENGINE
+// ══════════════════════════════════════════════════════════
+const FB_CFG_KEY  = 'fb_config_v1';
+let fbApp = null, fbDb = null, fbConnected = false;
+let fbListeners = {}; // path -> unsubscribe fn
+
+function fbLoadConfig(){
+  try{ return JSON.parse(localStorage.getItem(FB_CFG_KEY)||'{}'); }catch(e){return {};}
+}
+function fbSaveConfig(cfg){ localStorage.setItem(FB_CFG_KEY,JSON.stringify(cfg)); }
+
+function toggleFbConfig(){
+  const bar = document.getElementById('fbConfigBar');
+  const isHidden = bar.style.display==='none';
+  bar.style.display = isHidden ? 'block' : 'none';
+  if(isHidden){
+    const cfg = fbLoadConfig();
+    if(cfg.projectId) document.getElementById('fbProjectId').value = cfg.projectId||'';
+    if(cfg.databaseURL) document.getElementById('fbDbUrl').value = cfg.databaseURL||'';
+    if(cfg.apiKey) document.getElementById('fbApiKey').value = cfg.apiKey||'';
+  }
+}
+
+async function fbConnect(){
+  const projectId   = document.getElementById('fbProjectId').value.trim();
+  const databaseURL = document.getElementById('fbDbUrl').value.trim();
+  const apiKey      = document.getElementById('fbApiKey').value.trim();
+  if(!projectId||!databaseURL||!apiKey){ fbSetStatus('⚠️ กรุณากรอกข้อมูลให้ครบ','var(--accent-amber)'); return; }
+
+  fbSetStatus('⏳ กำลังเชื่อมต่อ...','var(--accent-amber)');
+  try {
+    // Wait for module to load
+    let attempts=0;
+    while(!window._fbModules && attempts<20){ await new Promise(r=>setTimeout(r,200)); attempts++; }
+    if(!window._fbModules) throw new Error('Firebase SDK ไม่โหลด');
+
+    const {initializeApp, getDatabase} = window._fbModules;
+    const firebaseConfig = { apiKey, projectId, databaseURL };
+
+    // Re-init or init
+    if(fbApp){ try{ fbApp.delete(); }catch(e){} }
+    fbApp = initializeApp(firebaseConfig, 'loan-app-'+Date.now());
+    fbDb  = getDatabase(fbApp);
+
+    fbConnected = true;
+    fbSaveConfig({projectId, databaseURL, apiKey});
+    fbSetStatus('✅ เชื่อมต่อสำเร็จ — กำลังซิงค์ข้อมูล...','var(--accent-green)');
+    fbUpdatePill(true);
+
+    // Start listening to all paths
+    await fbSyncAll();
+    fbSetStatus('🟢 เชื่อมต่อและซิงค์แล้ว · real-time active','var(--accent-green)');
+    document.getElementById('fbConfigBar').style.display = 'none';
+  } catch(err){
+    fbConnected = false;
+    fbSetStatus('❌ เชื่อมต่อไม่ได้: '+err.message,'var(--accent-red)');
+    fbUpdatePill(false);
+    console.error('Firebase error:', err);
+  }
+}
+
+function fbDisconnect(){
+  fbConnected = false;
+  // Remove all listeners
+  Object.keys(fbListeners).forEach(path=>{ try{ fbListeners[path](); }catch(e){} });
+  fbListeners = {};
+  if(fbApp){ try{ fbApp.delete(); }catch(e){} }
+  fbApp = null; fbDb = null;
+  fbSetStatus('⭕ ตัดการเชื่อมต่อแล้ว (ใช้ localStorage แทน)','var(--text-muted)');
+  fbUpdatePill(false);
+  localStorage.removeItem(FB_CFG_KEY);
+  document.getElementById('fbProjectId').value='';
+  document.getElementById('fbDbUrl').value='';
+  document.getElementById('fbApiKey').value='';
+}
+
+function fbSetStatus(msg, color){
+  const el=document.getElementById('fbStatus');
+  if(el){ el.textContent=msg; el.style.color=color; }
+}
+function fbUpdatePill(connected){
+  const dot  = document.getElementById('fbPillDot');
+  const lbl  = document.getElementById('fbPillLabel');
+  const pill = document.getElementById('fbPill');
+  if(connected){
+    dot.style.background='var(--accent-green)';
+    dot.style.boxShadow='0 0 6px var(--accent-green)';
+    lbl.textContent='Firebase Live';
+    lbl.style.color='var(--accent-green)';
+  } else {
+    dot.style.background='var(--text-muted)';
+    dot.style.boxShadow='none';
+    lbl.textContent='Firebase';
+    lbl.style.color='var(--text-muted)';
+  }
+}
+
+// ── Sync paths ──
+// /loan2026/april       → april data
+// /loan2026/month/{mo}  → month 5-12 data
+// /loan2026/settings    → month settings
+// /loan2026/activePage  → current page (optional)
+
+async function fbSyncAll(){
+  if(!fbDb) return;
+  const {ref, onValue} = window._fbModules;
+
+  // April data
+  fbListen('loan2026/april', snapshot=>{
+    const val = snapshot.val();
+    if(val && JSON.stringify(val)!==JSON.stringify(data)){
+      data = val;
+      render();
+    }
+  });
+
+  // Month 5-12 data
+  for(let mo=5; mo<=12; mo++){
+    const moKey = mo; // capture
+    fbListen('loan2026/month/'+moKey, snapshot=>{
+      const val = snapshot.val();
+      if(val){
+        const prev = JSON.stringify(mData[moKey]||{});
+        if(JSON.stringify(val) !== prev){
+          mData[moKey] = val;
+          // re-render if this month is currently visible
+          if(document.getElementById('page-m'+moKey)?.style.display !== 'none'){
+            renderMonth(moKey);
+          }
+        }
+      }
+    });
+  }
+
+  // Settings
+  fbListen('loan2026/settings', snapshot=>{
+    const val = snapshot.val();
+    if(val && JSON.stringify(val)!==JSON.stringify(mSettings)){
+      mSettings = val;
+      localStorage.setItem(M_SETTINGS_KEY, JSON.stringify(mSettings));
+      // Re-render current month page if applicable
+      const cur = localStorage.getItem('active_page')||'page-dash';
+      const mo=parseInt(cur.replace('page-m',''));
+      if(!isNaN(mo)&&mo>=5&&mo<=12) renderMonth(mo);
+    }
+  });
+}
+
+function fbListen(path, callback){
+  if(!fbDb) return;
+  const {ref, onValue, off} = window._fbModules;
+  const r = ref(fbDb, path);
+  const unsub = onValue(r, callback, err=>console.warn('fbListen error:',path,err));
+  if(fbListeners[path]) try{ fbListeners[path](); }catch(e){}
+  fbListeners[path] = ()=>off(r);
+}
+
+// ── Write helpers ──
+async function fbWrite(path, value){
+  if(!fbDb||!fbConnected) return false;
+  try{
+    const {ref, set} = window._fbModules;
+    await set(ref(fbDb, path), value);
+    return true;
+  }catch(err){ console.warn('fbWrite error:',path,err); return false; }
+}
+
+// ── Override save functions to also write to Firebase ──
+const _origSaveData = saveData;
+window.saveData = function(){
+  _origSaveData();
+  fbWrite('loan2026/april', data);
+};
+
+const _origMSaveData = mSaveData;
+window.mSaveData = function(mo){
+  _origMSaveData(mo);
+  fbWrite('loan2026/month/'+mo, mData[mo]||{});
+};
+
+const _origMSaveSettings = mSaveSettings;
+window.mSaveSettings = function(){
+  _origMSaveSettings();
+  fbWrite('loan2026/settings', mSettings);
+};
+
+// ── Auto-reconnect on load if config saved ──
+(async function fbAutoConnect(){
+  const cfg = fbLoadConfig();
+  if(cfg.projectId && cfg.databaseURL && cfg.apiKey){
+    document.getElementById('fbProjectId').value = cfg.projectId;
+    document.getElementById('fbDbUrl').value     = cfg.databaseURL;
+    document.getElementById('fbApiKey').value    = cfg.apiKey;
+    fbSetStatus('⏳ กำลังเชื่อมต่ออัตโนมัติ...','var(--accent-amber)');
+    fbUpdatePill(false);
+    await fbConnect();
+  }
+})();
+
+// ── Firebase status in title ──
+setInterval(()=>{
+  document.title = fbConnected
+    ? '🟢 ระบบวิเคราะห์สินเชื่อ 2569'
+    : '⚪ ระบบวิเคราะห์สินเชื่อ 2569';
+}, 3000);
+// ══════════════════════════════════════════════════════════
+
+</script>
 </head>
 <body>
+
+
+<!-- Firebase Config Bar -->
+<div id="fbConfigBar" style="background:var(--bg-card);border:1px solid var(--border);border-bottom:1px solid var(--border-bright);padding:10px 16px;margin-bottom:12px;border-radius:var(--radius);display:none;">
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;">
+    <div style="flex:1;min-width:200px;">
+      <div class="form-label">Firebase Project ID</div>
+      <input type="text" class="form-input" id="fbProjectId" placeholder="your-project-id" style="font-size:12px;padding:7px 10px;">
+    </div>
+    <div style="flex:2;min-width:260px;">
+      <div class="form-label">Database URL</div>
+      <input type="text" class="form-input" id="fbDbUrl" placeholder="https://your-project-default-rtdb.firebaseio.com" style="font-size:12px;padding:7px 10px;">
+    </div>
+    <div style="flex:2;min-width:260px;">
+      <div class="form-label">API Key</div>
+      <input type="text" class="form-input" id="fbApiKey" placeholder="AIzaSy..." style="font-size:12px;padding:7px 10px;">
+    </div>
+    <div style="display:flex;gap:6px;flex-shrink:0;">
+      <button class="btn" onclick="fbConnect()" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:var(--accent-green);font-size:12px;padding:7px 14px;">🔗 เชื่อมต่อ</button>
+      <button class="btn" onclick="fbDisconnect()" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:7px 12px;">✕</button>
+    </div>
+  </div>
+  <div id="fbStatus" style="font-size:11px;font-family:var(--font-mono);margin-top:8px;color:var(--text-muted);">ยังไม่ได้เชื่อมต่อ</div>
+</div>
+
+<!-- Firebase Status Pill (always visible) -->
+<div style="position:fixed;bottom:20px;right:20px;z-index:500;">
+  <button id="fbPill" onclick="toggleFbConfig()" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:20px;font-family:var(--font-th);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border-bright);background:var(--bg-card);color:var(--text-muted);transition:all .2s;box-shadow:0 2px 12px rgba(0,0,0,.4);">
+    <span id="fbPillDot" style="width:8px;height:8px;border-radius:50%;background:var(--text-muted);transition:background .3s;flex-shrink:0;"></span>
+    <span id="fbPillLabel">Firebase</span>
+  </button>
+</div>
 
 <div class="nav-bar" id="mainNav">
   <a class="nav-btn active" onclick="showPage('page-dash')" id="nav-dash">📊 เม.ย.</a>
@@ -822,7 +1070,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
         <div class="budget-track" style="flex:1"><div class="budget-fill" id="progressNewFill-apr" style="width:0%;background:var(--accent-blue)"></div></div>
         <span id="progressNewPct-apr" style="font-size:12px;font-family:var(--font-mono);color:var(--accent-blue);min-width:38px;text-align:right;">0%</span>
       </div>
-      <div class="budget-targets" id="progressNewTarget-apr">เป้า 250 ราย · ยอดกู้เฉลี่ย/คน: ฿10,000</div>
+      <div class="budget-targets" id="progressNewTarget-apr">เป้า 250 ราย · ราคาเฉลี่ย/คน: ฿10,000</div>
     </div>
     <div class="budget-section">
       <div class="budget-label">
@@ -833,7 +1081,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
         <div class="budget-track" style="flex:1"><div class="budget-fill" id="progressOldFill-apr" style="width:0%;background:var(--accent-green)"></div></div>
         <span id="progressOldPct-apr" style="font-size:12px;font-family:var(--font-mono);color:var(--accent-green);min-width:38px;text-align:right;">0%</span>
       </div>
-      <div class="budget-targets" id="progressOldTarget-apr">เป้า 60 ราย · ยอดกู้เฉลี่ย/คน: ฿18,000</div>
+      <div class="budget-targets" id="progressOldTarget-apr">เป้า 60 ราย · ราคาเฉลี่ย/คน: ฿18,000</div>
     </div>
     <hr class="divider">
     <div id="budgetAlert-apr"></div>
@@ -2311,13 +2559,13 @@ function renderKPI() {
   document.getElementById('progressNewFill-apr').style.width = pNew + '%';
   document.getElementById('progressNewPct-apr').textContent = pNew + '%';
   document.getElementById('progressNewTarget-apr').textContent =
-    `เป้า ${TARGET_NEW} ราย · ยอดกู้เฉลี่ย/คน: ${cntNew ? fmtShort(spentNew/cntNew) : fmt(BUDGET_NEW/TARGET_NEW)}`;
+    `เป้า ${TARGET_NEW} ราย · ราคาเฉลี่ย/คน: ${cntNew ? fmtShort(spentNew/cntNew) : fmt(BUDGET_NEW/TARGET_NEW)}`;
 
   document.getElementById('progressOldNum-apr').textContent = `${fmt(spentOld)} / ${fmt(BUDGET_OLD)}`;
   document.getElementById('progressOldFill-apr').style.width = pOld + '%';
   document.getElementById('progressOldPct-apr').textContent = pOld + '%';
   document.getElementById('progressOldTarget-apr').textContent =
-    `เป้า ${TARGET_OLD} ราย · ยอดกู้เฉลี่ย/คน: ${cntOld ? fmtShort(spentOld/cntOld) : fmt(BUDGET_OLD/TARGET_OLD)}`;
+    `เป้า ${TARGET_OLD} ราย · ราคาเฉลี่ย/คน: ${cntOld ? fmtShort(spentOld/cntOld) : fmt(BUDGET_OLD/TARGET_OLD)}`;
 
   // workday stats
   const ws = getWorkdayStatus();
