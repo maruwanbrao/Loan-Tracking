@@ -663,22 +663,22 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
     <!-- Firebase SDK (compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script>
 // ══════════════════════════════════════════════════════════
 // FIREBASE ENGINE (compat SDK)
 // ══════════════════════════════════════════════════════════
-const FB_KNOWN = {
-  databaseURL:       "https://loan-tracking-1d613-default-rtdb.asia-southeast1.firebasedatabase.app",
+// ── Firebase config (Web API key is safe to expose — security via Rules + Auth) ──
+const FB_CONFIG = {
+  apiKey:            "AIzaSyCEanmZPjSX7F-uF3WNEFct6rVv7-mJccK",
   authDomain:        "loan-tracking-1d613.firebaseapp.com",
+  databaseURL:       "https://loan-tracking-1d613-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId:         "loan-tracking-1d613",
   storageBucket:     "loan-tracking-1d613.firebasestorage.app",
-  messagingSenderId: "709725329526",
-  appId:             "1:709725329526:web:97f9870977f1f16981e7757",
+  messagingSenderId: "715287328361",
+  appId:             "1:715287328361:web:90b4119e17b0eb73b054f8",
 };
-const FB_APIKEY_KEY = 'fb_apikey_v1';
-function fbGetApiKey(){ return localStorage.getItem(FB_APIKEY_KEY)||''; }
-function fbSetApiKey(k){ localStorage.setItem(FB_APIKEY_KEY, k.trim()); }
-function fbGetConfig(){ return { ...FB_KNOWN, apiKey: fbGetApiKey() }; }
+function fbGetConfig(){ return FB_CONFIG; }
 
 let fbApp = null, fbDb = null, fbConnected = false;
 let fbListeners = {};
@@ -713,33 +713,30 @@ function toggleFbConfig(){
   const isOpen = bar.getAttribute('data-open')==='1';
   bar.setAttribute('data-open', isOpen?'0':'1');
   bar.style.display = isOpen ? 'none' : 'block';
-  if(!isOpen){
-    const inp = document.getElementById('fbApiKeyInput');
-    const btn = document.getElementById('fbConnectBtn');
-    const saved = fbGetApiKey();
-    if(inp && saved) inp.value = saved;
-    if(btn) btn.disabled = !saved;
-  }
 }
 
 // ── Connect ──
-function fbConnectFromUI(){
-  const inp = document.getElementById('fbApiKeyInput');
-  if(!inp||!inp.value.trim()) return;
-  fbSetApiKey(inp.value.trim());
-  fbConnect();
-}
 async function fbConnect(){
-  if(!fbGetApiKey()){ fbSetStatus('⚠️ กรุณากรอก API Key','var(--accent-amber)'); return; }
   fbSetStatus('⏳ กำลังเชื่อมต่อ...','var(--accent-amber)');
   fbUpdatePill(false);
   try {
+    // Wait for Firebase SDK to load
     let t=0;
-    while(typeof firebase==='undefined' && t<30){ await new Promise(r=>setTimeout(r,200)); t++; }
-    if(typeof firebase==='undefined') throw new Error('Firebase SDK โหลดไม่ได้ — เปิดใช้งานบน internet');
-    try{ if(firebase.apps.length) firebase.apps.forEach(a=>{ try{a.delete();}catch(e){} }); }catch(e){}
-    fbApp = firebase.initializeApp(fbGetConfig(), 'loan'+Date.now());
+    while(typeof firebase==='undefined' && t<30){
+      await new Promise(r=>setTimeout(r,200)); t++;
+    }
+    if(typeof firebase==='undefined') throw new Error('Firebase SDK โหลดไม่ได้ — ต้องใช้ internet');
+
+    // Init app (avoid duplicate)
+    try{ firebase.apps.forEach(a=>a.delete()); }catch(e){}
+    fbApp = firebase.initializeApp(FB_CONFIG, 'loan-app');
     fbDb  = firebase.database(fbApp);
+
+    // Anonymous Auth — ไม่ต้องกรอก password ใดๆ
+    const auth = firebase.auth(fbApp);
+    await auth.signInAnonymously();
+    console.log('[Firebase] Signed in anonymously ✓');
+
     fbConnected = true;
     fbUpdatePill(true);
     const bar = document.getElementById('fbConfigBar');
@@ -764,12 +761,7 @@ function fbDisconnect(){
   try{ if(fbApp) fbApp.delete(); }catch(e){}
   fbApp=null; fbDb=null;
   fbUpdatePill(false);
-  localStorage.removeItem(FB_APIKEY_KEY);
-  const inp=document.getElementById('fbApiKeyInput');
-  const btn=document.getElementById('fbConnectBtn');
-  if(inp) inp.value='';
-  if(btn) btn.disabled=true;
-  fbSetStatus('⭕ ตัดการเชื่อมต่อแล้ว','var(--text-muted)');
+  fbSetStatus('⭕ ตัดการเชื่อมต่อแล้ว — กด เชื่อมต่อใหม่ เพื่อเปิดใช้อีกครั้ง','var(--text-muted)');
 }
 
 // ── Read / Write ──
@@ -822,16 +814,8 @@ async function fbWrite(path, value){
   catch(e){ console.warn('fbWrite',path,e); return false; }
 }
 
-// ── Auto-connect on page load ──
-setTimeout(function(){
-  if(fbGetApiKey()){
-    fbConnect();
-  } else {
-    const bar=document.getElementById('fbConfigBar');
-    if(bar){ bar.style.display='block'; bar.setAttribute('data-open','1'); }
-    fbSetStatus('กรอก API Key เพื่อเปิด real-time sync','var(--text-muted)');
-  }
-}, 800);
+// ── Auto-connect on every page load ──
+setTimeout(fbConnect, 800);
 // ══════════════════════════════════════════════════════════
   </script>
 </head>
@@ -839,42 +823,30 @@ setTimeout(function(){
 
 
 
-<!-- Firebase Config Bar -->
+<!-- Firebase Config Bar (status only — auto-connects) -->
 <div id="fbConfigBar" data-open="0" style="
   position:fixed;top:60px;right:20px;z-index:1000;
-  background:var(--bg-card);border:1px solid rgba(59,130,246,.35);
-  padding:18px 20px;border-radius:12px;display:none;
-  box-shadow:0 8px 32px rgba(0,0,0,.6);width:340px;
-  animation:slideDown .2s ease;">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-    <div style="font-size:13px;font-weight:700;color:var(--text-primary);">🔥 Firebase Connection</div>
-    <button onclick="toggleFbConfig()" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;">✕</button>
+  background:var(--bg-card);border:1px solid rgba(59,130,246,.3);
+  padding:16px 20px;border-radius:12px;display:none;
+  box-shadow:0 8px 32px rgba(0,0,0,.6);width:300px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <div style="font-size:13px;font-weight:700;color:var(--text-primary);">🔥 Firebase Status</div>
+    <button onclick="toggleFbConfig()" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;line-height:1;">✕</button>
   </div>
-  <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:12px;line-height:1.6;">
+  <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);line-height:1.8;margin-bottom:10px;">
     Project: <span style="color:var(--accent-cyan);">loan-tracking-1d613</span><br>
-    DB: asia-southeast1
+    Region: <span style="color:var(--accent-cyan);">asia-southeast1</span><br>
+    Auth: <span style="color:var(--accent-green);">Anonymous (auto)</span>
   </div>
-  <div style="margin-bottom:12px;">
-    <label class="form-label">🔑 API Key</label>
-    <input type="password" class="form-input" id="fbApiKeyInput"
-      placeholder="AIzaSy..."
-      style="font-size:13px;padding:9px 12px;"
-      oninput="document.getElementById('fbConnectBtn').disabled=!this.value.trim();">
-    <div style="font-size:10px;color:var(--text-muted);margin-top:5px;">
-      🔒 เก็บใน localStorage เครื่องนี้เท่านั้น
-    </div>
-  </div>
-  <div style="display:flex;gap:8px;">
-    <button class="btn" id="fbConnectBtn" onclick="fbConnectFromUI()" disabled
-      style="flex:1;justify-content:center;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:var(--accent-green);font-size:13px;padding:9px;">
-      🔗 เชื่อมต่อ
+  <div id="fbStatus" style="font-size:12px;font-family:var(--font-mono);padding:8px 10px;background:var(--bg-surface);border-radius:6px;min-height:20px;"></div>
+  <div style="display:flex;gap:8px;margin-top:10px;">
+    <button class="btn" onclick="fbConnect()" style="flex:1;justify-content:center;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:var(--accent-blue);font-size:12px;padding:7px;">
+      🔄 เชื่อมต่อใหม่
     </button>
-    <button class="btn" onclick="fbDisconnect()"
-      style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:13px;padding:9px 12px;">
-      ✕
+    <button class="btn" onclick="fbDisconnect()" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:7px 10px;">
+      ✕ ตัด
     </button>
   </div>
-  <div id="fbStatus" style="font-size:11px;font-family:var(--font-mono);margin-top:10px;min-height:18px;"></div>
 </div>
 
 <div class="nav-bar" id="mainNav">
