@@ -505,51 +505,7 @@
 
   .legend { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:14px; }
   .legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); }
-  .legend-dot  { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
-
-  /* ─── NAV BAR ─── */
-  .nav-bar {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 28px;
-  }
-  .nav-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 9px 20px;
-    border-radius: 8px;
-    font-family: var(--font-th);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    border: 1px solid var(--border-bright);
-    background: var(--bg-card);
-    color: var(--text-secondary);
-    transition: all 0.15s;
-  }
-  .nav-btn:hover { border-color: var(--accent-blue); color: var(--text-primary); background: var(--bg-card-hover); }
-  .nav-btn.active { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; }
-
-
-  /* ─── NAV SCROLLABLE ─── */
-  .nav-bar {
-    display: flex;
-    justify-content: flex-start;
-    overflow-x: auto;
-    gap: 6px;
-    margin-bottom: 28px;
-    padding-bottom: 4px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border-bright) transparent;
-  }
-  .nav-bar::-webkit-scrollbar { height: 3px; }
-  .nav-bar::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
-  .nav-btn { white-space: nowrap; flex-shrink: 0; }
-
-/* ─── ALLOC PAGE STYLES ─── */
+  .legend-dot  { width:8px; height:8px; border-radius:2px; flex-shrink:0; }/* ─── ALLOC PAGE STYLES ─── */
 
 
 
@@ -670,26 +626,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
 .toast.show{transform:translateX(-50%) translateY(0);}
 
 /* DIVIDER */
-.divider{border:none;border-top:1px solid var(--border);margin:14px 0;}
-
-
-
-
-
-  /* ─── NAV SCROLLABLE ─── */
-  .nav-bar {
-    display: flex;
-    overflow-x: auto;
-    gap: 6px;
-    margin-bottom: 28px;
-    padding-bottom: 4px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border-bright) transparent;
-  }
-  .nav-bar::-webkit-scrollbar { height: 3px; }
-  .nav-bar::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
-  .nav-btn { white-space: nowrap; flex-shrink: 0; }
-  /* Settings bar slide */
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0;}/* Settings bar slide */
   .settings-bar { animation: slideDown .2s ease; }
   @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
 
@@ -699,126 +636,236 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
     50%      { opacity:0.4; }
   }
 
+
+  /* ─── NAV BAR ─── */
+  .nav-bar {
+    display: flex; overflow-x: auto; gap: 6px;
+    margin-bottom: 20px; padding: 2px 2px 6px;
+    scrollbar-width: thin; scrollbar-color: var(--border-bright) transparent;
+  }
+  .nav-bar::-webkit-scrollbar { height: 3px; }
+  .nav-bar::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+  .nav-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 8px;
+    font-family: var(--font-th); font-size: 13px; font-weight: 600;
+    cursor: pointer; text-decoration: none;
+    border: 1px solid var(--border-bright);
+    background: var(--bg-card); color: var(--text-secondary);
+    transition: all 0.15s; white-space: nowrap; flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--accent-blue); color: var(--text-primary); background: var(--bg-card-hover); }
+  .nav-btn.active { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; }
+
 </style>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue, off } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-    window._fbModules = { initializeApp, getDatabase, ref, set, get, onValue, off };
-  
+  <!-- Firebase SDK (compat - no module import needed) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js">
 // ══════════════════════════════════════════════════════════
-// FIREBASE REALTIME SYNC ENGINE
+// FIREBASE ENGINE (compat SDK)
 // ══════════════════════════════════════════════════════════
-// ── Firebase Config (hardcoded) ──
-const FB_CONFIG = {
- 
+const FB_KNOWN = {
+  databaseURL:       "https://loan-tracking-9d28e-default-rtdb.asia-southeast1.firebasedatabase.app",
+  authDomain:        "loan-tracking-9d28e.firebaseapp.com",
+  projectId:         "loan-tracking-9d28e",
+  storageBucket:     "loan-tracking-9d28e.firebasestorage.app",
+  messagingSenderId: "709725329526",
+  appId:             "1:709725329526:web:97f9870977f1f16981e7757",
 };
+const FB_APIKEY_KEY = 'fb_apikey_v1';
+function fbGetApiKey(){ return localStorage.getItem(FB_APIKEY_KEY)||''; }
+function fbSetApiKey(k){ localStorage.setItem(FB_APIKEY_KEY, k.trim()); }
+function fbGetConfig(){ return { ...FB_KNOWN, apiKey: fbGetApiKey() }; }
 
 let fbApp = null, fbDb = null, fbConnected = false;
 let fbListeners = {};
 
+// ── UI helpers ──
 function fbSetStatus(msg, color){
-  const el=document.getElementById('fbStatus');
-  if(el){ el.textContent=msg; el.style.color=color; }
-  console.log('[Firebase]', msg);
+  const el = document.getElementById('fbStatus');
+  if(el){ el.textContent=msg; el.style.color=color||'var(--text-muted)'; }
 }
 function fbUpdatePill(connected){
-  const dot=document.getElementById('fbPillDot');
-  const lbl=document.getElementById('fbPillLabel');
+  const dot = document.getElementById('fbPillDot');
+  const lbl = document.getElementById('fbPillLabel');
   if(!dot||!lbl) return;
   if(connected){
-    dot.style.background='var(--accent-green)';
-    dot.style.boxShadow='0 0 8px var(--accent-green)';
-    dot.style.animation='none';
-    lbl.textContent='🟢 Live';
-    lbl.style.color='var(--accent-green)';
+    dot.style.background   = 'var(--accent-green)';
+    dot.style.boxShadow    = '0 0 8px var(--accent-green)';
+    dot.style.animation    = 'none';
+    lbl.textContent        = '🟢 Live';
+    lbl.style.color        = 'var(--accent-green)';
   } else {
-    dot.style.background='var(--accent-amber)';
-    dot.style.boxShadow='none';
-    dot.style.animation='fbPulse 2s infinite';
-    lbl.textContent='⏳ กำลังเชื่อมต่อ...';
-    lbl.style.color='var(--accent-amber)';
+    dot.style.background   = 'var(--accent-amber)';
+    dot.style.boxShadow    = 'none';
+    dot.style.animation    = 'fbPulse 2s infinite';
+    lbl.textContent        = 'Firebase';
+    lbl.style.color        = 'var(--text-muted)';
+  }
+}
+function toggleFbConfig(){
+  const bar = document.getElementById('fbConfigBar');
+  if(!bar) return;
+  const isOpen = bar.getAttribute('data-open')==='1';
+  bar.setAttribute('data-open', isOpen?'0':'1');
+  bar.style.display = isOpen ? 'none' : 'block';
+  if(!isOpen){
+    const inp = document.getElementById('fbApiKeyInput');
+    const btn = document.getElementById('fbConnectBtn');
+    const saved = fbGetApiKey();
+    if(inp && saved) inp.value = saved;
+    if(btn) btn.disabled = !saved;
   }
 }
 
+// ── Connect ──
+function fbConnectFromUI(){
+  const inp = document.getElementById('fbApiKeyInput');
+  if(!inp||!inp.value.trim()) return;
+  fbSetApiKey(inp.value.trim());
+  fbConnect();
+}
 async function fbConnect(){
-  fbSetStatus('⏳ กำลังเชื่อมต่อ Firebase...','var(--accent-amber)');
+  if(!fbGetApiKey()){ fbSetStatus('⚠️ กรุณากรอก API Key','var(--accent-amber)'); return; }
+  fbSetStatus('⏳ กำลังเชื่อมต่อ...','var(--accent-amber)');
   fbUpdatePill(false);
   try {
-    // Wait for Firebase module
-    let attempts=0;
-    while(!window._fbModules && attempts<30){ await new Promise(r=>setTimeout(r,200)); attempts++; }
-    if(!window._fbModules) throw new Error('Firebase SDK โหลดไม่ได้ — ตรวจสอบ internet connection');
-
-    const {initializeApp, getDatabase} = window._fbModules;
-    if(fbApp){ try{ await fbApp.delete(); }catch(e){} }
-    fbApp = initializeApp(FB_CONFIG, 'loan-app');
-    fbDb  = getDatabase(fbApp);
+    let t=0;
+    while(typeof firebase==='undefined' && t<30){ await new Promise(r=>setTimeout(r,200)); t++; }
+    if(typeof firebase==='undefined') throw new Error('Firebase SDK โหลดไม่ได้ — เปิดใช้งานบน internet');
+    try{ if(firebase.apps.length) firebase.apps.forEach(a=>{ try{a.delete();}catch(e){} }); }catch(e){}
+    fbApp = firebase.initializeApp(fbGetConfig(), 'loan'+Date.now());
+    fbDb  = firebase.database(fbApp);
     fbConnected = true;
     fbUpdatePill(true);
-    fbSetStatus('✅ เชื่อมต่อสำเร็จ — กำลังเปิด real-time sync...','var(--accent-green)');
+    const bar = document.getElementById('fbConfigBar');
+    if(bar){ bar.style.display='none'; bar.setAttribute('data-open','0'); }
     await fbSyncAll();
     fbSetStatus('🟢 Real-time sync เปิดอยู่','var(--accent-green)');
   } catch(err){
-    fbConnected = false;
+    fbConnected=false; fbDb=null; fbApp=null;
     fbSetStatus('❌ '+err.message,'var(--accent-red)');
+    fbUpdatePill(false);
     const dot=document.getElementById('fbPillDot');
     const lbl=document.getElementById('fbPillLabel');
     if(dot){ dot.style.background='var(--accent-red)'; dot.style.animation='none'; }
-    if(lbl){ lbl.textContent='❌ Error'; lbl.style.color='var(--accent-red)'; }
-    console.error('[Firebase Error]', err);
+    if(lbl){ lbl.textContent='❌ ต่อไม่ได้'; lbl.style.color='var(--accent-red)'; }
+    console.error('[Firebase]', err);
   }
 }
-
 function fbDisconnect(){
   fbConnected=false;
-  Object.keys(fbListeners).forEach(p=>{ try{fbListeners[p]();}catch(e){} });
+  Object.keys(fbListeners).forEach(p=>{ try{fbListeners[p].off();}catch(e){} });
   fbListeners={};
-  if(fbApp){ try{fbApp.delete();}catch(e){} }
+  try{ if(fbApp) fbApp.delete(); }catch(e){}
   fbApp=null; fbDb=null;
   fbUpdatePill(false);
-  const lbl=document.getElementById('fbPillLabel');
-  if(lbl){ lbl.textContent='Firebase Off'; lbl.style.color='var(--text-muted)'; }
+  localStorage.removeItem(FB_APIKEY_KEY);
+  const inp=document.getElementById('fbApiKeyInput');
+  const btn=document.getElementById('fbConnectBtn');
+  if(inp) inp.value='';
+  if(btn) btn.disabled=true;
+  fbSetStatus('⭕ ตัดการเชื่อมต่อแล้ว','var(--text-muted)');
 }
 
-// ── Override save functions to also write to Firebase ──
-// ── Override save functions to also write to Firebase ──
-const _origSaveData = saveData;
-window.saveData = function(){
-  _origSaveData();
-  fbWrite('loan2026/april', data);
-};
+// ── Read / Write ──
+async function fbSyncAll(){
+  if(!fbDb) return;
+  // April
+  fbListen('loan2026/april', snap=>{
+    const val=snap.val();
+    if(val && JSON.stringify(val)!==JSON.stringify(data)){
+      data=val; render();
+    }
+  });
+  // Months 5-12
+  for(let mo=5;mo<=12;mo++){
+    const m=mo;
+    fbListen('loan2026/month/'+m, snap=>{
+      const val=snap.val();
+      if(val){
+        const prev=JSON.stringify(mData[m]||{});
+        if(JSON.stringify(val)!==prev){
+          mData[m]=val;
+          const pg=document.getElementById('page-m'+m);
+          if(pg && pg.style.display!=='none') renderMonth(m);
+        }
+      }
+    });
+  }
+  // Settings
+  fbListen('loan2026/settings', snap=>{
+    const val=snap.val();
+    if(val && JSON.stringify(val)!==JSON.stringify(mSettings)){
+      mSettings=val;
+      localStorage.setItem(M_SETTINGS_KEY,JSON.stringify(mSettings));
+      const cur=localStorage.getItem('active_page')||'page-dash';
+      const mo=parseInt(cur.replace('page-m',''));
+      if(!isNaN(mo)&&mo>=5&&mo<=12) renderMonth(mo);
+    }
+  });
+}
+function fbListen(path, cb){
+  if(!fbDb) return;
+  if(fbListeners[path]){ try{fbListeners[path].off();}catch(e){} }
+  const r=fbDb.ref(path);
+  r.on('value', cb, e=>console.warn('fbListen',path,e));
+  fbListeners[path]=r;
+}
+async function fbWrite(path, value){
+  if(!fbDb||!fbConnected) return false;
+  try{ await fbDb.ref(path).set(value); return true; }
+  catch(e){ console.warn('fbWrite',path,e); return false; }
+}
 
-const _origMSaveData = mSaveData;
-window.mSaveData = function(mo){
-  _origMSaveData(mo);
-  fbWrite('loan2026/month/'+mo, mData[mo]||{});
-};
-
-const _origMSaveSettings = mSaveSettings;
-window.mSaveSettings = function(){
-  _origMSaveSettings();
-  fbWrite('loan2026/settings', mSettings);
-};
-
-// ── Auto-connect on load ──
-setTimeout(fbConnect, 600);
-
-// ── Firebase status in title ──
-setInterval(()=>{
-  document.title = fbConnected
-    ? '🟢 ระบบวิเคราะห์สินเชื่อ 2569'
-    : '⚪ ระบบวิเคราะห์สินเชื่อ 2569';
-}, 3000);
+// ── Auto-connect on page load ──
+setTimeout(function(){
+  if(fbGetApiKey()){
+    fbConnect();
+  } else {
+    const bar=document.getElementById('fbConfigBar');
+    if(bar){ bar.style.display='block'; bar.setAttribute('data-open','1'); }
+    fbSetStatus('กรอก API Key เพื่อเปิด real-time sync','var(--text-muted)');
+  }
+}, 800);
 // ══════════════════════════════════════════════════════════
 
 </script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
 
 
+<!-- Firebase Config Bar -->
+<div id="fbConfigBar" data-open="0" style="background:var(--bg-card);border:1px solid rgba(59,130,246,.3);padding:16px 18px;margin-bottom:14px;border-radius:10px;display:none;box-shadow:0 4px 20px rgba(0,0,0,.3);">
+  <div style="margin-bottom:10px;">
+    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">
+      🔥 Firebase: <span style="font-family:var(--font-mono);color:var(--accent-cyan);">loan-tracking-9d28e</span> &nbsp;·&nbsp;
+      <span style="font-size:11px;color:var(--text-muted);">asia-southeast1</span>
+    </div>
+    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+      <div style="flex:1;min-width:240px;">
+        <div class="form-label">🔑 API Key</div>
+        <input type="password" class="form-input" id="fbApiKeyInput" placeholder="AIzaSy..."
+          style="font-size:13px;padding:9px 12px;"
+          oninput="document.getElementById('fbConnectBtn').disabled=!this.value.trim();">
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="btn" id="fbConnectBtn" onclick="fbConnectFromUI()" disabled
+          style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:var(--accent-green);font-size:13px;padding:9px 18px;">
+          🔗 เชื่อมต่อ
+        </button>
+        <button class="btn" onclick="fbDisconnect()"
+          style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:13px;padding:9px 14px;">
+          ✕ ตัด
+        </button>
+      </div>
+    </div>
+  </div>
+  <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">🔒 API Key จะเก็บไว้ใน localStorage เครื่องนี้เท่านั้น ไม่ฝังในโค้ด</div>
+  <div id="fbStatus" style="font-size:11px;font-family:var(--font-mono);margin-top:6px;color:var(--text-muted);"></div>
+</div>
 <div class="nav-bar" id="mainNav">
   <a class="nav-btn active" onclick="showPage('page-dash')" id="nav-dash">📊 เม.ย.</a>
   <a class="nav-btn" onclick="showPage('page-m5')" id="nav-m5">📅 พ.ค.</a>
@@ -2728,7 +2775,8 @@ function saveDay() {
     data[key] = { amtNew, cntNew, amtOld, cntOld, note };
   }
 
-  saveData();
+  saveData();           // localStorage
+  fbWrite('loan2026/april', data);  // Firebase
   closeModal();
   render();
 }
@@ -2738,6 +2786,7 @@ function deleteDay() {
   const key = dateKey(currentEditDate);
   delete data[key];
   saveData();
+  fbWrite('loan2026/april', data);
   closeModal();
   render();
 }
@@ -3052,7 +3101,10 @@ const mData = {};
 const M_SETTINGS_KEY = 'month_settings_v2';
 let mSettings = {};
 function mLoadSettings(){ try{ const r=localStorage.getItem(M_SETTINGS_KEY); if(r) mSettings=JSON.parse(r); }catch(e){} }
-function mSaveSettings(){ localStorage.setItem(M_SETTINGS_KEY,JSON.stringify(mSettings)); }
+function mSaveSettings(){
+  localStorage.setItem(M_SETTINGS_KEY,JSON.stringify(mSettings));
+  fbWrite('loan2026/settings', mSettings);
+}
 function mGetSetting(mo,key,def){ return (mSettings[mo]&&mSettings[mo][key]!==undefined)?mSettings[mo][key]:def; }
 function mCfg(mo){
   return {
@@ -3567,13 +3619,19 @@ function mSaveDay(){
   const note=document.getElementById('mInNote').value.trim();
   if(!amtNew&&!cntNew&&!amtOld&&!cntOld&&!note) delete mData[mo][key];
   else mData[mo][key]={amtNew,cntNew,amtOld,cntOld,note};
-  mSaveData(mo); mCloseModal(); renderMonth(mo);
+  mSaveData(mo);
+  fbWrite('loan2026/month/'+mo, mData[mo]||{});
+  mCloseModal();
+  renderMonth(mo);
 }
 function mDeleteDay(){
   if(!mCurrentModal) return;
   const {mo,d}=mCurrentModal;
   if(mData[mo]) delete mData[mo][mDateKey(mo,d)];
-  mSaveData(mo); mCloseModal(); renderMonth(mo);
+  mSaveData(mo);
+  fbWrite('loan2026/month/'+mo, mData[mo]||{});
+  mCloseModal();
+  renderMonth(mo);
 }
 document.getElementById('monthModal').addEventListener('click',function(e){if(e.target===this)mCloseModal();});
 
