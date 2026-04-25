@@ -660,15 +660,18 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
 </style>
 
   <!-- Firebase SDK (compat - no module import needed) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js">
+    <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script>
 // ══════════════════════════════════════════════════════════
 // FIREBASE ENGINE (compat SDK)
 // ══════════════════════════════════════════════════════════
 const FB_KNOWN = {
-  databaseURL:       "https://loan-tracking-9d28e-default-rtdb.asia-southeast1.firebasedatabase.app",
-  authDomain:        "loan-tracking-9d28e.firebaseapp.com",
-  projectId:         "loan-tracking-9d28e",
-  storageBucket:     "loan-tracking-9d28e.firebasestorage.app",
+  databaseURL:       "https://loan-tracking-1d613-default-rtdb.asia-southeast1.firebasedatabase.app",
+  authDomain:        "loan-tracking-1d613.firebaseapp.com",
+  projectId:         "loan-tracking-1d613",
+  storageBucket:     "loan-tracking-1d613.firebasestorage.app",
   messagingSenderId: "709725329526",
   appId:             "1:709725329526:web:97f9870977f1f16981e7757",
 };
@@ -679,6 +682,7 @@ function fbGetConfig(){ return { ...FB_KNOWN, apiKey: fbGetApiKey() }; }
 
 let fbApp = null, fbDb = null, fbConnected = false;
 let fbListeners = {};
+
 
 // ── UI helpers ──
 function fbSetStatus(msg, color){
@@ -829,43 +833,50 @@ setTimeout(function(){
   }
 }, 800);
 // ══════════════════════════════════════════════════════════
-
-</script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  </script>
 </head>
 <body>
 
 
 
 <!-- Firebase Config Bar -->
-<div id="fbConfigBar" data-open="0" style="background:var(--bg-card);border:1px solid rgba(59,130,246,.3);padding:16px 18px;margin-bottom:14px;border-radius:10px;display:none;box-shadow:0 4px 20px rgba(0,0,0,.3);">
-  <div style="margin-bottom:10px;">
-    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">
-      🔥 Firebase: <span style="font-family:var(--font-mono);color:var(--accent-cyan);">loan-tracking-9d28e</span> &nbsp;·&nbsp;
-      <span style="font-size:11px;color:var(--text-muted);">asia-southeast1</span>
-    </div>
-    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
-      <div style="flex:1;min-width:240px;">
-        <div class="form-label">🔑 API Key</div>
-        <input type="password" class="form-input" id="fbApiKeyInput" placeholder="AIzaSy..."
-          style="font-size:13px;padding:9px 12px;"
-          oninput="document.getElementById('fbConnectBtn').disabled=!this.value.trim();">
-      </div>
-      <div style="display:flex;gap:6px;flex-shrink:0;">
-        <button class="btn" id="fbConnectBtn" onclick="fbConnectFromUI()" disabled
-          style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:var(--accent-green);font-size:13px;padding:9px 18px;">
-          🔗 เชื่อมต่อ
-        </button>
-        <button class="btn" onclick="fbDisconnect()"
-          style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:13px;padding:9px 14px;">
-          ✕ ตัด
-        </button>
-      </div>
+<div id="fbConfigBar" data-open="0" style="
+  position:fixed;top:60px;right:20px;z-index:1000;
+  background:var(--bg-card);border:1px solid rgba(59,130,246,.35);
+  padding:18px 20px;border-radius:12px;display:none;
+  box-shadow:0 8px 32px rgba(0,0,0,.6);width:340px;
+  animation:slideDown .2s ease;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <div style="font-size:13px;font-weight:700;color:var(--text-primary);">🔥 Firebase Connection</div>
+    <button onclick="toggleFbConfig()" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;">✕</button>
+  </div>
+  <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);margin-bottom:12px;line-height:1.6;">
+    Project: <span style="color:var(--accent-cyan);">loan-tracking-1d613</span><br>
+    DB: asia-southeast1
+  </div>
+  <div style="margin-bottom:12px;">
+    <label class="form-label">🔑 API Key</label>
+    <input type="password" class="form-input" id="fbApiKeyInput"
+      placeholder="AIzaSy..."
+      style="font-size:13px;padding:9px 12px;"
+      oninput="document.getElementById('fbConnectBtn').disabled=!this.value.trim();">
+    <div style="font-size:10px;color:var(--text-muted);margin-top:5px;">
+      🔒 เก็บใน localStorage เครื่องนี้เท่านั้น
     </div>
   </div>
-  <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">🔒 API Key จะเก็บไว้ใน localStorage เครื่องนี้เท่านั้น ไม่ฝังในโค้ด</div>
-  <div id="fbStatus" style="font-size:11px;font-family:var(--font-mono);margin-top:6px;color:var(--text-muted);"></div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn" id="fbConnectBtn" onclick="fbConnectFromUI()" disabled
+      style="flex:1;justify-content:center;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:var(--accent-green);font-size:13px;padding:9px;">
+      🔗 เชื่อมต่อ
+    </button>
+    <button class="btn" onclick="fbDisconnect()"
+      style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:13px;padding:9px 12px;">
+      ✕
+    </button>
+  </div>
+  <div id="fbStatus" style="font-size:11px;font-family:var(--font-mono);margin-top:10px;min-height:18px;"></div>
 </div>
+
 <div class="nav-bar" id="mainNav">
   <a class="nav-btn active" onclick="showPage('page-dash')" id="nav-dash">📊 เม.ย.</a>
   <a class="nav-btn" onclick="showPage('page-m5')" id="nav-m5">📅 พ.ค.</a>
@@ -880,10 +891,10 @@ setTimeout(function(){
 
 <!-- Firebase Status Pill (always visible) -->
 <div style="position:fixed;bottom:20px;right:20px;z-index:500;">
-  <div id="fbPill" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:20px;font-family:var(--font-th);font-size:12px;font-weight:600;border:1px solid var(--border-bright);background:var(--bg-card);color:var(--text-muted);box-shadow:0 2px 12px rgba(0,0,0,.4);">
+  <button id="fbPill" onclick="toggleFbConfig()" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:20px;font-family:var(--font-th);font-size:12px;font-weight:600;border:1px solid var(--border-bright);background:var(--bg-card);color:var(--text-muted);box-shadow:0 2px 12px rgba(0,0,0,.4);cursor:pointer;transition:all .2s;">
     <span id="fbPillDot" style="width:8px;height:8px;border-radius:50%;background:var(--text-muted);transition:background .3s;animation:fbPulse 2s infinite;flex-shrink:0;"></span>
     <span id="fbPillLabel">Firebase</span>
-  </div>
+  </button>
 </div>
 
 
@@ -2776,7 +2787,7 @@ function saveDay() {
   }
 
   saveData();           // localStorage
-  fbWrite('loan2026/april', data);  // Firebase
+  if(typeof fbWrite==="function") fbWrite('loan2026/april', data);
   closeModal();
   render();
 }
@@ -2786,7 +2797,7 @@ function deleteDay() {
   const key = dateKey(currentEditDate);
   delete data[key];
   saveData();
-  fbWrite('loan2026/april', data);
+  if(typeof fbWrite==="function") fbWrite('loan2026/april', data);
   closeModal();
   render();
 }
@@ -3103,7 +3114,7 @@ let mSettings = {};
 function mLoadSettings(){ try{ const r=localStorage.getItem(M_SETTINGS_KEY); if(r) mSettings=JSON.parse(r); }catch(e){} }
 function mSaveSettings(){
   localStorage.setItem(M_SETTINGS_KEY,JSON.stringify(mSettings));
-  fbWrite('loan2026/settings', mSettings);
+  if(typeof fbWrite==="function") fbWrite('loan2026/settings', mSettings);
 }
 function mGetSetting(mo,key,def){ return (mSettings[mo]&&mSettings[mo][key]!==undefined)?mSettings[mo][key]:def; }
 function mCfg(mo){
@@ -3620,7 +3631,7 @@ function mSaveDay(){
   if(!amtNew&&!cntNew&&!amtOld&&!cntOld&&!note) delete mData[mo][key];
   else mData[mo][key]={amtNew,cntNew,amtOld,cntOld,note};
   mSaveData(mo);
-  fbWrite('loan2026/month/'+mo, mData[mo]||{});
+  if(typeof fbWrite==="function") fbWrite('loan2026/month/'+mo, mData[mo]||{});
   mCloseModal();
   renderMonth(mo);
 }
@@ -3629,7 +3640,7 @@ function mDeleteDay(){
   const {mo,d}=mCurrentModal;
   if(mData[mo]) delete mData[mo][mDateKey(mo,d)];
   mSaveData(mo);
-  fbWrite('loan2026/month/'+mo, mData[mo]||{});
+  if(typeof fbWrite==="function") fbWrite('loan2026/month/'+mo, mData[mo]||{});
   mCloseModal();
   renderMonth(mo);
 }
