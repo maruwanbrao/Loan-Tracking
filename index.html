@@ -629,10 +629,6 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
 .divider{border:none;border-top:1px solid var(--border);margin:14px 0;}/* Settings bar slide */
   .settings-bar { animation: slideDown .2s ease; }
   @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
-
-
-  @keyframes fbPulse {
-    0%,100% { opacity:1; }
     50%      { opacity:0.4; }
   }
 
@@ -657,197 +653,90 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
   .nav-btn:hover { border-color: var(--accent-blue); color: var(--text-primary); background: var(--bg-card-hover); }
   .nav-btn.active { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; }
 
+
+  /* ─── GOOGLE SHEETS SYNC ─── */
+  .gs-pill {
+    position: fixed; bottom: 20px; right: 20px; z-index: 500;
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 14px; border-radius: 20px;
+    font-family: var(--font-th); font-size: 12px; font-weight: 600;
+    border: 1px solid var(--border-bright);
+    background: var(--bg-card);
+    box-shadow: 0 2px 12px rgba(0,0,0,.4);
+    cursor: pointer; transition: all .2s;
+  }
+  .gs-pill:hover { border-color: var(--accent-green); }
+  .gs-pill-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--text-muted); flex-shrink: 0;
+    transition: background .3s;
+  }
+  .gs-pill-dot.syncing { animation: gsPulse 1s infinite; background: var(--accent-amber); }
+  .gs-pill-dot.ok      { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+  .gs-pill-dot.error   { background: var(--accent-red); }
+  @keyframes gsPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* Google Sheets config panel */
+  .gs-panel {
+    position: fixed; bottom: 58px; right: 20px; z-index: 1000;
+    background: var(--bg-card); border: 1px solid rgba(34,197,94,.3);
+    padding: 18px 20px; border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.6); width: 360px;
+    display: none;
+    animation: slideDown .2s ease;
+  }
+
 </style>
-
-  <!-- Firebase SDK (compat - no module import needed) -->
-    <!-- Firebase SDK (compat) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-  <script>
-// ══════════════════════════════════════════════════════════
-// FIREBASE ENGINE (compat SDK)
-// ══════════════════════════════════════════════════════════
-// ── Firebase config (Web API key is safe to expose — security via Rules + Auth) ──
-const FB_CONFIG = {
-  apiKey:            "AIzaSyCEanmZPjSX7F-uF3WNEFct6rVv7-mJcck",
-  authDomain:        "loan-tracking-1d613.firebaseapp.com",
-  databaseURL:       "https://loan-tracking-1d613-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId:         "loan-tracking-1d613",
-  storageBucket:     "loan-tracking-1d613.firebasestorage.app",
-  messagingSenderId: "715287328361",
-  appId:             "1:715287328361:web:90b4119e17b0eb73b054f8",
-  measurementId:     "G-W36TQ412WZ",
-};
-function fbGetConfig(){ return FB_CONFIG; }
-
-let fbApp = null, fbDb = null, fbConnected = false;
-let fbListeners = {};
-
-
-// ── UI helpers ──
-function fbSetStatus(msg, color){
-  const el = document.getElementById('fbStatus');
-  if(el){ el.textContent=msg; el.style.color=color||'var(--text-muted)'; }
-}
-function fbUpdatePill(connected){
-  const dot = document.getElementById('fbPillDot');
-  const lbl = document.getElementById('fbPillLabel');
-  if(!dot||!lbl) return;
-  if(connected){
-    dot.style.background   = 'var(--accent-green)';
-    dot.style.boxShadow    = '0 0 8px var(--accent-green)';
-    dot.style.animation    = 'none';
-    lbl.textContent        = '🟢 Live';
-    lbl.style.color        = 'var(--accent-green)';
-  } else {
-    dot.style.background   = 'var(--accent-amber)';
-    dot.style.boxShadow    = 'none';
-    dot.style.animation    = 'fbPulse 2s infinite';
-    lbl.textContent        = 'Firebase';
-    lbl.style.color        = 'var(--text-muted)';
-  }
-}
-function toggleFbConfig(){
-  const bar = document.getElementById('fbConfigBar');
-  if(!bar) return;
-  const isOpen = bar.getAttribute('data-open')==='1';
-  bar.setAttribute('data-open', isOpen?'0':'1');
-  bar.style.display = isOpen ? 'none' : 'block';
-}
-
-// ── Connect ──
-async function fbConnect(){
-  fbSetStatus('⏳ กำลังเชื่อมต่อ...','var(--accent-amber)');
-  fbUpdatePill(false);
-  try {
-    // Wait for Firebase SDK to load
-    let t=0;
-    while(typeof firebase==='undefined' && t<30){
-      await new Promise(r=>setTimeout(r,200)); t++;
-    }
-    if(typeof firebase==='undefined') throw new Error('Firebase SDK โหลดไม่ได้ — ต้องใช้ internet');
-
-    // Init app (avoid duplicate)
-    try{ firebase.apps.forEach(a=>a.delete()); }catch(e){}
-    fbApp = firebase.initializeApp(FB_CONFIG, 'loan-app');
-    fbDb  = firebase.database(fbApp);
-
-    // Anonymous Auth — ไม่ต้องกรอก password ใดๆ
-    const auth = firebase.auth(fbApp);
-    await auth.signInAnonymously();
-    console.log('[Firebase] Signed in anonymously ✓');
-
-    fbConnected = true;
-    fbUpdatePill(true);
-    const bar = document.getElementById('fbConfigBar');
-    if(bar){ bar.style.display='none'; bar.setAttribute('data-open','0'); }
-    await fbSyncAll();
-    fbSetStatus('🟢 Real-time sync เปิดอยู่','var(--accent-green)');
-  } catch(err){
-    fbConnected=false; fbDb=null; fbApp=null;
-    fbSetStatus('❌ '+err.message,'var(--accent-red)');
-    fbUpdatePill(false);
-    const dot=document.getElementById('fbPillDot');
-    const lbl=document.getElementById('fbPillLabel');
-    if(dot){ dot.style.background='var(--accent-red)'; dot.style.animation='none'; }
-    if(lbl){ lbl.textContent='❌ ต่อไม่ได้'; lbl.style.color='var(--accent-red)'; }
-    console.error('[Firebase]', err);
-  }
-}
-function fbDisconnect(){
-  fbConnected=false;
-  Object.keys(fbListeners).forEach(p=>{ try{fbListeners[p].off();}catch(e){} });
-  fbListeners={};
-  try{ if(fbApp) fbApp.delete(); }catch(e){}
-  fbApp=null; fbDb=null;
-  fbUpdatePill(false);
-  fbSetStatus('⭕ ตัดการเชื่อมต่อแล้ว — กด เชื่อมต่อใหม่ เพื่อเปิดใช้อีกครั้ง','var(--text-muted)');
-}
-
-// ── Read / Write ──
-async function fbSyncAll(){
-  if(!fbDb) return;
-  // April
-  fbListen('loan2026/april', snap=>{
-    const val=snap.val();
-    if(val && JSON.stringify(val)!==JSON.stringify(data)){
-      data=val; render();
-    }
-  });
-  // Months 5-12
-  for(let mo=5;mo<=12;mo++){
-    const m=mo;
-    fbListen('loan2026/month/'+m, snap=>{
-      const val=snap.val();
-      if(val){
-        const prev=JSON.stringify(mData[m]||{});
-        if(JSON.stringify(val)!==prev){
-          mData[m]=val;
-          const pg=document.getElementById('page-m'+m);
-          if(pg && pg.style.display!=='none') renderMonth(m);
-        }
-      }
-    });
-  }
-  // Settings
-  fbListen('loan2026/settings', snap=>{
-    const val=snap.val();
-    if(val && JSON.stringify(val)!==JSON.stringify(mSettings)){
-      mSettings=val;
-      localStorage.setItem(M_SETTINGS_KEY,JSON.stringify(mSettings));
-      const cur=localStorage.getItem('active_page')||'page-dash';
-      const mo=parseInt(cur.replace('page-m',''));
-      if(!isNaN(mo)&&mo>=5&&mo<=12) renderMonth(mo);
-    }
-  });
-}
-function fbListen(path, cb){
-  if(!fbDb) return;
-  if(fbListeners[path]){ try{fbListeners[path].off();}catch(e){} }
-  const r=fbDb.ref(path);
-  r.on('value', cb, e=>console.warn('fbListen',path,e));
-  fbListeners[path]=r;
-}
-async function fbWrite(path, value){
-  if(!fbDb||!fbConnected) return false;
-  try{ await fbDb.ref(path).set(value); return true; }
-  catch(e){ console.warn('fbWrite',path,e); return false; }
-}
-
-// ── Auto-connect on every page load ──
-setTimeout(fbConnect, 800);
-// ══════════════════════════════════════════════════════════
-  </script>
 </head>
 <body>
 
 
 
-<!-- Firebase Config Bar (status only — auto-connects) -->
-<div id="fbConfigBar" data-open="0" style="
-  position:fixed;top:60px;right:20px;z-index:1000;
-  background:var(--bg-card);border:1px solid rgba(59,130,246,.3);
-  padding:16px 20px;border-radius:12px;display:none;
-  box-shadow:0 8px 32px rgba(0,0,0,.6);width:300px;">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-    <div style="font-size:13px;font-weight:700;color:var(--text-primary);">🔥 Firebase Status</div>
-    <button onclick="toggleFbConfig()" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;line-height:1;">✕</button>
+
+
+<!-- Google Sheets Sync Panel -->
+<div class="gs-panel" id="gsPanel">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <div style="font-size:13px;font-weight:700;color:var(--text-primary);">🔗 Google Sheets Sync</div>
+    <button onclick="gsTogglePanel()" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;line-height:1;">✕</button>
   </div>
-  <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);line-height:1.8;margin-bottom:10px;">
-    Project: <span style="color:var(--accent-cyan);">loan-tracking-1d613</span><br>
-    Region: <span style="color:var(--accent-cyan);">asia-southeast1</span><br>
-    Auth: <span style="color:var(--accent-green);">Anonymous (auto)</span>
+  <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px;line-height:1.7;">
+    วาง <b style="color:var(--accent-green)">Web App URL</b> จาก Google Apps Script<br>
+    (Deploy → New deployment → Web App → Execute as: Me → Anyone)
   </div>
-  <div id="fbStatus" style="font-size:12px;font-family:var(--font-mono);padding:8px 10px;background:var(--bg-surface);border-radius:6px;min-height:20px;"></div>
-  <div style="display:flex;gap:8px;margin-top:10px;">
-    <button class="btn" onclick="fbConnect()" style="flex:1;justify-content:center;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:var(--accent-blue);font-size:12px;padding:7px;">
-      🔄 เชื่อมต่อใหม่
+  <div class="form-group">
+    <label class="form-label">Apps Script Web App URL</label>
+    <input type="text" class="form-input" id="gsUrl"
+      placeholder="https://script.google.com/macros/s/..."
+      style="font-size:12px;padding:8px 10px;"
+      oninput="document.getElementById('gsSaveBtn').disabled=!this.value.trim()">
+  </div>
+  <div style="display:flex;gap:8px;margin-top:4px;">
+    <button class="btn" id="gsSaveBtn" onclick="gsSaveUrl()" disabled
+      style="flex:1;justify-content:center;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:var(--accent-green);font-size:13px;padding:9px;">
+      💾 บันทึก URL
     </button>
-    <button class="btn" onclick="fbDisconnect()" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:7px 10px;">
-      ✕ ตัด
+    <button class="btn" onclick="gsTestConnection()"
+      style="background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:var(--accent-blue);font-size:13px;padding:9px 12px;">
+      🧪 ทดสอบ
     </button>
   </div>
+  <div id="gsStatus" style="font-size:11px;font-family:var(--font-mono);margin-top:10px;min-height:16px;color:var(--text-muted);"></div>
+  <hr style="border:none;border-top:1px solid var(--border);margin:12px 0;">
+  <div style="font-size:11px;color:var(--text-muted);line-height:1.8;">
+    <div style="margin-bottom:4px;font-weight:600;color:var(--text-secondary);">📋 วิธีตั้งค่า (ครั้งเดียว):</div>
+    1. เปิด Google Sheets ใหม่<br>
+    2. Extensions → Apps Script<br>
+    3. วางโค้ดจากไฟล์ <code style="color:var(--accent-cyan);">apps-script.gs</code><br>
+    4. Deploy → New deployment → Web App<br>
+    5. Copy URL มาวางด้านบน
+  </div>
+</div>
+
+<!-- Google Sheets Pill -->
+<div class="gs-pill" id="gsPill" onclick="gsTogglePanel()">
+  <span class="gs-pill-dot" id="gsPillDot"></span>
+  <span id="gsPillLabel">Sheets</span>
 </div>
 
 <div class="nav-bar" id="mainNav">
@@ -861,16 +750,6 @@ setTimeout(fbConnect, 800);
   <a class="nav-btn" onclick="showPage('page-m11')" id="nav-m11">📅 พ.ย.</a>
   <a class="nav-btn" onclick="showPage('page-m12')" id="nav-m12">📅 ธ.ค.</a>
 </div>
-
-<!-- Firebase Status Pill (always visible) -->
-<div style="position:fixed;bottom:20px;right:20px;z-index:500;">
-  <button id="fbPill" onclick="toggleFbConfig()" style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:20px;font-family:var(--font-th);font-size:12px;font-weight:600;border:1px solid var(--border-bright);background:var(--bg-card);color:var(--text-muted);box-shadow:0 2px 12px rgba(0,0,0,.4);cursor:pointer;transition:all .2s;">
-    <span id="fbPillDot" style="width:8px;height:8px;border-radius:50%;background:var(--text-muted);transition:background .3s;animation:fbPulse 2s infinite;flex-shrink:0;"></span>
-    <span id="fbPillLabel">Firebase</span>
-  </button>
-</div>
-
-
 <div id="page-dash"  class="page-content">
 <div class="header">
   <div class="header-badge">CREDIT ANALYTICS · APRIL 2026</div>
@@ -2760,7 +2639,6 @@ function saveDay() {
   }
 
   saveData();           // localStorage
-  if(typeof fbWrite==="function") fbWrite('loan2026/april', data);
   closeModal();
   render();
 }
@@ -2770,7 +2648,6 @@ function deleteDay() {
   const key = dateKey(currentEditDate);
   delete data[key];
   saveData();
-  if(typeof fbWrite==="function") fbWrite('loan2026/april', data);
   closeModal();
   render();
 }
@@ -3087,7 +2964,6 @@ let mSettings = {};
 function mLoadSettings(){ try{ const r=localStorage.getItem(M_SETTINGS_KEY); if(r) mSettings=JSON.parse(r); }catch(e){} }
 function mSaveSettings(){
   localStorage.setItem(M_SETTINGS_KEY,JSON.stringify(mSettings));
-  if(typeof fbWrite==="function") fbWrite('loan2026/settings', mSettings);
 }
 function mGetSetting(mo,key,def){ return (mSettings[mo]&&mSettings[mo][key]!==undefined)?mSettings[mo][key]:def; }
 function mCfg(mo){
@@ -3604,7 +3480,6 @@ function mSaveDay(){
   if(!amtNew&&!cntNew&&!amtOld&&!cntOld&&!note) delete mData[mo][key];
   else mData[mo][key]={amtNew,cntNew,amtOld,cntOld,note};
   mSaveData(mo);
-  if(typeof fbWrite==="function") fbWrite('loan2026/month/'+mo, mData[mo]||{});
   mCloseModal();
   renderMonth(mo);
 }
@@ -3613,7 +3488,6 @@ function mDeleteDay(){
   const {mo,d}=mCurrentModal;
   if(mData[mo]) delete mData[mo][mDateKey(mo,d)];
   mSaveData(mo);
-  if(typeof fbWrite==="function") fbWrite('loan2026/month/'+mo, mData[mo]||{});
   mCloseModal();
   renderMonth(mo);
 }
@@ -3636,6 +3510,214 @@ function showPage(id){
 }
 const lastPage=(()=>{const p=localStorage.getItem('active_page'); return(p&&p!=='page-alloc')?p:'page-dash';})();
 showPage(lastPage);
+
+
+// ══════════════════════════════════════════════════════════
+// GOOGLE SHEETS SYNC ENGINE v2 (JSONP + form-POST)
+// ══════════════════════════════════════════════════════════
+const GS_URL_KEY = 'gs_webapp_url_v1';
+
+function gsGetUrl(){ return localStorage.getItem(GS_URL_KEY) || ''; }
+
+function gsSaveUrl(){
+  const url = document.getElementById('gsUrl').value.trim();
+  if(!url) return;
+  localStorage.setItem(GS_URL_KEY, url);
+  gsTogglePanel();
+  gsSetStatus('✅ บันทึก URL แล้ว', 'var(--accent-green)');
+  gsReadAll();
+}
+
+function gsTogglePanel(){
+  const panel = document.getElementById('gsPanel');
+  if(!panel) return;
+  const isOpen = panel.style.display !== 'none' && panel.style.display !== '';
+  panel.style.display = isOpen ? 'none' : 'block';
+  if(!isOpen){
+    const inp = document.getElementById('gsUrl');
+    const btn = document.getElementById('gsSaveBtn');
+    const saved = gsGetUrl();
+    if(inp && saved) inp.value = saved;
+    if(btn) btn.disabled = !saved;
+  }
+}
+
+function gsSetStatus(msg, color){
+  const el = document.getElementById('gsStatus');
+  if(el){ el.textContent = msg; el.style.color = color || 'var(--text-muted)'; }
+}
+
+function gsUpdatePill(state){
+  const dot = document.getElementById('gsPillDot');
+  const lbl = document.getElementById('gsPillLabel');
+  if(!dot || !lbl) return;
+  dot.className = 'gs-pill-dot ' + state;
+  const map = {
+    ok:      ['🟢 Synced',    'var(--accent-green)'],
+    syncing: ['⏳ Syncing…',  'var(--accent-amber)'],
+    error:   ['❌ Error',     'var(--accent-red)'],
+  };
+  const [txt, col] = map[state] || ['Sheets', 'var(--text-muted)'];
+  lbl.textContent = txt;
+  lbl.style.color = col;
+}
+
+// ── JSONP GET (handles CORS for Apps Script) ──────────────
+function gsJsonp(url, params){
+  return new Promise((resolve, reject) => {
+    const cbName = '_gscb' + Date.now();
+    const qs = Object.entries(params).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');
+    const fullUrl = url + '?' + qs + '&callback=' + cbName;
+    const script  = document.createElement('script');
+
+    const timer = setTimeout(() => {
+      cleanup(); reject(new Error('Timeout — ตรวจสอบ URL และ deployment'));
+    }, 15000);
+
+    window[cbName] = (data) => {
+      cleanup();
+      resolve(typeof data === 'string' ? JSON.parse(data) : data);
+    };
+
+    function cleanup(){
+      clearTimeout(timer);
+      delete window[cbName];
+      if(script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    script.onerror = () => { cleanup(); reject(new Error('Script load failed — ตรวจสอบ URL')); };
+    script.src = fullUrl;
+    document.head.appendChild(script);
+  });
+}
+
+// ── Form-encoded POST (handles CORS for Apps Script) ──────
+async function gsPost(url, payload){
+  const form = new FormData();
+  form.append('action', payload.action || 'write');
+  form.append('sheet',  payload.sheet  || '');
+  form.append('data',   typeof payload.data === 'string'
+    ? payload.data : JSON.stringify(payload.data));
+
+  const res = await fetch(url, {
+    method: 'POST',
+    body: form,
+    redirect: 'follow',
+  });
+  return res.text();
+}
+
+// ── Test connection ────────────────────────────────────────
+async function gsTestConnection(){
+  const url = gsGetUrl();
+  if(!url){ gsSetStatus('⚠️ ยังไม่ได้ตั้งค่า URL', 'var(--accent-amber)'); return; }
+  gsUpdatePill('syncing');
+  gsSetStatus('⏳ กำลังทดสอบ…', 'var(--accent-amber)');
+  try {
+    const res = await gsJsonp(url, { action: 'ping' });
+    if(res === 'pong' || (typeof res === 'string' && res.includes('pong'))){
+      gsUpdatePill('ok');
+      gsSetStatus('✅ เชื่อมต่อสำเร็จ', 'var(--accent-green)');
+    } else {
+      throw new Error('Unexpected: ' + JSON.stringify(res).slice(0,60));
+    }
+  } catch(e){
+    gsUpdatePill('error');
+    gsSetStatus('❌ ' + e.message, 'var(--accent-red)');
+    console.warn('[GS Test]', e);
+  }
+}
+
+// ── Write to Sheets ────────────────────────────────────────
+async function gsWrite(sheetKey, data){
+  const url = gsGetUrl();
+  if(!url) return;
+  gsUpdatePill('syncing');
+  try {
+    await gsPost(url, { action:'write', sheet: sheetKey, data: JSON.stringify(data) });
+    gsUpdatePill('ok');
+  } catch(e){
+    console.warn('[GS Write]', sheetKey, e);
+    gsUpdatePill('error');
+  }
+}
+
+// ── Read all from Sheets ───────────────────────────────────
+async function gsReadAll(){
+  const url = gsGetUrl();
+  if(!url) return;
+  gsUpdatePill('syncing');
+  gsSetStatus('⏳ กำลังโหลดข้อมูลจาก Sheets…', 'var(--accent-amber)');
+  try {
+    const json = await gsJsonp(url, { action: 'readAll' });
+
+    // April
+    if(json.april && Object.keys(json.april).length > 0){
+      data = json.april;
+      saveData();  // mirror to localStorage
+      render();
+    }
+    // Months 5-12
+    for(let mo = 5; mo <= 12; mo++){
+      const key = 'month_' + mo;
+      if(json[key] && Object.keys(json[key]).length > 0){
+        mData[mo] = json[key];
+        mSaveData(mo);
+        const pg = document.getElementById('page-m'+mo);
+        if(pg && pg.style.display !== 'none') renderMonth(mo);
+      }
+    }
+    // Settings
+    if(json.settings && Object.keys(json.settings).length > 0){
+      mSettings = json.settings;
+      localStorage.setItem(M_SETTINGS_KEY, JSON.stringify(mSettings));
+    }
+
+    gsUpdatePill('ok');
+    gsSetStatus('✅ โหลดข้อมูลเรียบร้อย ' + new Date().toLocaleTimeString('th-TH'), 'var(--accent-green)');
+    console.log('[GS] readAll done', json);
+  } catch(e){
+    gsUpdatePill('error');
+    gsSetStatus('❌ โหลดไม่ได้: ' + e.message, 'var(--accent-red)');
+    console.warn('[GS ReadAll]', e);
+  }
+}
+
+// ── Patch save functions ───────────────────────────────────
+const _gs_origSaveData = saveData;
+saveData = function(){
+  _gs_origSaveData();
+  gsWrite('april', data);
+};
+
+const _gs_origMSaveData = mSaveData;
+mSaveData = function(mo){
+  _gs_origMSaveData(mo);
+  gsWrite('month_'+mo, mData[mo]||{});
+};
+
+const _gs_origMSaveSettings = mSaveSettings;
+mSaveSettings = function(){
+  _gs_origMSaveSettings();
+  gsWrite('settings', mSettings);
+};
+
+// ── Startup ────────────────────────────────────────────────
+setTimeout(function(){
+  const saved = gsGetUrl();
+  const inp = document.getElementById('gsUrl');
+  const btn = document.getElementById('gsSaveBtn');
+  if(inp && saved) inp.value = saved;
+  if(btn) btn.disabled = !saved;
+  if(saved) gsReadAll();
+  else {
+    // Show panel if not configured yet
+    const panel = document.getElementById('gsPanel');
+    if(panel) panel.style.display = 'block';
+    gsSetStatus('กรุณาตั้งค่า Apps Script URL', 'var(--text-muted)');
+  }
+}, 700);
+// ══════════════════════════════════════════════════════════
 
 </script>
 </body>
