@@ -3646,6 +3646,7 @@ async function gsWrite(sheetKey, data){
 async function gsReadAll(){
   const url = gsGetUrl();
   if(!url) return;
+  _gsLoading = true;  // prevent save-loop during load
   gsUpdatePill('syncing');
   gsSetStatus('⏳ กำลังโหลดข้อมูลจาก Sheets…', 'var(--accent-amber)');
   try {
@@ -3654,7 +3655,8 @@ async function gsReadAll(){
     // April
     if(json.april && Object.keys(json.april).length > 0){
       data = json.april;
-      saveData();  // mirror to localStorage
+      // Write to localStorage directly (bypass patched saveData to avoid gsWrite loop)
+      try { localStorage.setItem('loan_april_2026_v1', JSON.stringify(data)); } catch(e){}
       render();
     }
     // Months 5-12
@@ -3662,7 +3664,11 @@ async function gsReadAll(){
       const key = 'month_' + mo;
       if(json[key] && Object.keys(json[key]).length > 0){
         mData[mo] = json[key];
-        mSaveData(mo);
+        // Write to localStorage directly (bypass patched mSaveData)
+        try {
+          const cfg = typeof MONTH_CFGS !== 'undefined' ? MONTH_CFGS[mo] : null;
+          if(cfg) localStorage.setItem(cfg.storageKey, JSON.stringify(mData[mo]));
+        } catch(e){}
         const pg = document.getElementById('page-m'+mo);
         if(pg && pg.style.display !== 'none') renderMonth(mo);
       }
@@ -3675,31 +3681,36 @@ async function gsReadAll(){
 
     gsUpdatePill('ok');
     gsSetStatus('✅ โหลดข้อมูลเรียบร้อย ' + new Date().toLocaleTimeString('th-TH'), 'var(--accent-green)');
-    console.log('[GS] readAll done', json);
+    console.log('[GS] readAll done', Object.keys(json.april||{}).length, 'april keys');
   } catch(e){
     gsUpdatePill('error');
     gsSetStatus('❌ โหลดไม่ได้: ' + e.message, 'var(--accent-red)');
     console.warn('[GS ReadAll]', e);
+  } finally {
+    _gsLoading = false;  // always reset flag
   }
 }
 
-// ── Patch save functions ───────────────────────────────────
+// ── Patch save functions (write to Sheets on user save) ────
+// Guard prevents gsWrite loop when loading from Sheets
+let _gsLoading = false;
+
 const _gs_origSaveData = saveData;
 saveData = function(){
   _gs_origSaveData();
-  gsWrite('april', data);
+  if(!_gsLoading) gsWrite('april', data);
 };
 
 const _gs_origMSaveData = mSaveData;
 mSaveData = function(mo){
   _gs_origMSaveData(mo);
-  gsWrite('month_'+mo, mData[mo]||{});
+  if(!_gsLoading) gsWrite('month_'+mo, mData[mo]||{});
 };
 
 const _gs_origMSaveSettings = mSaveSettings;
 mSaveSettings = function(){
   _gs_origMSaveSettings();
-  gsWrite('settings', mSettings);
+  if(!_gsLoading) gsWrite('settings', mSettings);
 };
 
 // ── Startup ────────────────────────────────────────────────
