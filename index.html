@@ -3509,7 +3509,7 @@ function showPage(id){
   if(!isNaN(mo)&&mo>=5&&mo<=12) renderMonth(mo);
 }
 const lastPage=(()=>{const p=localStorage.getItem('active_page'); return(p&&p!=='page-alloc')?p:'page-dash';})();
-showPage(lastPage);
+// showPage called after GS engine is defined (see bottom of script)
 
 
 // ══════════════════════════════════════════════════════════
@@ -3724,14 +3724,18 @@ mSaveSettings = function(){
 };
 
 // ── Startup ────────────────────────────────────────────────
+// Show active page (after all engines are defined)
+showPage(lastPage);
+
 setTimeout(function(){
   const saved = gsGetUrl();
   const inp = document.getElementById('gsUrl');
   const btn = document.getElementById('gsSaveBtn');
   if(inp && saved) inp.value = saved;
   if(btn) btn.disabled = !saved;
-  if(saved) gsReadAll();
-  else {
+  if(saved){
+    gsReadAll();
+  } else {
     // Show panel if not configured yet
     const panel = document.getElementById('gsPanel');
     if(panel) panel.style.display = 'block';
