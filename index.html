@@ -3593,15 +3593,18 @@ function gsJsonp(url, params){
 
 // ── Form-encoded POST (handles CORS for Apps Script) ──────
 async function gsPost(url, payload){
-  const form = new FormData();
-  form.append('action', payload.action || 'write');
-  form.append('sheet',  payload.sheet  || '');
-  form.append('data',   typeof payload.data === 'string'
-    ? payload.data : JSON.stringify(payload.data));
+  // Use URL-encoded so Apps Script e.parameter works reliably
+  const body = [
+    'action=' + encodeURIComponent(payload.action || 'write'),
+    'sheet='  + encodeURIComponent(payload.sheet  || ''),
+    'data='   + encodeURIComponent(typeof payload.data === 'string'
+                  ? payload.data : JSON.stringify(payload.data)),
+  ].join('&');
 
   const res = await fetch(url, {
-    method: 'POST',
-    body: form,
+    method:   'POST',
+    headers:  { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body:     body,
     redirect: 'follow',
   });
   return res.text();
@@ -3631,14 +3634,21 @@ async function gsTestConnection(){
 // ── Write to Sheets ────────────────────────────────────────
 async function gsWrite(sheetKey, data){
   const url = gsGetUrl();
-  if(!url) return;
+  if(!url){ console.warn('[GS] URL not set'); return; }
   gsUpdatePill('syncing');
   try {
-    await gsPost(url, { action:'write', sheet: sheetKey, data: JSON.stringify(data) });
+    const payload = { action:'write', sheet: sheetKey, data: JSON.stringify(data) };
+    console.log('[GS Write]', sheetKey, Object.keys(data).length, 'keys');
+    const result = await gsPost(url, payload);
+    console.log('[GS Write result]', result);
+    if(result && result.includes('error')){
+      throw new Error(result);
+    }
     gsUpdatePill('ok');
   } catch(e){
-    console.warn('[GS Write]', sheetKey, e);
+    console.warn('[GS Write ERROR]', sheetKey, e.message);
     gsUpdatePill('error');
+    gsSetStatus('❌ บันทึกไม่ได้: ' + e.message, 'var(--accent-red)');
   }
 }
 
