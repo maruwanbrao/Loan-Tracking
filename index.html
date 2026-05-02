@@ -3393,62 +3393,121 @@ function mRenderAnalysis(mo){
   const el=g('analysisContent-m'+mo); if(!el) return;
   const mc=mEffectiveBudget(mo), ws=mGetWorkdayStatus(mo);
   const {spentNew,spentOld,cntNew,cntOld}=mCalcTotals(mo);
-  const remBudNew=Math.max(0,mc.budNew-spentNew),remBudOld=Math.max(0,mc.budOld-spentOld);
-  const remCntNew=Math.max(0,mc.tgtNew-cntNew),  remCntOld=Math.max(0,mc.tgtOld-cntOld);
-  const remain=Math.max(1,ws.remain);
-  const ppN=remBudNew/Math.max(remCntNew,1), ppO=remBudOld/Math.max(remCntOld,1);
-  const todayNeedNew=remCntNew/remain, todayNeedOld=remCntOld/remain;
-  const hasData=ws.passed>0&&(cntNew>0||cntOld>0);
-  const can1st =mc.loanNew>0?Math.floor(remBudNew/mc.loanNew):0;
-  const canRoll=mc.loanOld>0?Math.floor(remBudOld/mc.loanOld):0;
-  const probNew=mc.tgtNew>0?Math.min(100,Math.round((can1st+cntNew)/mc.tgtNew*100)):0;
-  const probOld=mc.tgtOld>0?Math.min(100,Math.round((canRoll+cntOld)/mc.tgtOld*100)):0;
-  const pColor=p=>p>=100?'var(--accent-green)':p>=80?'var(--accent-amber)':'var(--accent-red)';
-  const pLabel=p=>p>=100?'✅ บรรลุเป้า':p>=80?'🔶 น่าจะถึงเป้า':'⚠️ เสี่ยง';
+  const remBudNew=Math.max(0,mc.budNew-spentNew), remBudOld=Math.max(0,mc.budOld-spentOld);
+  const remCntNew=Math.max(0,mc.tgtNew-cntNew),   remCntOld=Math.max(0,mc.tgtOld-cntOld);
+  const remain   =Math.max(1,ws.remain);
+  const ppN      =remBudNew/Math.max(remCntNew,1);
+  const ppO      =remBudOld/Math.max(remCntOld,1);
+  const todayNew =remCntNew/remain;
+  const todayOld =remCntOld/remain;
+  const hasData  =ws.passed>0&&(cntNew>0||cntOld>0);
+
+  // ความน่าจะเป็น: งบที่เหลือ ÷ วงเงิน/คน + ที่ทำไปแล้ว
+  const can1st  =mc.loanNew>0?Math.floor(remBudNew/mc.loanNew):0;
+  const canRoll =mc.loanOld>0?Math.floor(remBudOld/mc.loanOld):0;
+  const probNew =mc.tgtNew>0?Math.min(100,Math.round((can1st+cntNew)/mc.tgtNew*100)):0;
+  const probOld =mc.tgtOld>0?Math.min(100,Math.round((canRoll+cntOld)/mc.tgtOld*100)):0;
+  const pColor  =p=>p>=100?'var(--accent-green)':p>=80?'var(--accent-amber)':'var(--accent-red)';
+  const pLabel  =p=>p>=100?'✅ บรรลุเป้า':p>=80?'🔶 น่าจะถึงเป้า':'⚠️ เสี่ยง';
+
+  // สถานะภาพรวม
+  const budPctNew=mc.budNew>0?Math.round(spentNew/mc.budNew*100):0;
+  const budPctOld=mc.budOld>0?Math.round(spentOld/mc.budOld*100):0;
+  const cntPctNew=mc.tgtNew>0?Math.round(cntNew/mc.tgtNew*100):0;
+  const cntPctOld=mc.tgtOld>0?Math.round(cntOld/mc.tgtOld*100):0;
+  const dayPct   =ws.total>0?Math.round(ws.passed/ws.total*100):0;
+
+  let statusColor='var(--accent-green)', statusIcon='✅', statusMsg='ดำเนินการได้ตามแผน';
+  if(cntNew>=mc.tgtNew&&cntOld>=mc.tgtOld){
+    statusColor='var(--accent-cyan)'; statusIcon='🎉'; statusMsg='บรรลุเป้าหมายทั้งสองกลุ่มแล้ว!';
+  } else if(budPctNew>cntPctNew+12||budPctOld>cntPctOld+12){
+    statusColor='var(--accent-red)'; statusIcon='⚠️';
+    statusMsg='งบหมดเร็วกว่าจำนวนลูกค้า — ควรลดวงเงินต่อคน';
+  } else if(cntPctNew<dayPct-15||cntPctOld<dayPct-15){
+    statusColor='var(--accent-amber)'; statusIcon='🔶';
+    statusMsg='จำนวนลูกค้าช้ากว่าแผน — ควรเร่งปล่อย';
+  }
+
   el.innerHTML=`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+    <!-- สถานะ -->
+    <div style="background:rgba(0,0,0,.2);border:1px solid var(--border-bright);border-radius:8px;
+         padding:14px;margin-bottom:10px;border-left:3px solid ${statusColor};">
+      <div style="font-size:12px;font-weight:700;color:${statusColor};margin-bottom:8px;">
+        ${statusIcon} ${statusMsg}
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+        ${[['งบที่ใช้','var(--accent-blue)',budPctNew+'%'],
+           ['ลูกค้าใหม่','var(--accent-green)',cntPctNew+'%'],
+           ['ลูกค้าเก่า','var(--accent-amber)',cntPctOld+'%'],
+           ['เวลาผ่านไป','var(--accent-cyan)',dayPct+'%']
+          ].map(([lbl,col,val])=>`
+          <div style="background:rgba(255,255,255,.03);border-radius:6px;padding:8px;text-align:center;">
+            <div style="font-size:9px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:3px;">${lbl}</div>
+            <div style="font-size:15px;font-weight:700;font-family:var(--font-mono);color:${col};">${val}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- ความน่าจะเป็น -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
       <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px;border-top:2px solid ${pColor(probNew)};">
-        <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">🆕 ลูกค้าใหม่ — ทำได้รวม</div>
-        <div style="font-size:24px;font-weight:700;font-family:var(--font-mono);color:${pColor(probNew)};">${can1st+cntNew} / ${mc.tgtNew} ราย</div>
+        <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">🆕 ลูกค้าใหม่</div>
+        <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:${pColor(probNew)};">${can1st+cntNew} / ${mc.tgtNew}</div>
         <div style="font-size:10px;color:var(--text-muted);">${pLabel(probNew)} ${probNew}%</div>
         <div style="height:5px;background:var(--border);border-radius:3px;margin-top:6px;position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 3px);">
           <div style="position:absolute;top:0;left:0;height:100%;max-width:100%;background:${pColor(probNew)};width:${probNew}%;"></div></div>
-        <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">วงเงินแนะนำ: <b style="color:var(--accent-green);">${mFmtS(ppN)}/คน</b> · ต้องปล่อย ${todayNeedNew.toFixed(1)} ราย/วัน</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:5px;">
+          วงเงินแนะนำ <b style="color:var(--accent-green);">${mFmtS(ppN)}/คน</b> · ต้องปล่อย ${todayNew.toFixed(1)} ราย/วัน
+        </div>
       </div>
       <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:14px;border-top:2px solid ${pColor(probOld)};">
-        <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">🔄 ลูกค้าเก่า — ทำได้รวม</div>
-        <div style="font-size:24px;font-weight:700;font-family:var(--font-mono);color:${pColor(probOld)};">${canRoll+cntOld} / ${mc.tgtOld} ราย</div>
+        <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">🔄 ลูกค้าเก่า</div>
+        <div style="font-size:22px;font-weight:700;font-family:var(--font-mono);color:${pColor(probOld)};">${canRoll+cntOld} / ${mc.tgtOld}</div>
         <div style="font-size:10px;color:var(--text-muted);">${pLabel(probOld)} ${probOld}%</div>
         <div style="height:5px;background:var(--border);border-radius:3px;margin-top:6px;position:relative;overflow:hidden;clip-path:inset(0 0 0 0 round 3px);">
           <div style="position:absolute;top:0;left:0;height:100%;max-width:100%;background:${pColor(probOld)};width:${probOld}%;"></div></div>
-        <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">วงเงินแนะนำ: <b style="color:var(--accent-amber);">${mFmtS(ppO)}/คน</b> · ต้องปล่อย ${todayNeedOld.toFixed(1)} ราย/วัน</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:5px;">
+          วงเงินแนะนำ <b style="color:var(--accent-amber);">${mFmtS(ppO)}/คน</b> · ต้องปล่อย ${todayOld.toFixed(1)} ราย/วัน
+        </div>
       </div>
     </div>
-    <div style="background:rgba(6,182,212,.04);border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text-secondary);line-height:1.7;margin-bottom:${mc.carryNew>0||mc.carryOld>0?'10px':'0'}">
+
+    <!-- คำแนะนำวันนี้ -->
+    <div style="background:rgba(6,182,212,.04);border:1px solid rgba(6,182,212,.2);
+         border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text-secondary);line-height:1.7;">
       <b style="color:var(--accent-cyan);">📌 คำแนะนำ:</b>
-      ${!hasData?`เริ่มบันทึกข้อมูล — วงเงินฐาน: ใหม่ <b>${mFmtS(mc.loanNew)}/คน</b> · เก่า <b>${mFmtS(mc.loanOld)}/คน</b>`:
-        remain<=3?`⚡ เร่งด่วน! เหลือ ${remain} วัน — ต้องปล่อยวันละ ${Math.ceil(todayNeedNew)} ราย(ใหม่) + ${Math.ceil(todayNeedOld)} ราย(เก่า)`:
-        `ต้องปล่อยวันนี้: <b>${todayNeedNew.toFixed(1)} ราย(ใหม่)</b> ${mFmt(mc.loanNew)}/คน + <b>${todayNeedOld.toFixed(1)} ราย(เก่า)</b> ${mFmt(mc.loanOld)}/คน · งบใช้วันนี้รวม ${mFmtS(Math.ceil(todayNeedNew)*mc.loanNew+Math.ceil(todayNeedOld)*mc.loanOld)}`}
+      ${!hasData
+        ? `เริ่มบันทึกข้อมูล — วงเงินฐาน: ใหม่ <b>${mFmtS(mc.loanNew)}/คน</b> · เก่า <b>${mFmtS(mc.loanOld)}/คน</b>`
+        : remain<=3
+          ? `⚡ เร่งด่วน! เหลือ ${remain} วัน — ต้องปล่อยวันละ ${Math.ceil(todayNew)} ราย(ใหม่) + ${Math.ceil(todayOld)} ราย(เก่า)`
+          : `ต้องปล่อยวันนี้: <b>${todayNew.toFixed(1)} ราย(ใหม่)</b> ${mFmt(mc.loanNew)}/คน + <b>${todayOld.toFixed(1)} ราย(เก่า)</b> ${mFmt(mc.loanOld)}/คน · งบวันนี้รวม ${mFmtS(Math.ceil(todayNew)*mc.loanNew+Math.ceil(todayOld)*mc.loanOld)}`
+      }
     </div>
-    ${(mc.carryNew>0||mc.carryOld>0)?`
-    <div style="background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.25);border-radius:8px;padding:12px 14px;">
-      <div style="font-size:12px;font-weight:600;color:var(--accent-cyan);margin-bottom:8px;">🔄 งบสะสม Carryover จากเดือนก่อนหน้า</div>
+
+    <!-- Carryover (ถ้ามี) -->
+    ${mc.carryNew>0||mc.carryOld>0 ? `
+    <div style="background:rgba(6,182,212,.05);border:1px solid rgba(6,182,212,.2);
+         border-radius:8px;padding:12px 14px;margin-top:10px;">
+      <div style="font-size:12px;font-weight:600;color:var(--accent-cyan);margin-bottom:8px;">
+        🔄 งบสะสม Carryover จากเดือนก่อนหน้า
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
         <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:10px;">
           <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">1st Loan carry</div>
           <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-cyan);">${mc.carryNew>0?mFmt(mc.carryNew):'—'}</div>
-          <div style="font-size:10px;color:var(--text-muted);">งบตั้งต้น ${mFmt(mc.baseBudNew)} + carry = ${mFmt(mc.budNew)}</div>
+          <div style="font-size:10px;color:var(--text-muted);">${mFmt(mc.baseBudNew)} + carry = ${mFmt(mc.budNew)}</div>
         </div>
         <div style="background:rgba(0,0,0,.2);border-radius:6px;padding:10px;">
           <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">Rollover carry</div>
           <div style="font-size:18px;font-weight:700;font-family:var(--font-mono);color:var(--accent-cyan);">${mc.carryOld>0?mFmt(mc.carryOld):'—'}</div>
-          <div style="font-size:10px;color:var(--text-muted);">งบตั้งต้น ${mFmt(mc.baseBudOld)} + carry = ${mFmt(mc.budOld)}</div>
+          <div style="font-size:10px;color:var(--text-muted);">${mFmt(mc.baseBudOld)} + carry = ${mFmt(mc.budOld)}</div>
         </div>
       </div>
       <div style="font-size:11px;color:var(--text-muted);">
         ${mc.breakdown.map(b=>`<span style="display:inline-block;background:rgba(6,182,212,.1);border-radius:4px;padding:2px 8px;margin:2px;font-family:var(--font-mono);">${TH_MONTHS_SHORT_M[b.mo]}: 1st +${mFmtS(b.surplusNew)} · Roll +${mFmtS(b.surplusOld)}</span>`).join('')}
       </div>
-    </div>`:''}`;
+    </div>` : ''}
+  `;
 }
 
 // ── Month Modal ──
@@ -3515,9 +3574,18 @@ const lastPage=(()=>{const p=localStorage.getItem('active_page'); return(p&&p!==
 // ══════════════════════════════════════════════════════════
 // GOOGLE SHEETS SYNC ENGINE v2 (JSONP + form-POST)
 // ══════════════════════════════════════════════════════════
+// ─────────────────────────────────────────────────────────
+// 🔧 GOOGLE APPS SCRIPT URL — แก้ไขได้ที่นี่
+//    หลังจาก Deploy ใหม่ ให้เปลี่ยน URL ด้านล่างนี้
+// ─────────────────────────────────────────────────────────
+const GS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz4vMnv4lm6mOM7otmMHkvp2OqiTTTx_3MFyW5hW_qPgj7lmFHt6MSDi5MPE3iN03LrWw/exec';
+
 const GS_URL_KEY = 'gs_webapp_url_v1';
 
-function gsGetUrl(){ return localStorage.getItem(GS_URL_KEY) || ''; }
+function gsGetUrl(){
+  // ใช้ URL ที่ฝังไว้ก่อน ถ้าไม่มีค่อยใช้จาก localStorage
+  return GS_WEBAPP_URL || localStorage.getItem(GS_URL_KEY) || '';
+}
 
 function gsSaveUrl(){
   const url = document.getElementById('gsUrl').value.trim();
@@ -3536,9 +3604,10 @@ function gsTogglePanel(){
   if(!isOpen){
     const inp = document.getElementById('gsUrl');
     const btn = document.getElementById('gsSaveBtn');
-    const saved = gsGetUrl();
-    if(inp && saved) inp.value = saved;
-    if(btn) btn.disabled = !saved;
+    // แสดง URL ปัจจุบัน (จาก hardcode หรือ localStorage)
+    const current = GS_WEBAPP_URL || localStorage.getItem(GS_URL_KEY) || '';
+    if(inp) inp.value = current;
+    if(btn) btn.disabled = !current;
   }
 }
 
@@ -3733,10 +3802,12 @@ setTimeout(function(){
   const btn = document.getElementById('gsSaveBtn');
   if(inp && saved) inp.value = saved;
   if(btn) btn.disabled = !saved;
-  if(saved){
+  // ถ้ามี URL (จาก hardcode หรือ localStorage) → เชื่อมต่อทันที
+  const activeUrl = GS_WEBAPP_URL || saved;
+  if(activeUrl){
     gsReadAll();
   } else {
-    // Show panel if not configured yet
+    // ยังไม่มี URL → แสดง panel ให้กรอก
     const panel = document.getElementById('gsPanel');
     if(panel) panel.style.display = 'block';
     gsSetStatus('กรุณาตั้งค่า Apps Script URL', 'var(--text-muted)');
