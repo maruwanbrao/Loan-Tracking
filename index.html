@@ -998,6 +998,48 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
         </div>
       </div>
 
+      <!-- ─── Carryover Section ─── -->
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);text-transform:uppercase;letter-spacing:1px;">
+            🔄 Carryover งบจากเดือนก่อน
+          </div>
+          <!-- Toggle เปิด/ปิด carryover -->
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <div style="position:relative;width:36px;height:20px;">
+              <input type="checkbox" id="s_carry_on_5" onchange="mApplySettings(5)"
+                style="opacity:0;width:0;height:0;position:absolute;">
+              <span id="s_carry_track_5" style="position:absolute;inset:0;border-radius:20px;background:var(--border);transition:background .2s;"></span>
+              <span id="s_carry_thumb_5" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--text-muted);transition:all .2s;"></span>
+            </div>
+            <span id="s_carry_lbl_5" style="font-size:11px;color:var(--text-muted);">ปิดอยู่</span>
+          </label>
+        </div>
+        <!-- คีย์ยอด carry เพิ่มเอง -->
+        <div id="s_carry_fields_5" style="display:none;">
+          <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">
+            ระบุงบสะสมที่ต้องการนำมาบวกเพิ่ม (ถ้าไม่กรอก = ใช้งบตั้งต้นปกติ)
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">Carry 1st Loan (฿)</label>
+              <input type="number" class="form-input" id="s_carryNew_5"
+                placeholder="0" min="0" oninput="mApplySettings(5)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryNew_hint_5">—</div>
+            </div>
+            <div>
+              <label class="form-label">Carry Rollover (฿)</label>
+              <input type="number" class="form-input" id="s_carryOld_5"
+                placeholder="0" min="0" oninput="mApplySettings(5)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryOld_hint_5">—</div>
+            </div>
+          </div>
+          <div id="s_carry_total_5" style="margin-top:8px;font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);"></div>
+        </div>
+      </div>
+
       <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
         <span id="s_saved_5" style="font-size:11px;color:var(--accent-green);font-family:var(--font-mono);opacity:0;transition:opacity .3s;">✓ บันทึกแล้ว</span>
         <button class="btn" onclick="mResetSettings(5)" style="margin-left:auto;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:6px 12px;">↺ รีเซ็ต</button>
@@ -1144,6 +1186,48 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
           <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">วันจันทร์หยุดอัตโนมัติ · กดวันที่เพิ่มเติมที่ต้องการหยุด</div>
           <div id="holidayPicker-m6" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;"></div>
           <div style="font-size:11px;color:var(--text-muted);">วันทำงาน: <span id="workdayCount-m6" style="color:var(--accent-cyan);font-family:var(--font-mono);font-weight:700;">—</span> วัน</div>
+        </div>
+      </div>
+
+      <!-- ─── Carryover Section ─── -->
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);text-transform:uppercase;letter-spacing:1px;">
+            🔄 Carryover งบจากเดือนก่อน
+          </div>
+          <!-- Toggle เปิด/ปิด carryover -->
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <div style="position:relative;width:36px;height:20px;">
+              <input type="checkbox" id="s_carry_on_6" onchange="mApplySettings(6)"
+                style="opacity:0;width:0;height:0;position:absolute;">
+              <span id="s_carry_track_6" style="position:absolute;inset:0;border-radius:20px;background:var(--border);transition:background .2s;"></span>
+              <span id="s_carry_thumb_6" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--text-muted);transition:all .2s;"></span>
+            </div>
+            <span id="s_carry_lbl_6" style="font-size:11px;color:var(--text-muted);">ปิดอยู่</span>
+          </label>
+        </div>
+        <!-- คีย์ยอด carry เพิ่มเอง -->
+        <div id="s_carry_fields_6" style="display:none;">
+          <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">
+            ระบุงบสะสมที่ต้องการนำมาบวกเพิ่ม (ถ้าไม่กรอก = ใช้งบตั้งต้นปกติ)
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">Carry 1st Loan (฿)</label>
+              <input type="number" class="form-input" id="s_carryNew_6"
+                placeholder="0" min="0" oninput="mApplySettings(6)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryNew_hint_6">—</div>
+            </div>
+            <div>
+              <label class="form-label">Carry Rollover (฿)</label>
+              <input type="number" class="form-input" id="s_carryOld_6"
+                placeholder="0" min="0" oninput="mApplySettings(6)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryOld_hint_6">—</div>
+            </div>
+          </div>
+          <div id="s_carry_total_6" style="margin-top:8px;font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);"></div>
         </div>
       </div>
 
@@ -1296,6 +1380,48 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
         </div>
       </div>
 
+      <!-- ─── Carryover Section ─── -->
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);text-transform:uppercase;letter-spacing:1px;">
+            🔄 Carryover งบจากเดือนก่อน
+          </div>
+          <!-- Toggle เปิด/ปิด carryover -->
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <div style="position:relative;width:36px;height:20px;">
+              <input type="checkbox" id="s_carry_on_7" onchange="mApplySettings(7)"
+                style="opacity:0;width:0;height:0;position:absolute;">
+              <span id="s_carry_track_7" style="position:absolute;inset:0;border-radius:20px;background:var(--border);transition:background .2s;"></span>
+              <span id="s_carry_thumb_7" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--text-muted);transition:all .2s;"></span>
+            </div>
+            <span id="s_carry_lbl_7" style="font-size:11px;color:var(--text-muted);">ปิดอยู่</span>
+          </label>
+        </div>
+        <!-- คีย์ยอด carry เพิ่มเอง -->
+        <div id="s_carry_fields_7" style="display:none;">
+          <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">
+            ระบุงบสะสมที่ต้องการนำมาบวกเพิ่ม (ถ้าไม่กรอก = ใช้งบตั้งต้นปกติ)
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">Carry 1st Loan (฿)</label>
+              <input type="number" class="form-input" id="s_carryNew_7"
+                placeholder="0" min="0" oninput="mApplySettings(7)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryNew_hint_7">—</div>
+            </div>
+            <div>
+              <label class="form-label">Carry Rollover (฿)</label>
+              <input type="number" class="form-input" id="s_carryOld_7"
+                placeholder="0" min="0" oninput="mApplySettings(7)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryOld_hint_7">—</div>
+            </div>
+          </div>
+          <div id="s_carry_total_7" style="margin-top:8px;font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);"></div>
+        </div>
+      </div>
+
       <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
         <span id="s_saved_7" style="font-size:11px;color:var(--accent-green);font-family:var(--font-mono);opacity:0;transition:opacity .3s;">✓ บันทึกแล้ว</span>
         <button class="btn" onclick="mResetSettings(7)" style="margin-left:auto;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:6px 12px;">↺ รีเซ็ต</button>
@@ -1442,6 +1568,48 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
           <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">วันจันทร์หยุดอัตโนมัติ · กดวันที่เพิ่มเติมที่ต้องการหยุด</div>
           <div id="holidayPicker-m8" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;"></div>
           <div style="font-size:11px;color:var(--text-muted);">วันทำงาน: <span id="workdayCount-m8" style="color:var(--accent-cyan);font-family:var(--font-mono);font-weight:700;">—</span> วัน</div>
+        </div>
+      </div>
+
+      <!-- ─── Carryover Section ─── -->
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);text-transform:uppercase;letter-spacing:1px;">
+            🔄 Carryover งบจากเดือนก่อน
+          </div>
+          <!-- Toggle เปิด/ปิด carryover -->
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <div style="position:relative;width:36px;height:20px;">
+              <input type="checkbox" id="s_carry_on_8" onchange="mApplySettings(8)"
+                style="opacity:0;width:0;height:0;position:absolute;">
+              <span id="s_carry_track_8" style="position:absolute;inset:0;border-radius:20px;background:var(--border);transition:background .2s;"></span>
+              <span id="s_carry_thumb_8" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--text-muted);transition:all .2s;"></span>
+            </div>
+            <span id="s_carry_lbl_8" style="font-size:11px;color:var(--text-muted);">ปิดอยู่</span>
+          </label>
+        </div>
+        <!-- คีย์ยอด carry เพิ่มเอง -->
+        <div id="s_carry_fields_8" style="display:none;">
+          <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">
+            ระบุงบสะสมที่ต้องการนำมาบวกเพิ่ม (ถ้าไม่กรอก = ใช้งบตั้งต้นปกติ)
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">Carry 1st Loan (฿)</label>
+              <input type="number" class="form-input" id="s_carryNew_8"
+                placeholder="0" min="0" oninput="mApplySettings(8)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryNew_hint_8">—</div>
+            </div>
+            <div>
+              <label class="form-label">Carry Rollover (฿)</label>
+              <input type="number" class="form-input" id="s_carryOld_8"
+                placeholder="0" min="0" oninput="mApplySettings(8)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryOld_hint_8">—</div>
+            </div>
+          </div>
+          <div id="s_carry_total_8" style="margin-top:8px;font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);"></div>
         </div>
       </div>
 
@@ -1594,6 +1762,48 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
         </div>
       </div>
 
+      <!-- ─── Carryover Section ─── -->
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);text-transform:uppercase;letter-spacing:1px;">
+            🔄 Carryover งบจากเดือนก่อน
+          </div>
+          <!-- Toggle เปิด/ปิด carryover -->
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <div style="position:relative;width:36px;height:20px;">
+              <input type="checkbox" id="s_carry_on_9" onchange="mApplySettings(9)"
+                style="opacity:0;width:0;height:0;position:absolute;">
+              <span id="s_carry_track_9" style="position:absolute;inset:0;border-radius:20px;background:var(--border);transition:background .2s;"></span>
+              <span id="s_carry_thumb_9" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--text-muted);transition:all .2s;"></span>
+            </div>
+            <span id="s_carry_lbl_9" style="font-size:11px;color:var(--text-muted);">ปิดอยู่</span>
+          </label>
+        </div>
+        <!-- คีย์ยอด carry เพิ่มเอง -->
+        <div id="s_carry_fields_9" style="display:none;">
+          <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">
+            ระบุงบสะสมที่ต้องการนำมาบวกเพิ่ม (ถ้าไม่กรอก = ใช้งบตั้งต้นปกติ)
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">Carry 1st Loan (฿)</label>
+              <input type="number" class="form-input" id="s_carryNew_9"
+                placeholder="0" min="0" oninput="mApplySettings(9)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryNew_hint_9">—</div>
+            </div>
+            <div>
+              <label class="form-label">Carry Rollover (฿)</label>
+              <input type="number" class="form-input" id="s_carryOld_9"
+                placeholder="0" min="0" oninput="mApplySettings(9)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryOld_hint_9">—</div>
+            </div>
+          </div>
+          <div id="s_carry_total_9" style="margin-top:8px;font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);"></div>
+        </div>
+      </div>
+
       <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
         <span id="s_saved_9" style="font-size:11px;color:var(--accent-green);font-family:var(--font-mono);opacity:0;transition:opacity .3s;">✓ บันทึกแล้ว</span>
         <button class="btn" onclick="mResetSettings(9)" style="margin-left:auto;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:6px 12px;">↺ รีเซ็ต</button>
@@ -1740,6 +1950,48 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
           <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">วันจันทร์หยุดอัตโนมัติ · กดวันที่เพิ่มเติมที่ต้องการหยุด</div>
           <div id="holidayPicker-m10" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;"></div>
           <div style="font-size:11px;color:var(--text-muted);">วันทำงาน: <span id="workdayCount-m10" style="color:var(--accent-cyan);font-family:var(--font-mono);font-weight:700;">—</span> วัน</div>
+        </div>
+      </div>
+
+      <!-- ─── Carryover Section ─── -->
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);text-transform:uppercase;letter-spacing:1px;">
+            🔄 Carryover งบจากเดือนก่อน
+          </div>
+          <!-- Toggle เปิด/ปิด carryover -->
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <div style="position:relative;width:36px;height:20px;">
+              <input type="checkbox" id="s_carry_on_10" onchange="mApplySettings(10)"
+                style="opacity:0;width:0;height:0;position:absolute;">
+              <span id="s_carry_track_10" style="position:absolute;inset:0;border-radius:20px;background:var(--border);transition:background .2s;"></span>
+              <span id="s_carry_thumb_10" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--text-muted);transition:all .2s;"></span>
+            </div>
+            <span id="s_carry_lbl_10" style="font-size:11px;color:var(--text-muted);">ปิดอยู่</span>
+          </label>
+        </div>
+        <!-- คีย์ยอด carry เพิ่มเอง -->
+        <div id="s_carry_fields_10" style="display:none;">
+          <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">
+            ระบุงบสะสมที่ต้องการนำมาบวกเพิ่ม (ถ้าไม่กรอก = ใช้งบตั้งต้นปกติ)
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">Carry 1st Loan (฿)</label>
+              <input type="number" class="form-input" id="s_carryNew_10"
+                placeholder="0" min="0" oninput="mApplySettings(10)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryNew_hint_10">—</div>
+            </div>
+            <div>
+              <label class="form-label">Carry Rollover (฿)</label>
+              <input type="number" class="form-input" id="s_carryOld_10"
+                placeholder="0" min="0" oninput="mApplySettings(10)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryOld_hint_10">—</div>
+            </div>
+          </div>
+          <div id="s_carry_total_10" style="margin-top:8px;font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);"></div>
         </div>
       </div>
 
@@ -1892,6 +2144,48 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
         </div>
       </div>
 
+      <!-- ─── Carryover Section ─── -->
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);text-transform:uppercase;letter-spacing:1px;">
+            🔄 Carryover งบจากเดือนก่อน
+          </div>
+          <!-- Toggle เปิด/ปิด carryover -->
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <div style="position:relative;width:36px;height:20px;">
+              <input type="checkbox" id="s_carry_on_11" onchange="mApplySettings(11)"
+                style="opacity:0;width:0;height:0;position:absolute;">
+              <span id="s_carry_track_11" style="position:absolute;inset:0;border-radius:20px;background:var(--border);transition:background .2s;"></span>
+              <span id="s_carry_thumb_11" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--text-muted);transition:all .2s;"></span>
+            </div>
+            <span id="s_carry_lbl_11" style="font-size:11px;color:var(--text-muted);">ปิดอยู่</span>
+          </label>
+        </div>
+        <!-- คีย์ยอด carry เพิ่มเอง -->
+        <div id="s_carry_fields_11" style="display:none;">
+          <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">
+            ระบุงบสะสมที่ต้องการนำมาบวกเพิ่ม (ถ้าไม่กรอก = ใช้งบตั้งต้นปกติ)
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">Carry 1st Loan (฿)</label>
+              <input type="number" class="form-input" id="s_carryNew_11"
+                placeholder="0" min="0" oninput="mApplySettings(11)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryNew_hint_11">—</div>
+            </div>
+            <div>
+              <label class="form-label">Carry Rollover (฿)</label>
+              <input type="number" class="form-input" id="s_carryOld_11"
+                placeholder="0" min="0" oninput="mApplySettings(11)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryOld_hint_11">—</div>
+            </div>
+          </div>
+          <div id="s_carry_total_11" style="margin-top:8px;font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);"></div>
+        </div>
+      </div>
+
       <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
         <span id="s_saved_11" style="font-size:11px;color:var(--accent-green);font-family:var(--font-mono);opacity:0;transition:opacity .3s;">✓ บันทึกแล้ว</span>
         <button class="btn" onclick="mResetSettings(11)" style="margin-left:auto;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--accent-red);font-size:12px;padding:6px 12px;">↺ รีเซ็ต</button>
@@ -2038,6 +2332,48 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
           <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">วันจันทร์หยุดอัตโนมัติ · กดวันที่เพิ่มเติมที่ต้องการหยุด</div>
           <div id="holidayPicker-m12" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;"></div>
           <div style="font-size:11px;color:var(--text-muted);">วันทำงาน: <span id="workdayCount-m12" style="color:var(--accent-cyan);font-family:var(--font-mono);font-weight:700;">—</span> วัน</div>
+        </div>
+      </div>
+
+      <!-- ─── Carryover Section ─── -->
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);text-transform:uppercase;letter-spacing:1px;">
+            🔄 Carryover งบจากเดือนก่อน
+          </div>
+          <!-- Toggle เปิด/ปิด carryover -->
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+            <div style="position:relative;width:36px;height:20px;">
+              <input type="checkbox" id="s_carry_on_12" onchange="mApplySettings(12)"
+                style="opacity:0;width:0;height:0;position:absolute;">
+              <span id="s_carry_track_12" style="position:absolute;inset:0;border-radius:20px;background:var(--border);transition:background .2s;"></span>
+              <span id="s_carry_thumb_12" style="position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--text-muted);transition:all .2s;"></span>
+            </div>
+            <span id="s_carry_lbl_12" style="font-size:11px;color:var(--text-muted);">ปิดอยู่</span>
+          </label>
+        </div>
+        <!-- คีย์ยอด carry เพิ่มเอง -->
+        <div id="s_carry_fields_12" style="display:none;">
+          <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;">
+            ระบุงบสะสมที่ต้องการนำมาบวกเพิ่ม (ถ้าไม่กรอก = ใช้งบตั้งต้นปกติ)
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div>
+              <label class="form-label">Carry 1st Loan (฿)</label>
+              <input type="number" class="form-input" id="s_carryNew_12"
+                placeholder="0" min="0" oninput="mApplySettings(12)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryNew_hint_12">—</div>
+            </div>
+            <div>
+              <label class="form-label">Carry Rollover (฿)</label>
+              <input type="number" class="form-input" id="s_carryOld_12"
+                placeholder="0" min="0" oninput="mApplySettings(12)"
+                style="font-size:13px;padding:8px 10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="s_carryOld_hint_12">—</div>
+            </div>
+          </div>
+          <div id="s_carry_total_12" style="margin-top:8px;font-size:11px;font-family:var(--font-mono);color:var(--accent-cyan);"></div>
         </div>
       </div>
 
@@ -2968,12 +3304,16 @@ function mSaveSettings(){
 function mGetSetting(mo,key,def){ return (mSettings[mo]&&mSettings[mo][key]!==undefined)?mSettings[mo][key]:def; }
 function mCfg(mo){
   return {
-    budNew:  mGetSetting(mo,'budNew',  2500000),
-    budOld:  mGetSetting(mo,'budOld',  1080000),
-    tgtNew:  mGetSetting(mo,'tgtNew',  250),
-    tgtOld:  mGetSetting(mo,'tgtOld',  60),
-    loanNew: mGetSetting(mo,'loanNew', 10000),
-    loanOld: mGetSetting(mo,'loanOld', 12000),
+    budNew:   mGetSetting(mo,'budNew',   2500000),
+    budOld:   mGetSetting(mo,'budOld',   1080000),
+    tgtNew:   mGetSetting(mo,'tgtNew',   250),
+    tgtOld:   mGetSetting(mo,'tgtOld',   60),
+    loanNew:  mGetSetting(mo,'loanNew',  10000),
+    loanOld:  mGetSetting(mo,'loanOld',  12000),
+    // Carryover — คีย์เพิ่มเองในหน้า settings
+    carryOn:  mGetSetting(mo,'carryOn',  false),
+    carryNew: mGetSetting(mo,'carryNew', 0),
+    carryOld: mGetSetting(mo,'carryOld', 0),
   };
 }
 function mGetHolidays(mo){
@@ -3081,32 +3421,19 @@ function mGetCarryover(mo){
   return {carryNew, carryOld, breakdown};
 }
 
-// ─────────────────────────────────────────────────────────
-// 💡 CARRYOVER — ปิดอยู่ชั่วคราว
-//    ถ้าต้องการเปิดใช้: เปลี่ยน ENABLE_CARRYOVER = true
-//    ระบบจะนำงบที่เหลือจากเดือนก่อนมาบวกให้อัตโนมัติ
-// ─────────────────────────────────────────────────────────
-const ENABLE_CARRYOVER = false;
-
 function mEffectiveBudget(mo){
   const mc = mCfg(mo);
-  // Carryover: เปิด/ปิดได้ที่ ENABLE_CARRYOVER ด้านบน
-  if(ENABLE_CARRYOVER){
-    const {carryNew, carryOld, breakdown} = mGetCarryover(mo);
-    return {
-      budNew: mc.budNew + carryNew, budOld: mc.budOld + carryOld,
-      baseBudNew: mc.budNew, baseBudOld: mc.budOld,
-      carryNew, carryOld, breakdown,
-      tgtNew: mc.tgtNew, tgtOld: mc.tgtOld,
-      loanNew: mc.loanNew, loanOld: mc.loanOld,
-    };
-  }
-  // Default: ใช้งบตั้งต้นเท่านั้น
+  // Carry: ใช้ค่าที่คีย์เองใน settings (เปิด/ปิดได้ด้วย toggle)
+  const carryNew = mc.carryOn ? (mc.carryNew || 0) : 0;
+  const carryOld = mc.carryOn ? (mc.carryOld || 0) : 0;
   return {
-    budNew: mc.budNew, budOld: mc.budOld,
-    baseBudNew: mc.budNew, baseBudOld: mc.budOld,
-    carryNew: 0, carryOld: 0, breakdown: [],
-    tgtNew: mc.tgtNew, tgtOld: mc.tgtOld,
+    budNew:     mc.budNew + carryNew,
+    budOld:     mc.budOld + carryOld,
+    baseBudNew: mc.budNew,
+    baseBudOld: mc.budOld,
+    carryNew, carryOld,
+    breakdown:  carryNew||carryOld ? [{mo: mo-1, surplusNew: carryNew, surplusOld: carryOld}] : [],
+    tgtNew:  mc.tgtNew,  tgtOld:  mc.tgtOld,
     loanNew: mc.loanNew, loanOld: mc.loanOld,
   };
 }
@@ -3125,7 +3452,7 @@ function mToggleSettings(mo){
   const el=g('settingsBar-m'+mo); if(!el) return;
   const isHidden=el.style.display==='none'||el.style.display==='';
   el.style.display=isHidden?'block':'none';
-  if(isHidden){ mRestoreSettingsForm(mo); mRenderHolidayPicker(mo); }
+  if(isHidden){ mRestoreSettingsForm(mo); mRenderHolidayPicker(mo); mUpdateCarryUI(mo); }
 }
 function mRestoreSettingsForm(mo){
   const mc=mCfg(mo);
@@ -3136,6 +3463,12 @@ function mRestoreSettingsForm(mo){
   s('s_budOld_'+mo,  mc.budOld,  1080000);
   s('s_tgtOld_'+mo,  mc.tgtOld,  60);
   s('s_loanOld_'+mo, mc.loanOld, 12000);
+  // Carry
+  const chk = g('s_carry_on_'+mo);
+  if(chk) chk.checked = mc.carryOn || false;
+  const cN = g('s_carryNew_'+mo); if(cN) cN.value = mc.carryNew||'';
+  const cO = g('s_carryOld_'+mo); if(cO) cO.value = mc.carryOld||'';
+  mUpdateCarryUI(mo);
 }
 function mApplySettings(mo){
   const getV=(id,def)=>{ const e=g(id); return (e&&e.value!=='')?parseFloat(e.value):def; };
@@ -3146,18 +3479,56 @@ function mApplySettings(mo){
   mSettings[mo].budOld  = getV('s_budOld_'+mo,  1080000);
   mSettings[mo].tgtOld  = getV('s_tgtOld_'+mo,  60);
   mSettings[mo].loanOld = getV('s_loanOld_'+mo, 12000);
+  // Carryover
+  const carryEl = g('s_carry_on_'+mo);
+  mSettings[mo].carryOn  = carryEl ? carryEl.checked : false;
+  mSettings[mo].carryNew = getV('s_carryNew_'+mo, 0);
+  mSettings[mo].carryOld = getV('s_carryOld_'+mo, 0);
   // keep existing holidays
   if(mSettings[mo].holidays===undefined) mSettings[mo].holidays=mGetHolidays(mo);
   mSaveSettings();
+  mUpdateCarryUI(mo);
   const msg=g('s_saved_'+mo); if(msg){msg.style.opacity='1';setTimeout(()=>msg.style.opacity='0',1500);}
   mRenderHolidayPicker(mo);
   renderMonth(mo);
+}
+
+function mUpdateCarryUI(mo){
+  const chk    = g('s_carry_on_'+mo);
+  const fields = g('s_carry_fields_'+mo);
+  const track  = g('s_carry_track_'+mo);
+  const thumb  = g('s_carry_thumb_'+mo);
+  const lbl    = g('s_carry_lbl_'+mo);
+  if(!chk) return;
+  const on = chk.checked;
+  if(fields) fields.style.display = on ? 'block' : 'none';
+  if(track)  track.style.background = on ? 'var(--accent-cyan)' : 'var(--border)';
+  if(thumb){
+    thumb.style.left       = on ? '19px' : '3px';
+    thumb.style.background = on ? '#fff' : 'var(--text-muted)';
+  }
+  if(lbl) lbl.textContent = on ? 'เปิดอยู่' : 'ปิดอยู่';
+  if(lbl) lbl.style.color = on ? 'var(--accent-cyan)' : 'var(--text-muted)';
+  // Update hint labels
+  if(on){
+    const mc = mCfg(mo);
+    const cN = parseFloat(g('s_carryNew_'+mo)?.value)||0;
+    const cO = parseFloat(g('s_carryOld_'+mo)?.value)||0;
+    const hN = g('s_carryNew_hint_'+mo);
+    const hO = g('s_carryOld_hint_'+mo);
+    const tot = g('s_carry_total_'+mo);
+    if(hN) hN.textContent = cN>0 ? `งบใหม่รวม: ${mFmt(mc.budNew+cN)}` : '—';
+    if(hO) hO.textContent = cO>0 ? `งบเก่ารวม: ${mFmt(mc.budOld+cO)}` : '—';
+    if(tot && (cN||cO)) tot.innerHTML = `งบรวมหลัง carry: <b>1st ${mFmt(mc.budNew+cN)}</b> · <b>Roll ${mFmt(mc.budOld+cO)}</b>`;
+    else if(tot) tot.textContent = '';
+  }
 }
 function mResetSettings(mo){
   if(!confirm('รีเซ็ตการตั้งค่าเดือนนี้กลับค่าเริ่มต้น?')) return;
   delete mSettings[mo];
   mSaveSettings();
   mRestoreSettingsForm(mo);
+  mUpdateCarryUI(mo);
   mRenderHolidayPicker(mo);
   renderMonth(mo);
 }
