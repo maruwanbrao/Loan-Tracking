@@ -686,6 +686,46 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
     animation: slideDown .2s ease;
   }
 
+
+  /* ─── HALF MONTH MONITOR ─── */
+  .half-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .half-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .half-card.over  { border-color: rgba(239,68,68,.5);  background: rgba(239,68,68,.05); }
+  .half-card.warn  { border-color: rgba(245,158,11,.4); background: rgba(245,158,11,.04); }
+  .half-card.ok    { border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.04); }
+  .half-title {
+    font-size: 10px; font-family: var(--font-mono);
+    color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 8px;
+  }
+  .half-bar-wrap {
+    height: 5px; background: var(--border); border-radius: 3px;
+    position: relative; overflow: hidden;
+    clip-path: inset(0 0 0 0 round 3px); margin: 6px 0 4px;
+  }
+  .half-bar-fill {
+    position: absolute; top:0; left:0;
+    height: 100%; max-width: 100%; border-radius: 3px;
+    transition: width .6s ease;
+  }
+  .half-quota-line {
+    position: absolute; top:0; height:100%;
+    width: 2px; background: rgba(255,255,255,.4);
+    border-radius: 1px;
+  }
+
 </style>
 </head>
 <body>
@@ -1101,6 +1141,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
       <div id="progressBars-m5"></div>
       <hr class="divider">
       <div id="budgetAlert-m5"></div>
+      <div id="halfMonth-m5" style="margin-top:12px;"></div>
       <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
         วันทำงาน: <span id="totalWorkDays-m5" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
         ผ่านแล้ว: <span id="passedWorkDays-m5" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
@@ -1292,6 +1333,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
       <div id="progressBars-m6"></div>
       <hr class="divider">
       <div id="budgetAlert-m6"></div>
+      <div id="halfMonth-m6" style="margin-top:12px;"></div>
       <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
         วันทำงาน: <span id="totalWorkDays-m6" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
         ผ่านแล้ว: <span id="passedWorkDays-m6" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
@@ -1483,6 +1525,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
       <div id="progressBars-m7"></div>
       <hr class="divider">
       <div id="budgetAlert-m7"></div>
+      <div id="halfMonth-m7" style="margin-top:12px;"></div>
       <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
         วันทำงาน: <span id="totalWorkDays-m7" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
         ผ่านแล้ว: <span id="passedWorkDays-m7" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
@@ -1674,6 +1717,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
       <div id="progressBars-m8"></div>
       <hr class="divider">
       <div id="budgetAlert-m8"></div>
+      <div id="halfMonth-m8" style="margin-top:12px;"></div>
       <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
         วันทำงาน: <span id="totalWorkDays-m8" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
         ผ่านแล้ว: <span id="passedWorkDays-m8" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
@@ -1865,6 +1909,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
       <div id="progressBars-m9"></div>
       <hr class="divider">
       <div id="budgetAlert-m9"></div>
+      <div id="halfMonth-m9" style="margin-top:12px;"></div>
       <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
         วันทำงาน: <span id="totalWorkDays-m9" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
         ผ่านแล้ว: <span id="passedWorkDays-m9" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
@@ -2056,6 +2101,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
       <div id="progressBars-m10"></div>
       <hr class="divider">
       <div id="budgetAlert-m10"></div>
+      <div id="halfMonth-m10" style="margin-top:12px;"></div>
       <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
         วันทำงาน: <span id="totalWorkDays-m10" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
         ผ่านแล้ว: <span id="passedWorkDays-m10" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
@@ -2247,6 +2293,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
       <div id="progressBars-m11"></div>
       <hr class="divider">
       <div id="budgetAlert-m11"></div>
+      <div id="halfMonth-m11" style="margin-top:12px;"></div>
       <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
         วันทำงาน: <span id="totalWorkDays-m11" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
         ผ่านแล้ว: <span id="passedWorkDays-m11" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
@@ -2438,6 +2485,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
       <div id="progressBars-m12"></div>
       <hr class="divider">
       <div id="budgetAlert-m12"></div>
+      <div id="halfMonth-m12" style="margin-top:12px;"></div>
       <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono)">
         วันทำงาน: <span id="totalWorkDays-m12" style="color:var(--accent-cyan)">—</span> วัน &nbsp;|&nbsp;
         ผ่านแล้ว: <span id="passedWorkDays-m12" style="color:var(--accent-amber)">—</span> วัน &nbsp;|&nbsp;
@@ -3700,8 +3748,89 @@ function renderMonth(mo){
   }
 
   mRenderCalendar(mo);
+  mRenderHalfMonth(mo);
   mRenderTable(mo);
   mRenderAnalysis(mo);
+}
+
+// ── Half-Month Monitor ────────────────────────────────────
+function mRenderHalfMonth(mo){
+  var el = g('halfMonth-m'+mo); if(!el) return;
+  var mc   = mEffectiveBudget(mo);
+  var dim  = mDaysInMonth(mo);
+  var mid  = Math.floor(dim / 2);
+  var today = mGetTodayDate(mo);
+  var wdAll    = mGetWorkdays(mo);
+  var wdFirst  = wdAll.filter(function(d){ return d <= mid; });
+  var wdSecond = wdAll.filter(function(d){ return d > mid; });
+
+  var spentNewH1=0, spentOldH1=0, cntNewH1=0, cntOldH1=0;
+  var spentNewH2=0, spentOldH2=0, cntNewH2=0, cntOldH2=0;
+  Object.entries(mData[mo]||{}).forEach(function(kv){
+    var key = kv[0], v = kv[1];
+    var day = parseInt((key.split('-')[2])||0);
+    if(day <= mid){
+      spentNewH1+=(v.amtNew||0); spentOldH1+=(v.amtOld||0);
+      cntNewH1  +=(v.cntNew||0); cntOldH1  +=(v.cntOld||0);
+    } else {
+      spentNewH2+=(v.amtNew||0); spentOldH2+=(v.amtOld||0);
+      cntNewH2  +=(v.cntNew||0); cntOldH2  +=(v.cntOld||0);
+    }
+  });
+
+  var quotaNewH    = mc.budNew / 2;
+  var quotaOldH    = mc.budOld / 2;
+  var quotaCntNewH = mc.tgtNew / 2;
+  var quotaCntOldH = mc.tgtOld / 2;
+  var inFirst  = !today || today <= mid;
+  var inSecond = today && today > mid;
+
+  function halfCard(spent, quota, cnt, quotaCnt, workdays, isActive, isFirst){
+    var pct    = quota > 0 ? Math.min(120, Math.round(spent/quota*100)) : 0;
+    var cntPct = quotaCnt > 0 ? Math.min(120, Math.round(cnt/quotaCnt*100)) : 0;
+    var over   = pct > 105;
+    var warn   = pct > 85 && !over;
+    var barC   = over ? 'var(--accent-red)' : warn ? 'var(--accent-amber)' : 'var(--accent-green)';
+    var cls    = over ? 'half-card over' : warn ? 'half-card warn' : 'half-card ok';
+    var border = isActive ? 'border-color:var(--accent-cyan) !important;' : '';
+    var dayFrom = isFirst ? 1 : mid+1;
+    var dayTo   = isFirst ? mid : dim;
+    var label   = isFirst ? 'ครึ่งแรก' : 'ครึ่งหลัง';
+    var daysUsed = workdays.filter(function(d){ return mData[mo] && mData[mo][mDateKey(mo,d)]; }).length;
+
+    var chip = '';
+    if(over)       chip = '<span style="font-size:9px;background:rgba(239,68,68,.15);color:var(--accent-red);border-radius:3px;padding:1px 5px;margin-left:4px;">เกิน +'+mFmt(spent-quota)+'</span>';
+    else if(warn)  chip = '<span style="font-size:9px;background:rgba(245,158,11,.15);color:var(--accent-amber);border-radius:3px;padding:1px 5px;margin-left:4px;">'+pct+'%</span>';
+    else if(pct>0) chip = '<span style="font-size:9px;background:rgba(34,197,94,.12);color:var(--accent-green);border-radius:3px;padding:1px 5px;margin-left:4px;">'+pct+'%</span>';
+
+    var html = '<div class="'+cls+'" style="'+border+'">';
+    if(isActive) html += '<div style="position:absolute;top:5px;right:8px;font-size:9px;font-family:var(--font-mono);color:var(--accent-cyan);">● ปัจจุบัน</div>';
+    html += '<div class="half-title">'+label+' ('+dayFrom+'–'+dayTo+')</div>';
+    html += '<div style="display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;">';
+    html += '<span style="font-size:16px;font-weight:700;font-family:var(--font-mono);color:'+barC+';">'+mFmtS(spent)+'</span>';
+    html += '<span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">/ '+mFmtS(quota)+'</span>';
+    html += chip + '</div>';
+    html += '<div class="half-bar-wrap"><div class="half-bar-fill" style="width:'+Math.min(100,pct)+'%;background:'+barC+';"></div></div>';
+    html += '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);">';
+    html += '<span>ลูกค้า '+cnt+' / '+quotaCnt.toFixed(0)+' ราย ('+cntPct+'%)</span>';
+    html += '<span>'+daysUsed+'/'+workdays.length+' วัน</span></div>';
+    html += '</div>';
+    return html;
+  }
+
+  var html = '';
+  html += '<div style="font-size:11px;font-family:var(--font-mono);color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">📊 Monitoring ครึ่งเดือน · โควต้า = งบ ÷ 2</div>';
+  html += '<div style="font-size:10px;color:var(--accent-green);font-family:var(--font-mono);margin-bottom:4px;">🆕 1st Loan — โควต้า '+mFmtS(quotaNewH)+'/ครึ่งเดือน · เป้า '+Math.round(quotaCntNewH)+' ราย</div>';
+  html += '<div class="half-grid" style="margin-bottom:10px;">';
+  html += halfCard(spentNewH1, quotaNewH, cntNewH1, quotaCntNewH, wdFirst,  inFirst,  true);
+  html += halfCard(spentNewH2, quotaNewH, cntNewH2, quotaCntNewH, wdSecond, inSecond, false);
+  html += '</div>';
+  html += '<div style="font-size:10px;color:var(--accent-amber);font-family:var(--font-mono);margin-bottom:4px;">🔄 Rollover — โควต้า '+mFmtS(quotaOldH)+'/ครึ่งเดือน · เป้า '+Math.round(quotaCntOldH)+' ราย</div>';
+  html += '<div class="half-grid">';
+  html += halfCard(spentOldH1, quotaOldH, cntOldH1, quotaCntOldH, wdFirst,  inFirst,  true);
+  html += halfCard(spentOldH2, quotaOldH, cntOldH2, quotaCntOldH, wdSecond, inSecond, false);
+  html += '</div>';
+  el.innerHTML = html;
 }
 
 function mRenderCalendar(mo){
