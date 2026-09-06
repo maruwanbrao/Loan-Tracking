@@ -762,6 +762,9 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--acce
     </button>
   </div>
   <div id="gsStatus" style="font-size:11px;font-family:var(--font-mono);margin-top:10px;min-height:16px;color:var(--text-muted);"></div>
+  <div style="margin-top:2px;">
+    <a onclick="gsResetUrl()" style="font-size:10px;color:var(--text-muted);text-decoration:underline;cursor:pointer;">ใช้ URL เริ่มต้นที่ฝังไว้ในระบบ</a>
+  </div>
   <hr style="border:none;border-top:1px solid var(--border);margin:12px 0;">
   <div style="font-size:11px;color:var(--text-muted);line-height:1.8;">
     <div style="margin-bottom:4px;font-weight:600;color:var(--text-secondary);">📋 วิธีตั้งค่า (ครั้งเดียว):</div>
@@ -3403,7 +3406,7 @@ function mGetWorkdayStatus(mo){
   let passed=0,remain=0;
   all.forEach(d=>{
     const key=mDateKey(mo,d);
-    const hasData=!!(mData[mo]&&mData[mo][key]&&(mData[mo][key].amtNew||mData[mo][key].amtOld));
+    const hasData=!!(mData[mo]&&mData[mo][key]&&(mData[mo][key].amtNew||mData[mo][key].amtOld||mData[mo][key].cntNew||mData[mo][key].cntOld));
     if(hasData||(today&&d<today)) passed++; else remain++;
   });
   return {total:all.length,passed,remain};
@@ -3480,7 +3483,9 @@ function mEffectiveBudget(mo){
     baseBudNew: mc.budNew,
     baseBudOld: mc.budOld,
     carryNew, carryOld,
-    breakdown:  carryNew||carryOld ? [{mo: mo-1, surplusNew: carryNew, surplusOld: carryOld}] : [],
+    // หมายเหตุ: ยอด carry เป็นตัวเลขที่ผู้ใช้กรอกเองในหน้าตั้งค่า (ไม่ได้คำนวณอัตโนมัติจากเดือนก่อนหน้า)
+    // จึงใช้ label กลางๆ แทนการระบุชื่อเดือนที่มาของยอด เพื่อไม่ให้ป้ายกำกับผิดเดือนจริง
+    breakdown:  carryNew||carryOld ? [{label: 'ยกยอดมา', surplusNew: carryNew, surplusOld: carryOld}] : [],
     tgtNew:  mc.tgtNew,  tgtOld:  mc.tgtOld,
     loanNew: mc.loanNew, loanOld: mc.loanOld,
   };
@@ -3698,9 +3703,9 @@ function renderMonth(mo){
     const pN=mPct(spentNew,mc.budNew),pO=mPct(spentOld,mc.budOld);
     // Carryover breakdown rows
     const carryRowsNew = mc.breakdown.filter(b=>b.surplusNew>0).map(b=>
-      `<span style="font-size:10px;color:var(--accent-cyan);font-family:var(--font-mono);">${TH_MONTHS_SHORT_M[b.mo]} +${mFmtS(b.surplusNew)}</span>`).join(' ');
+      `<span style="font-size:10px;color:var(--accent-cyan);font-family:var(--font-mono);">${b.label||'ยกยอดมา'} +${mFmtS(b.surplusNew)}</span>`).join(' ');
     const carryRowsOld = mc.breakdown.filter(b=>b.surplusOld>0).map(b=>
-      `<span style="font-size:10px;color:var(--accent-cyan);font-family:var(--font-mono);">${TH_MONTHS_SHORT_M[b.mo]} +${mFmtS(b.surplusOld)}</span>`).join(' ');
+      `<span style="font-size:10px;color:var(--accent-cyan);font-family:var(--font-mono);">${b.label||'ยกยอดมา'} +${mFmtS(b.surplusOld)}</span>`).join(' ');
     pb.innerHTML=`
       <div class="budget-section">
         <div class="budget-label">
@@ -4208,8 +4213,9 @@ const GS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz4vMnv4lm6mOM7ot
 const GS_URL_KEY = 'gs_webapp_url_v1';
 
 function gsGetUrl(){
-  // ใช้ URL ที่ฝังไว้ก่อน ถ้าไม่มีค่อยใช้จาก localStorage
-  return GS_WEBAPP_URL || localStorage.getItem(GS_URL_KEY) || '';
+  // ใช้ URL ที่ผู้ใช้บันทึกเองจากหน้าตั้งค่าก่อน (ถ้ามี) — ไม่งั้น fallback ไปที่ URL ที่ฝังไว้ในโค้ด
+  // (เดิม bug: โค้ดให้ URL ที่ฝังไว้ชนะเสมอ ทำให้กด "บันทึก URL" ในหน้าตั้งค่าแล้วไม่มีผลอะไรเลย)
+  return localStorage.getItem(GS_URL_KEY) || GS_WEBAPP_URL || '';
 }
 
 function gsSaveUrl(){
@@ -4221,6 +4227,18 @@ function gsSaveUrl(){
   gsReadAll();
 }
 
+function gsResetUrl(){
+  // ล้างค่า URL ที่ผู้ใช้บันทึกเอง กลับไปใช้ URL เริ่มต้นที่ฝังไว้ในโค้ด
+  localStorage.removeItem(GS_URL_KEY);
+  const inp = document.getElementById('gsUrl');
+  const btn = document.getElementById('gsSaveBtn');
+  const def = GS_WEBAPP_URL || '';
+  if(inp) inp.value = def;
+  if(btn) btn.disabled = !def;
+  gsSetStatus('↩️ กลับไปใช้ URL เริ่มต้นแล้ว', 'var(--text-muted)');
+  gsReadAll();
+}
+
 function gsTogglePanel(){
   const panel = document.getElementById('gsPanel');
   if(!panel) return;
@@ -4229,8 +4247,8 @@ function gsTogglePanel(){
   if(!isOpen){
     const inp = document.getElementById('gsUrl');
     const btn = document.getElementById('gsSaveBtn');
-    // แสดง URL ปัจจุบัน (จาก hardcode หรือ localStorage)
-    const current = GS_WEBAPP_URL || localStorage.getItem(GS_URL_KEY) || '';
+    // แสดง URL ที่ใช้งานจริงตอนนี้ (localStorage ที่ผู้ใช้บันทึกเอง มีสิทธิ์เหนือ URL ที่ฝังไว้)
+    const current = gsGetUrl();
     if(inp) inp.value = current;
     if(btn) btn.disabled = !current;
   }
@@ -4351,36 +4369,54 @@ async function gsReadAll(){
   const url = gsGetUrl();
   if(!url) return;
   _gsLoading = true;  // prevent save-loop during load
+  const readStartedAt = Date.now(); // snapshot ก่อนเริ่มดึงข้อมูล ใช้กันไม่ให้ทับข้อมูลที่เพิ่งบันทึกสดๆ
   gsUpdatePill('syncing');
   gsSetStatus('⏳ กำลังโหลดข้อมูลจาก Sheets…', 'var(--accent-amber)');
   try {
     const json = await gsJsonp(url, { action: 'readAll' });
 
     // April
-    if(json.april && Object.keys(json.april).length > 0){
-      data = json.april;
-      // Write to localStorage directly (bypass patched saveData to avoid gsWrite loop)
-      try { localStorage.setItem('loan_april_2026_v1', JSON.stringify(data)); } catch(e){}
-      render();
+    // แก้บั๊ก: เดิมใช้ Object.keys(...).length > 0 เป็นเงื่อนไข ทำให้ถ้าลบข้อมูลทั้งเดือนจนว่างเปล่า
+    // (sync ขึ้น Sheet เป็น {} สำเร็จ) เครื่อง/เบราว์เซอร์อื่นจะ "เมิน" ค่าว่างนี้และไม่มีวันเห็นการลบ
+    // เปลี่ยนมาเช็คแค่ว่า server ส่ง key นี้กลับมาจริงหรือไม่ (แม้จะเป็น {} ก็ยังถือว่านำมาใช้)
+    if(json.april !== undefined && json.april !== null){
+      if(!_lastLocalEdit.april || _lastLocalEdit.april < readStartedAt){
+        data = json.april;
+        // Write to localStorage directly (bypass patched saveData to avoid gsWrite loop)
+        try { localStorage.setItem('loan_april_2026_v1', JSON.stringify(data)); } catch(e){}
+        render();
+      } else {
+        console.log('[GS] skip april — local edit happened during this sync, keeping local version');
+      }
     }
     // Months 5-12
     for(let mo = 5; mo <= 12; mo++){
       const key = 'month_' + mo;
-      if(json[key] && Object.keys(json[key]).length > 0){
-        mData[mo] = json[key];
-        // Write to localStorage directly (bypass patched mSaveData)
-        try {
-          const cfg = typeof MONTH_CFGS !== 'undefined' ? MONTH_CFGS[mo] : null;
-          if(cfg) localStorage.setItem(cfg.storageKey, JSON.stringify(mData[mo]));
-        } catch(e){}
-        const pg = document.getElementById('page-m'+mo);
-        if(pg && pg.style.display !== 'none') renderMonth(mo);
+      if(json[key] !== undefined && json[key] !== null){
+        if(!_lastLocalEdit[key] || _lastLocalEdit[key] < readStartedAt){
+          mData[mo] = json[key];
+          // Write to localStorage directly (bypass patched mSaveData)
+          try {
+            const cfg = typeof MONTH_CFGS !== 'undefined' ? MONTH_CFGS[mo] : null;
+            if(cfg) localStorage.setItem(cfg.storageKey, JSON.stringify(mData[mo]));
+          } catch(e){}
+          const pg = document.getElementById('page-m'+mo);
+          if(pg && pg.style.display !== 'none') renderMonth(mo);
+        } else {
+          console.log('[GS] skip', key, '— local edit happened during this sync, keeping local version');
+        }
       }
     }
     // Settings
-    if(json.settings && Object.keys(json.settings).length > 0){
-      mSettings = json.settings;
-      localStorage.setItem(M_SETTINGS_KEY, JSON.stringify(mSettings));
+    if(json.settings !== undefined && json.settings !== null){
+      if(!_lastLocalEdit.settings || _lastLocalEdit.settings < readStartedAt){
+        mSettings = json.settings;
+        localStorage.setItem(M_SETTINGS_KEY, JSON.stringify(mSettings));
+        // งบ/เป้าหมายเปลี่ยนได้บ่อย — รีเฟรชหน้าเดือนที่กำลังเปิดอยู่ให้เห็นผลทันที
+        const activePid = localStorage.getItem('active_page') || '';
+        const activeMo = parseInt(activePid.replace('page-m',''));
+        if(!isNaN(activeMo) && activeMo>=5 && activeMo<=12) renderMonth(activeMo);
+      }
     }
 
     gsUpdatePill('ok');
@@ -4399,21 +4435,29 @@ async function gsReadAll(){
 // Guard prevents gsWrite loop when loading from Sheets
 let _gsLoading = false;
 
+// เก็บเวลาที่ผู้ใช้แก้ไขข้อมูลแต่ละก้อนล่าสุด (key ตรงกับ sheetKey ที่ใช้ sync)
+// ใช้กันไม่ให้ gsReadAll() ที่กำลังโหลดอยู่ (อาจใช้เวลาหลายวินาที) เขียนทับข้อมูลที่ผู้ใช้
+// เพิ่งบันทึกไปหมาดๆ ระหว่างที่กำลังโหลด (race condition ระหว่างอ่าน/เขียน)
+let _lastLocalEdit = {};
+
 const _gs_origSaveData = saveData;
 saveData = function(){
   _gs_origSaveData();
+  _lastLocalEdit['april'] = Date.now();
   if(!_gsLoading) gsWrite('april', data);
 };
 
 const _gs_origMSaveData = mSaveData;
 mSaveData = function(mo){
   _gs_origMSaveData(mo);
+  _lastLocalEdit['month_'+mo] = Date.now();
   if(!_gsLoading) gsWrite('month_'+mo, mData[mo]||{});
 };
 
 const _gs_origMSaveSettings = mSaveSettings;
 mSaveSettings = function(){
   _gs_origMSaveSettings();
+  _lastLocalEdit['settings'] = Date.now();
   if(!_gsLoading) gsWrite('settings', mSettings);
 };
 
@@ -4427,8 +4471,8 @@ setTimeout(function(){
   const btn = document.getElementById('gsSaveBtn');
   if(inp && saved) inp.value = saved;
   if(btn) btn.disabled = !saved;
-  // ถ้ามี URL (จาก hardcode หรือ localStorage) → เชื่อมต่อทันที
-  const activeUrl = GS_WEBAPP_URL || saved;
+  // ถ้ามี URL (จาก localStorage ที่ผู้ใช้บันทึกเอง หรือ hardcode) → เชื่อมต่อทันที
+  const activeUrl = saved;
   if(activeUrl){
     gsReadAll();
   } else {
